@@ -1,4 +1,4 @@
-package com.ivantrykosh.app.zeitzuheiraten.ui.theme
+package com.ivantrykosh.app.zeitzuheiraten.presenter.ui.theme
 
 import android.app.Activity
 import android.os.Build
