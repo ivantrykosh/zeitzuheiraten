@@ -27,6 +27,9 @@ class FirebaseAuth(private val firebaseAuth: FirebaseAuth = Firebase.auth) {
         firebaseAuth.currentUser!!.delete().await()
     }
 
+    /**
+     * Returns user id if user exists, otherwise returns empty string
+     */
     fun getCurrentUserId(): String {
         return firebaseAuth.currentUser?.uid ?: ""
     }
