@@ -8,22 +8,37 @@ import com.ivantrykosh.app.zeitzuheiraten.domain.repository.UserAuthRepository
 import com.ivantrykosh.app.zeitzuheiraten.domain.repository.UserRepository
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class AppModule {
+abstract class AppModuleBindings {
 
-    @Binds
-    abstract fun bindFirebaseAuth(firebaseAuth: FirebaseAuth): FirebaseAuth
-
-    @Binds
-    abstract fun bindFirestoreUsers(firestoreUsers: FirestoreUsers): FirestoreUsers
-
+    @Singleton
     @Binds
     abstract fun bindUserAuthRepository(userAuthRepositoryImpl: UserAuthRepositoryImpl): UserAuthRepository
 
+    @Singleton
     @Binds
     abstract fun bindUserRepository(userRepositoryImpl: UserRepositoryImpl): UserRepository
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+object AppModuleProvidings {
+
+    @Singleton
+    @Provides
+    fun provideFirebaseAuth(): FirebaseAuth {
+        return FirebaseAuth()
+    }
+
+    @Singleton
+    @Provides
+    fun provideFirestoreUsers(): FirestoreUsers {
+        return FirestoreUsers()
+    }
 }

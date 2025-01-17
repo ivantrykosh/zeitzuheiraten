@@ -86,4 +86,24 @@ class UserAuthRepositoryImplTest {
         verify(mockFirebaseAuth).getCurrentUserId()
         assertEquals(userId, id)
     }
+
+    @Test
+    fun `send verification email successfully`() = runTest {
+        whenever(mockFirebaseAuth.sendVerificationEmail()).doAnswer(Answer {  })
+
+        userAuthRepositoryImpl.sendVerificationEmail()
+
+        verify(mockFirebaseAuth).sendVerificationEmail()
+    }
+
+    @Test
+    fun `is email verified executes successfully`() = runTest {
+        val verified = true
+        whenever(mockFirebaseAuth.isEmailVerified()).doReturn(verified)
+
+        val isVerified = userAuthRepositoryImpl.isEmailVerified()
+
+        verify(mockFirebaseAuth).isEmailVerified()
+        assertEquals(verified, isVerified)
+    }
 }

@@ -1,0 +1,31 @@
+package com.ivantrykosh.app.zeitzuheiraten.presenter.auth.verify_email
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.auth.SendVerificationEmailUseCase
+import com.ivantrykosh.app.zeitzuheiraten.utils.Resource
+import com.ivantrykosh.app.zeitzuheiraten.utils.State
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import javax.inject.Inject
+
+@HiltViewModel
+class VerifyEmailViewModel @Inject constructor(
+    private val sendVerificationEmailUseCase: SendVerificationEmailUseCase
+) : ViewModel() {
+
+    var sendVerificationEmailState = MutableStateFlow(State<Unit>())
+        private set
+
+    fun sendVerificationEmail() {
+        sendVerificationEmailUseCase().onEach { result ->
+            sendVerificationEmailState.value = when (result) {
+                is Resource.Error -> State(error = result.message)
+                is Resource.Loading -> State(loading = true)
+                is Resource.Success -> State(data = Unit)
+            }
+        }.launchIn(viewModelScope)
+    }
+}

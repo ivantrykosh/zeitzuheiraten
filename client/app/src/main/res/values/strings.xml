@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Zeit zu heiraten</string>
+    <string name="app_icon">App icon</string>
+    <string name="sign_up_title">SIGN UP</string>
 </resources>

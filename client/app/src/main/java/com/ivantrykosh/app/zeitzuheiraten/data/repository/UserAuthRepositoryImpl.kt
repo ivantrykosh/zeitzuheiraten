@@ -30,4 +30,12 @@ class UserAuthRepositoryImpl @Inject constructor(
     override suspend fun getCurrentUserId(): String {
         return firebaseAuth.getCurrentUserId()
     }
+
+    override suspend fun sendVerificationEmail() {
+        firebaseAuth.sendVerificationEmail()
+    }
+
+    override suspend fun isEmailVerified(): Boolean {
+        return firebaseAuth.isEmailVerified()
+    }
 }

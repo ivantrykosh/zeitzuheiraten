@@ -20,6 +20,7 @@ class FirebaseAuth(private val firebaseAuth: FirebaseAuth = Firebase.auth) {
     }
 
     suspend fun resetPassword(email: String) {
+        firebaseAuth.useAppLanguage()
         firebaseAuth.sendPasswordResetEmail(email).await()
     }
 
@@ -32,5 +33,14 @@ class FirebaseAuth(private val firebaseAuth: FirebaseAuth = Firebase.auth) {
      */
     fun getCurrentUserId(): String {
         return firebaseAuth.currentUser?.uid ?: ""
+    }
+
+    suspend fun sendVerificationEmail() {
+        firebaseAuth.useAppLanguage()
+        firebaseAuth.currentUser!!.sendEmailVerification().await()
+    }
+
+    fun isEmailVerified(): Boolean {
+        return firebaseAuth.currentUser!!.isEmailVerified
     }
 }

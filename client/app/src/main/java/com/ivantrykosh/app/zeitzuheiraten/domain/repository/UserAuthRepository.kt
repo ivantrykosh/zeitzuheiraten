@@ -13,4 +13,8 @@ interface UserAuthRepository {
     suspend fun deleteCurrentUser()
 
     suspend fun getCurrentUserId(): String
+
+    suspend fun sendVerificationEmail()
+
+    suspend fun isEmailVerified(): Boolean
 }

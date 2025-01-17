@@ -7,13 +7,18 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.kotlin.doAnswer
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
+import org.mockito.stubbing.Answer
 
 @RunWith(MockitoJUnitRunner::class)
 class FirebaseAuthTest {
@@ -123,5 +128,45 @@ class FirebaseAuthTest {
 
         verify(mockFirebaseAuth).currentUser
         assertEquals(userUid, uid)
+    }
+
+    @Test
+    fun `send verification email successfully`() = runTest {
+        val completedTask = Tasks.forResult<Void>(null)
+        val user = mock<FirebaseUser> {
+            on { mockFirebaseAuth.currentUser } doReturn it
+            on { it.sendEmailVerification() } doReturn completedTask
+        }
+
+        auth.sendVerificationEmail()
+
+        verify(mockFirebaseAuth).currentUser
+        verify(user).sendEmailVerification()
+    }
+
+    @Test
+    fun `is email verified returns true because it is verified`() = runTest {
+        mock<FirebaseUser> {
+            on { mockFirebaseAuth.currentUser } doReturn it
+            on { it.isEmailVerified } doReturn true
+        }
+
+        val isVerified = auth.isEmailVerified()
+
+        verify(mockFirebaseAuth).currentUser
+        assertTrue(isVerified)
+    }
+
+    @Test
+    fun `is email verified returns false because it is not verified`() = runTest {
+        mock<FirebaseUser> {
+            on { mockFirebaseAuth.currentUser } doReturn it
+            on { it.isEmailVerified } doReturn false
+        }
+
+        val isVerified = auth.isEmailVerified()
+
+        verify(mockFirebaseAuth).currentUser
+        assertFalse(isVerified)
     }
 }
