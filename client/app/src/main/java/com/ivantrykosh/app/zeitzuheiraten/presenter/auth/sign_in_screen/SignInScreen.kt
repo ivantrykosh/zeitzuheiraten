@@ -1,0 +1,162 @@
+package com.ivantrykosh.app.zeitzuheiraten.presenter.auth.sign_in_screen
+
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.ivantrykosh.app.zeitzuheiraten.R
+import com.ivantrykosh.app.zeitzuheiraten.presenter.auth.InputField
+import com.ivantrykosh.app.zeitzuheiraten.presenter.auth.PasswordInputField
+import com.ivantrykosh.app.zeitzuheiraten.presenter.ui.theme.PurpleGrey80
+import com.ivantrykosh.app.zeitzuheiraten.utils.isEmailValid
+import com.ivantrykosh.app.zeitzuheiraten.utils.isPasswordValid
+
+@Preview(showBackground = true)
+@Composable
+fun SignInScreen(
+    signInViewModel: SignInViewModel = hiltViewModel(),
+    navigateToMainPage: () -> Unit = { }
+) {
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+
+    var emailError by remember { mutableStateOf(false) }
+    val standardEmailErrorMessage = stringResource(id = R.string.email_invalid)
+    var emailErrorMessage by remember { mutableStateOf("") }
+
+    var passwordError by remember { mutableStateOf(false) }
+    val standardPasswordErrorMessage = stringResource(id = R.string.password_invalid)
+    var passwordErrorMessage by remember { mutableStateOf("") }
+
+    val signInState by signInViewModel.signInState.collectAsStateWithLifecycle()
+    var loaded by remember { mutableStateOf(false) }
+
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        Card(
+            modifier = Modifier.align(Alignment.Center),
+            colors = CardDefaults.cardColors(
+                containerColor = PurpleGrey80
+            )
+        ) {
+            Column(
+                modifier = Modifier.padding(8.dp)
+            ) {
+                InputField(
+                    value = email,
+                    onValueChange = { email = it },
+                    label = R.string.email,
+                    icon = R.drawable.baseline_email_24,
+                    iconDescription = R.string.email_icon,
+                    onFocusChange = {
+                        if (!it.hasFocus && email.isNotEmpty()) {
+                            if (!isEmailValid(email)) {
+                                emailError = true
+                                emailErrorMessage = standardEmailErrorMessage
+                            } else {
+                                emailError = false
+                                emailErrorMessage = ""
+                            }
+                        }
+                    },
+                    error = emailError,
+                    errorMessage = emailErrorMessage
+                )
+
+                PasswordInputField(
+                    value = password,
+                    onValueChange = { password = it },
+                    onFocusChange = {
+                        if (!it.hasFocus) {
+                            if (!isPasswordValid(password) && password.isNotEmpty()) {
+                                passwordError = true
+                                passwordErrorMessage = standardPasswordErrorMessage
+                            } else {
+                                passwordError = false
+                                passwordErrorMessage = ""
+                            }
+                        }
+                    },
+                    error = passwordError,
+                    errorMessage = passwordErrorMessage
+                )
+
+                FilledTonalButton(
+                    onClick = {
+                        if (!isEmailValid(email)) {
+                            emailError = true
+                            emailErrorMessage = standardEmailErrorMessage
+                        } else if (!isPasswordValid(password)) {
+                            passwordError = true
+                            passwordErrorMessage = standardPasswordErrorMessage
+                        } else {
+                            emailError = false
+                            emailErrorMessage = ""
+                            passwordError = false
+                            passwordErrorMessage = ""
+                            signInViewModel.signIn(email, password)
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                ) {
+                    Text(text = stringResource(id = R.string.sign_in_title), fontSize = 16.sp)
+                }
+            }
+        }
+
+
+        if (!loaded) {
+            when {
+                signInState.loading -> {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                }
+                signInState.error != null -> {
+                    if (signInState.error is FirebaseAuthInvalidCredentialsException) {
+                        emailError = true
+                        emailErrorMessage = stringResource(id = R.string.email_or_password_invalid)
+                        passwordError = true
+                        passwordErrorMessage = stringResource(id = R.string.email_or_password_invalid)
+                    } else {
+                        AlertDialog(
+                            onDismissRequest = { },
+                            confirmButton = { Text(text = stringResource(id = R.string.ok_title)) },
+                            title = { Text(text = stringResource(id = R.string.error)) },
+                            text = { Text(text = stringResource(id = R.string.error_occurred)) }
+                        )
+                    }
+                }
+                signInState.data != null -> {
+                    loaded = true
+                    navigateToMainPage()
+                }
+            }
+        }
+    }
+}

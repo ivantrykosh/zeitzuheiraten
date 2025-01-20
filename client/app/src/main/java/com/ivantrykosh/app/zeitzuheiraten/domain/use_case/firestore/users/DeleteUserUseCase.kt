@@ -21,7 +21,7 @@ class DeleteUserUseCase @Inject constructor(
             userRepository.deleteUser(userId)
             emit(Resource.Success())
         } catch (e: Exception) {
-            emit(Resource.Error(e.message ?: "An error occurred after trying to delete user"))
+            emit(Resource.Error(e))
         }
     }
 }

@@ -19,7 +19,7 @@ class DoesUserLogInAndIsEmailVerifiedUseCase @Inject constructor(
                 emit(Resource.Success(isEmailVerified))
             }
         } catch (e: Exception) {
-            emit(Resource.Error(e.message ?: "An error occurred after trying to get user id and check if email is verified"))
+            emit(Resource.Error(e))
         }
     }
 }

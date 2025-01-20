@@ -25,7 +25,7 @@ class CreateUserUseCase @Inject constructor(
             if (userAuthRepository.getCurrentUserId().isNotEmpty()) {
                 userAuthRepository.deleteCurrentUser()
             }
-            emit(Resource.Error(e.message ?: "An error occurred after trying to sign up"))
+            emit(Resource.Error(e))
         }
     }
 }

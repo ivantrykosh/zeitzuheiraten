@@ -38,7 +38,7 @@ class DoesUserLogInAndIsEmailVerifiedUseCaseTest {
         doesUserLogInAndIsEmailVerifiedUseCase().collect { result ->
             when (result) {
                 is Resource.Loading -> { }
-                is Resource.Error -> { Assert.fail(result.message) }
+                is Resource.Error -> { Assert.fail(result.error.message) }
                 is Resource.Success -> { success = result.data!! }
             }
         }
@@ -59,7 +59,7 @@ class DoesUserLogInAndIsEmailVerifiedUseCaseTest {
         doesUserLogInAndIsEmailVerifiedUseCase().collect { result ->
             when (result) {
                 is Resource.Loading -> { }
-                is Resource.Error -> { Assert.fail(result.message) }
+                is Resource.Error -> { Assert.fail(result.error.message) }
                 is Resource.Success -> { success = result.data!! }
             }
         }
@@ -78,7 +78,7 @@ class DoesUserLogInAndIsEmailVerifiedUseCaseTest {
         doesUserLogInAndIsEmailVerifiedUseCase().collect { result ->
             when (result) {
                 is Resource.Loading -> { }
-                is Resource.Error -> { Assert.fail(result.message) }
+                is Resource.Error -> { Assert.fail(result.error.message) }
                 is Resource.Success -> { success = result.data!! }
             }
         }

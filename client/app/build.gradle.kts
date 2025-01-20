@@ -72,11 +72,8 @@ dependencies {
 
     implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
     implementation("com.google.firebase:firebase-auth")
-    implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.firebase:firebase-firestore")
     // TODO add firebase storage after updating project to Blaze plan
-    implementation("com.google.android.gms:play-services-base:18.5.0")
-    implementation("com.google.android.gms:play-services-auth:21.3.0")
 
     val hilt_version = "2.51.1"
     implementation("com.google.dagger:hilt-android:$hilt_version")

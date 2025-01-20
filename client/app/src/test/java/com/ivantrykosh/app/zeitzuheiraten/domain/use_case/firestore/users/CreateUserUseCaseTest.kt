@@ -1,5 +1,7 @@
 package com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.users
 
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.firestore.FirebaseFirestoreException
 import com.ivantrykosh.app.zeitzuheiraten.data.repository.UserAuthRepositoryImpl
 import com.ivantrykosh.app.zeitzuheiraten.data.repository.UserRepositoryImpl
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.User
@@ -12,6 +14,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.kotlin.doAnswer
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.doThrow
 import org.mockito.kotlin.mock
@@ -46,7 +49,7 @@ class CreateUserUseCaseTest {
         createUserUseCase(email, password, user).collect { result ->
             when (result) {
                 is Resource.Loading -> { }
-                is Resource.Error -> { Assert.fail(result.message) }
+                is Resource.Error -> { Assert.fail(result.error.message) }
                 is Resource.Success -> { resourceSuccess = true }
             }
         }
@@ -57,21 +60,27 @@ class CreateUserUseCaseTest {
         Assert.assertTrue(resourceSuccess)
     }
 
-    @Test(expected = CancellationException::class)
+    @Test
     fun `create user failed because credentials is incorrect`() = runBlocking {
         val email = "test@email"
         val password = "pass"
         val user = User(id = "t1e2s3t4", name = "Test User", email = "test@email")
-        whenever(userAuthRepositoryImpl.signUp(email, password)).doThrow(RuntimeException("Credentials is incorrect"))
+        var exception: Exception? = null
+        val mockException = mock<FirebaseAuthInvalidCredentialsException>()
+        whenever(userAuthRepositoryImpl.signUp(email, password)).doAnswer { throw mockException }
         whenever(userAuthRepositoryImpl.getCurrentUserId()).doReturn("")
 
         createUserUseCase(email, password, user).collect { result ->
             when (result) {
                 is Resource.Loading -> { }
-                is Resource.Error -> { this.cancel() }
+                is Resource.Error -> { exception = result.error }
                 is Resource.Success -> { Assert.fail("Must be error") }
             }
         }
+
+        verify(userAuthRepositoryImpl).signUp(email, password)
+        Assert.assertNotNull(exception)
+        Assert.assertTrue(exception is FirebaseAuthInvalidCredentialsException)
     }
 
     @Test
@@ -80,16 +89,17 @@ class CreateUserUseCaseTest {
         val password = "Password123"
         val userId = "t1e2s3t4"
         val user = User(name = "Test User", email = "test@email.com")
-        var resourceError = false
+        var exception: Exception? = null
+        val mockException = mock<FirebaseFirestoreException>()
         whenever(userAuthRepositoryImpl.signUp(email, password)).doReturn(Unit)
         whenever(userAuthRepositoryImpl.getCurrentUserId()).doReturn(userId)
         whenever(userAuthRepositoryImpl.deleteCurrentUser()).doReturn(Unit)
-        whenever(userRepositoryImpl.createUser(user.copy(id = userId))).doThrow(RuntimeException("Fail to create user in storage"))
+        whenever(userRepositoryImpl.createUser(user.copy(id = userId))).doAnswer { throw mockException }
 
         createUserUseCase(email, password, user).collect { result ->
             when (result) {
                 is Resource.Loading -> { }
-                is Resource.Error -> { resourceError = true }
+                is Resource.Error -> { exception = result.error }
                 is Resource.Success -> { Assert.fail("Must be error") }
             }
         }
@@ -97,7 +107,8 @@ class CreateUserUseCaseTest {
         verify(userAuthRepositoryImpl).signUp(email, password)
         verify(userRepositoryImpl).createUser(user.copy(id = userId))
         verify(userAuthRepositoryImpl).deleteCurrentUser()
-        Assert.assertTrue(resourceError)
+        Assert.assertNotNull(exception)
+        Assert.assertTrue(exception is FirebaseFirestoreException)
     }
 
     @Test(expected = CancellationException::class)

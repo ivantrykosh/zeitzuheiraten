@@ -28,22 +28,10 @@ class SignUpViewModel @Inject constructor(
         )
         createUserUseCase(email, password, user).onEach { result ->
             createUserState.value = when (result) {
-                is Resource.Error -> State(error = result.message)
+                is Resource.Error -> State(error = result.error)
                 is Resource.Loading -> State(loading = true)
                 is Resource.Success -> State(data = Unit)
             }
         }.launchIn(viewModelScope)
-    }
-
-    private val VALID_EMAIL_REGEX_PATTERN = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,10}$"
-    fun isEmailValid(email: String): Boolean {
-        val regex = Regex(VALID_EMAIL_REGEX_PATTERN, RegexOption.IGNORE_CASE)
-        return email.matches(regex)
-    }
-
-    private val VALID_PASSWORD_REGEX_PATTERN = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{6,64}"
-    fun isPasswordValid(password: String): Boolean {
-        val regex = Regex(VALID_PASSWORD_REGEX_PATTERN)
-        return password.matches(regex)
     }
 }

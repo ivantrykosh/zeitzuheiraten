@@ -15,7 +15,7 @@ class GetUserByIdUseCase @Inject constructor(
             val user = userRepository.getUserById(userId)
             emit(Resource.Success(user))
         } catch (e: Exception) {
-            emit(Resource.Error(e.message ?: "An error occurred after trying to get user by id"))
+            emit(Resource.Error(e))
         }
     }
 }

@@ -14,7 +14,7 @@ class IsEmailVerifiedUseCase @Inject constructor(
             val isVerified = userAuthRepository.isEmailVerified()
             emit(Resource.Success(isVerified))
         } catch (e: Exception) {
-            emit(Resource.Error(e.message ?: "An error occurred after trying to check if email is verified"))
+            emit(Resource.Error(e))
         }
     }
 }

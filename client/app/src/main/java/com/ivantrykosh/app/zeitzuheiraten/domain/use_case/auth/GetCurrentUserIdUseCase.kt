@@ -14,7 +14,7 @@ class GetCurrentUserIdUseCase @Inject constructor(
             val userId = userAuthRepository.getCurrentUserId()
             emit(Resource.Success(userId))
         } catch (e: Exception) {
-            emit(Resource.Error(e.message ?: "An error occurred after trying to get current user ID"))
+            emit(Resource.Error(e))
         }
     }
 }

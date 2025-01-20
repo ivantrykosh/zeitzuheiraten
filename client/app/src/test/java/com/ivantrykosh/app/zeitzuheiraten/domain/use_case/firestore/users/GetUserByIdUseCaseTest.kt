@@ -1,5 +1,6 @@
 package com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.users
 
+import com.google.firebase.firestore.FirebaseFirestoreException
 import com.ivantrykosh.app.zeitzuheiraten.data.repository.UserRepositoryImpl
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.User
 import com.ivantrykosh.app.zeitzuheiraten.utils.Resource
@@ -11,6 +12,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.kotlin.doAnswer
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.doThrow
 import org.mockito.kotlin.mock
@@ -39,7 +41,7 @@ class GetUserByIdUseCaseTest {
         getUserByIdUseCase(userId).collect { result ->
             when (result) {
                 is Resource.Loading -> { }
-                is Resource.Error -> { Assert.fail(result.message) }
+                is Resource.Error -> { Assert.fail(result.error.message) }
                 is Resource.Success -> { user = result.data!! }
             }
         }
@@ -53,19 +55,21 @@ class GetUserByIdUseCaseTest {
     @Test
     fun `get user by id failed because user does not exist`() = runBlocking {
         val userId = "wrongId"
-        var recourseError = false
-        whenever(userRepositoryImpl.getUserById(userId)).doThrow(RuntimeException("User does not exist"))
+        var exception: Exception? = null
+        val mockException = mock<FirebaseFirestoreException>()
+        whenever(userRepositoryImpl.getUserById(userId)).doAnswer { throw mockException }
 
         getUserByIdUseCase(userId).collect { result ->
             when (result) {
                 is Resource.Loading -> { }
-                is Resource.Error -> { recourseError = true }
+                is Resource.Error -> { exception = result.error }
                 is Resource.Success -> { Assert.fail("Must be error") }
             }
         }
 
         verify(userRepositoryImpl).getUserById(userId)
-        Assert.assertTrue(recourseError)
+        Assert.assertNotNull(exception)
+        Assert.assertTrue(exception is FirebaseFirestoreException)
     }
 
     @Test(expected = CancellationException::class)

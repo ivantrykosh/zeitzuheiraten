@@ -14,7 +14,7 @@ class ResetPasswordUseCase @Inject constructor(
             userAuthRepository.resetPassword(email)
             emit(Resource.Success())
         } catch (e: Exception) {
-            emit(Resource.Error(e.message ?: "An error occurred after trying to reset password"))
+            emit(Resource.Error(e))
         }
     }
 }

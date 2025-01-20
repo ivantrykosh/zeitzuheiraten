@@ -22,6 +22,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ivantrykosh.app.zeitzuheiraten.R
+import com.ivantrykosh.app.zeitzuheiraten.utils.isEmailValid
+import com.ivantrykosh.app.zeitzuheiraten.utils.isPasswordValid
 
 @Preview(showBackground = false)
 @Composable
@@ -57,10 +59,7 @@ fun SignUpScreen(
         TextField(value = name, onValueChange = { name = it })
         Checkbox(checked = isProvider, onCheckedChange = { isProvider = it })
         Button(onClick = {
-            if (
-                signUpViewModel.isEmailValid(email) &&
-                signUpViewModel.isPasswordValid(password)
-                ) {
+            if (isEmailValid(email) && isPasswordValid(password)) {
                 signUpViewModel.createUser(email, password, name, isProvider)
             } else {
                 Toast.makeText(context, "Incorrect email or password", Toast.LENGTH_LONG).show()
@@ -75,9 +74,9 @@ fun SignUpScreen(
             createUserState.value.loading -> {
                 Text("Loading...")
             }
-            createUserState.value.error.isNotEmpty() -> {
+            createUserState.value.error != null -> {
                 loaded = true
-                Toast.makeText(context, createUserState.value.error, Toast.LENGTH_LONG).show()
+                Toast.makeText(context, createUserState.value.error!!.message, Toast.LENGTH_LONG).show()
             }
             createUserState.value.data != null -> {
                 loaded = true

@@ -1,5 +1,19 @@
 <resources>
     <string name="app_name">Zeit zu heiraten</string>
     <string name="app_icon">App icon</string>
+    <string name="sign_in_title">SIGN IN</string>
     <string name="sign_up_title">SIGN UP</string>
+    <string name="default_notification_channel_id">1</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="show_password">Show password</string>
+    <string name="hide_password">Hide password</string>
+    <string name="password_icon">Password icon</string>
+    <string name="error_occurred">An error occurred</string>
+    <string name="password_invalid">Password is invalid</string>
+    <string name="email_icon">Password icon</string>
+    <string name="email_invalid">Email is invalid</string>
+    <string name="email_or_password_invalid">Email or password is invalid</string>
+    <string name="ok_title">OK</string>
+    <string name="error">Error</string>
 </resources>

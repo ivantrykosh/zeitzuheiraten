@@ -15,7 +15,7 @@ class SignInUseCase @Inject constructor(
             val userId = userAuthRepository.getCurrentUserId()
             emit(Resource.Success(userId))
         } catch (e: Exception) {
-            emit(Resource.Error(e.message ?: "An error occurred after trying to sign in"))
+            emit(Resource.Error(e))
         }
     }
 }

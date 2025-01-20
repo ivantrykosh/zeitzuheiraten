@@ -14,7 +14,7 @@ class SignOutUseCase @Inject constructor(
             userAuthRepository.signOut()
             emit(Resource.Success())
         } catch (e: Exception) {
-            emit(Resource.Error(e.message ?: "An error occurred after trying to sign out"))
+            emit(Resource.Error(e))
         }
     }
 }

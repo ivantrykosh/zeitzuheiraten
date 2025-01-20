@@ -15,7 +15,7 @@ class UpdateUserUseCase @Inject constructor(
             userRepository.updateUser(user)
             emit(Resource.Success())
         } catch (e: Exception) {
-            emit(Resource.Error(e.message ?: "An error occurred after trying to update user"))
+            emit(Resource.Error(e))
         }
     }
 }

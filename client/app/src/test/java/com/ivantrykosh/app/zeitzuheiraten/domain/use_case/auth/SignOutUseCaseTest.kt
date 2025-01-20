@@ -35,7 +35,7 @@ class SignOutUseCaseTest {
         signOutUseCase().collect { result ->
             when (result) {
                 is Resource.Loading -> { }
-                is Resource.Error -> { Assert.fail(result.message) }
+                is Resource.Error -> { Assert.fail(result.error.message) }
                 is Resource.Success -> { resourceSuccess = true }
             }
         }
