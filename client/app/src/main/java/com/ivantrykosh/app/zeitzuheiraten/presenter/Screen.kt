@@ -7,5 +7,9 @@ sealed class Screen(val route: String) {
         data object SignUpScreen: AuthScreen("sign_up_screen")
         data object SignInScreen: AuthScreen("sign_in_screen")
     }
-    data object MainScreen: Screen("main_screen")
+    sealed class MainScreen(route: String): Screen(route) {
+        data object MainScreen: Screen.MainScreen("main_screen")
+        data object HomeScreen: Screen.MainScreen("home_screen")
+        data object MyProfileScreen: Screen.MainScreen("my_profile_screen")
+    }
 }

@@ -25,4 +25,6 @@
     <string name="no_internet_connection">No internet connection</string>
     <string name="password_is_too_weak">Password is too weak</string>
     <string name="email_already_in_use">Email already in use</string>
+    <string name="home">Home</string>
+    <string name="my_profile">My profile</string>
 </resources>

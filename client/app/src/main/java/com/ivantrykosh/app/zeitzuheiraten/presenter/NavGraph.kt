@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import com.ivantrykosh.app.zeitzuheiraten.presenter.auth.auth_main_screen.AuthMainScreen
 import com.ivantrykosh.app.zeitzuheiraten.presenter.auth.sign_in_screen.SignInScreen
 import com.ivantrykosh.app.zeitzuheiraten.presenter.auth.sign_up_screen.SignUpScreen
+import com.ivantrykosh.app.zeitzuheiraten.presenter.main.MainScreen
 import com.ivantrykosh.app.zeitzuheiraten.presenter.splash_screen.SplashScreen
 
 @Composable
@@ -20,7 +21,7 @@ fun NavGraph(navController: NavHostController) {
                     }
                 },
                 navigateToMainPage = {
-                    navController.navigate(Screen.MainScreen.route) {
+                    navController.navigate(Screen.MainScreen.MainScreen.route) {
                         popUpTo(Screen.SplashScreen.route) { inclusive = true }
                     }
                 }
@@ -38,19 +39,19 @@ fun NavGraph(navController: NavHostController) {
         }
         composable(route = Screen.AuthScreen.SignUpScreen.route) {
             SignUpScreen {
-                navController.navigate(Screen.MainScreen.route) {
+                navController.navigate(Screen.MainScreen.MainScreen.route) {
                     popUpTo(Screen.AuthScreen.AuthMainScreen.route) { inclusive = true }
                 }
             }
         }
         composable(route = Screen.AuthScreen.SignInScreen.route) {
             SignInScreen {
-                navController.navigate(Screen.MainScreen.route) {
+                navController.navigate(Screen.MainScreen.MainScreen.route) {
                     popUpTo(Screen.AuthScreen.AuthMainScreen.route) { inclusive = true }
                 }
             }
         }
-        composable(route = Screen.MainScreen.route) {
+        composable(route = Screen.MainScreen.MainScreen.route) {
             MainScreen()
         }
     }
