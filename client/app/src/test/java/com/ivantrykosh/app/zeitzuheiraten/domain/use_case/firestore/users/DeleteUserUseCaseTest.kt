@@ -2,6 +2,7 @@ package com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.users
 
 import com.ivantrykosh.app.zeitzuheiraten.data.repository.UserAuthRepositoryImpl
 import com.ivantrykosh.app.zeitzuheiraten.data.repository.UserRepositoryImpl
+import com.ivantrykosh.app.zeitzuheiraten.domain.repository.FirebaseStorageRepository
 import com.ivantrykosh.app.zeitzuheiraten.utils.Resource
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.cancel
@@ -21,13 +22,15 @@ class DeleteUserUseCaseTest {
 
     private lateinit var userAuthRepositoryImpl: UserAuthRepositoryImpl
     private lateinit var userRepositoryImpl: UserRepositoryImpl
+    private lateinit var firebaseStorageRepository: FirebaseStorageRepository
     private lateinit var deleteUserUseCase: DeleteUserUseCase
 
     @Before
     fun setup() {
         userAuthRepositoryImpl = mock()
         userRepositoryImpl = mock()
-        deleteUserUseCase = DeleteUserUseCase(userAuthRepositoryImpl, userRepositoryImpl)
+        firebaseStorageRepository = mock()
+        deleteUserUseCase = DeleteUserUseCase(userAuthRepositoryImpl, userRepositoryImpl, firebaseStorageRepository)
     }
 
     @Test
@@ -36,6 +39,7 @@ class DeleteUserUseCaseTest {
         var resourceSuccess = false
         whenever(userAuthRepositoryImpl.getCurrentUserId()).doReturn(userId)
         whenever(userAuthRepositoryImpl.deleteCurrentUser()).doReturn(Unit)
+        whenever(firebaseStorageRepository.deleteImageOrFolder(userId)).doReturn(Unit)
         whenever(userRepositoryImpl.deleteUser(userId)).doReturn(Unit)
 
         deleteUserUseCase().collect { result ->
@@ -48,6 +52,7 @@ class DeleteUserUseCaseTest {
 
         verify(userAuthRepositoryImpl).getCurrentUserId()
         verify(userAuthRepositoryImpl).deleteCurrentUser()
+        verify(firebaseStorageRepository).deleteImageOrFolder(userId)
         verify(userRepositoryImpl).deleteUser(userId)
         Assert.assertTrue(resourceSuccess)
     }

@@ -73,7 +73,7 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore")
-    // TODO add firebase storage after updating project to Blaze plan
+    implementation("com.google.firebase:firebase-storage")
 
     val hilt_version = "2.51.1"
     implementation("com.google.dagger:hilt-android:$hilt_version")
@@ -83,6 +83,10 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.5")
 
     implementation("androidx.navigation:navigation-compose:2.8.5")
+
+    val coil_version = "3.0.4"
+    implementation("io.coil-kt.coil3:coil-compose:$coil_version")
+    implementation("io.coil-kt.coil3:coil-network-okhttp:$coil_version")
 
     testImplementation("org.mockito:mockito-core:3.4.0")
     testImplementation("org.mockito:mockito-inline:4.5.1")

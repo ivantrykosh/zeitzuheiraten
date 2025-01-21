@@ -71,7 +71,7 @@ fun SplashScreen(
                 loaded = true
                 AlertDialog(
                     onDismissRequest = { },
-                    confirmButton = { Text(text = stringResource(id = R.string.ok_title)) },
+                    confirmButton = { },
                     title = { Text(text = stringResource(id = R.string.error)) },
                     text = { Text(text = isUserLoggedIn.error?.message ?: stringResource(id = R.string.error_occurred)) }
                 )

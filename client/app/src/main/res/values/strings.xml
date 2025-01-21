@@ -11,9 +11,18 @@
     <string name="password_icon">Password icon</string>
     <string name="error_occurred">An error occurred</string>
     <string name="password_invalid">Password is invalid</string>
-    <string name="email_icon">Password icon</string>
+    <string name="email_icon">Email icon</string>
     <string name="email_invalid">Email is invalid</string>
     <string name="email_or_password_invalid">Email or password is invalid</string>
     <string name="ok_title">OK</string>
     <string name="error">Error</string>
+    <string name="name_invalid">Name is invalid</string>
+    <string name="name">Name</string>
+    <string name="name_icon">Name icon</string>
+    <string name="im_provider">I am a provider</string>
+    <string name="file_is_larger_than_5_mb">File is larger than 5 MB</string>
+    <string name="user_profile_pic">User profile picture</string>
+    <string name="no_internet_connection">No internet connection</string>
+    <string name="password_is_too_weak">Password is too weak</string>
+    <string name="email_already_in_use">Email already in use</string>
 </resources>

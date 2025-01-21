@@ -1,5 +1,6 @@
 package com.ivantrykosh.app.zeitzuheiraten.presenter.auth.sign_in_screen
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.ivantrykosh.app.zeitzuheiraten.R
 import com.ivantrykosh.app.zeitzuheiraten.presenter.auth.InputField
@@ -52,6 +54,8 @@ fun SignInScreen(
     val signInState by signInViewModel.signInState.collectAsStateWithLifecycle()
     var loaded by remember { mutableStateOf(false) }
 
+    var showAlertDialog by remember { mutableStateOf(false) }
+    var textInAlertDialog by remember { mutableStateOf("") }
 
     Box(
         modifier = Modifier
@@ -119,6 +123,7 @@ fun SignInScreen(
                             emailErrorMessage = ""
                             passwordError = false
                             passwordErrorMessage = ""
+                            loaded = false
                             signInViewModel.signIn(email, password)
                         }
                     },
@@ -138,18 +143,22 @@ fun SignInScreen(
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }
                 signInState.error != null -> {
-                    if (signInState.error is FirebaseAuthInvalidCredentialsException) {
-                        emailError = true
-                        emailErrorMessage = stringResource(id = R.string.email_or_password_invalid)
-                        passwordError = true
-                        passwordErrorMessage = stringResource(id = R.string.email_or_password_invalid)
-                    } else {
-                        AlertDialog(
-                            onDismissRequest = { },
-                            confirmButton = { Text(text = stringResource(id = R.string.ok_title)) },
-                            title = { Text(text = stringResource(id = R.string.error)) },
-                            text = { Text(text = stringResource(id = R.string.error_occurred)) }
-                        )
+                    loaded = true
+                    when (signInState.error) {
+                        is FirebaseAuthInvalidCredentialsException -> {
+                            emailError = true
+                            emailErrorMessage = stringResource(id = R.string.email_or_password_invalid)
+                            passwordError = true
+                            passwordErrorMessage = stringResource(id = R.string.email_or_password_invalid)
+                        }
+                        is FirebaseNetworkException -> {
+                            textInAlertDialog = stringResource(id = R.string.no_internet_connection)
+                            showAlertDialog = true
+                        }
+                        else -> {
+                            textInAlertDialog = stringResource(id = R.string.error_occurred)
+                            showAlertDialog = true
+                        }
                     }
                 }
                 signInState.data != null -> {
@@ -158,5 +167,14 @@ fun SignInScreen(
                 }
             }
         }
+    }
+
+    if (showAlertDialog) {
+        AlertDialog(
+            onDismissRequest = { },
+            confirmButton = { Text(text = stringResource(id = R.string.ok_title), modifier = Modifier.clickable { showAlertDialog = false }) },
+            title = { Text(text = stringResource(id = R.string.error)) },
+            text = { Text(text = textInAlertDialog) }
+        )
     }
 }
