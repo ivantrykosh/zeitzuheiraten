@@ -139,7 +139,7 @@ class CreateUserUseCaseTest {
         whenever(userAuthRepositoryImpl.getCurrentUserId()).doReturn(userId)
         whenever(firebaseStorageRepositoryImpl.uploadImage("$userId/$imageName", imageUri)).doReturn(downloadUrl)
         whenever(userAuthRepositoryImpl.deleteCurrentUser()).doReturn(Unit)
-        whenever(firebaseStorageRepositoryImpl.deleteImageOrFolder("$userId/$imageName")).doReturn(Unit)
+        whenever(firebaseStorageRepositoryImpl.deleteImage("$userId/$imageName")).doReturn(Unit)
         whenever(userRepositoryImpl.createUser(user.copy(id = userId, imageUrl = downloadUrl))).doAnswer { throw mockException }
 
         createUserUseCase(email, password, user, imageUri, imageName).collect { result ->
@@ -154,7 +154,7 @@ class CreateUserUseCaseTest {
         verify(firebaseStorageRepositoryImpl).uploadImage("$userId/$imageName", imageUri)
         verify(userRepositoryImpl).createUser(user.copy(id = userId, imageUrl = downloadUrl))
         verify(userAuthRepositoryImpl).deleteCurrentUser()
-        verify(firebaseStorageRepositoryImpl).deleteImageOrFolder("$userId/$imageName")
+        verify(firebaseStorageRepositoryImpl).deleteImage("$userId/$imageName")
         Assert.assertNotNull(exception)
         Assert.assertTrue(exception is FirebaseFirestoreException)
     }

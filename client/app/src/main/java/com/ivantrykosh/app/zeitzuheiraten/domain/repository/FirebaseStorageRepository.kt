@@ -6,5 +6,7 @@ interface FirebaseStorageRepository {
 
     suspend fun uploadImage(name: String, imageUri: Uri): String
 
-    suspend fun deleteImageOrFolder(name: String)
+    suspend fun deleteImage(name: String)
+
+    suspend fun deleteFolder(folderName: String)
 }

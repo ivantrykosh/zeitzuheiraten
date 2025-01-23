@@ -39,7 +39,7 @@ class DeleteUserUseCaseTest {
         var resourceSuccess = false
         whenever(userAuthRepositoryImpl.getCurrentUserId()).doReturn(userId)
         whenever(userAuthRepositoryImpl.deleteCurrentUser()).doReturn(Unit)
-        whenever(firebaseStorageRepository.deleteImageOrFolder(userId)).doReturn(Unit)
+        whenever(firebaseStorageRepository.deleteFolder(userId)).doReturn(Unit)
         whenever(userRepositoryImpl.deleteUser(userId)).doReturn(Unit)
 
         deleteUserUseCase().collect { result ->
@@ -52,7 +52,7 @@ class DeleteUserUseCaseTest {
 
         verify(userAuthRepositoryImpl).getCurrentUserId()
         verify(userAuthRepositoryImpl).deleteCurrentUser()
-        verify(firebaseStorageRepository).deleteImageOrFolder(userId)
+        verify(firebaseStorageRepository).deleteFolder(userId)
         verify(userRepositoryImpl).deleteUser(userId)
         Assert.assertTrue(resourceSuccess)
     }

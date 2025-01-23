@@ -20,10 +20,21 @@ class FirebaseStorage(private val firebaseStorage: FirebaseStorage = Firebase.st
         return downloadUri.toString()
     }
 
-    suspend fun deleteImageOrFolder(name: String) {
+    suspend fun deleteImage(name: String) {
         firebaseStorage.reference
             .child(name)
             .delete()
             .await()
+    }
+
+    suspend fun deleteFolder(folderName: String) {
+        val folderRef = firebaseStorage.reference.child(folderName)
+        val result = folderRef.listAll().await()
+        for (fileRef in result.items) {
+            fileRef.delete().await()
+        }
+        for (prefixRef in result.prefixes) {
+            deleteFolder(prefixRef.path)
+        }
     }
 }

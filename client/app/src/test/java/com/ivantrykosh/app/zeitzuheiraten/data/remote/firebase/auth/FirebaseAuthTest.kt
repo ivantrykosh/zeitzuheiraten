@@ -2,7 +2,9 @@ package com.ivantrykosh.app.zeitzuheiraten.data.remote.firebase.auth
 
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
+import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.test.runTest
@@ -12,13 +14,12 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.MockedStatic
+import org.mockito.Mockito.mockStatic
 import org.mockito.junit.MockitoJUnitRunner
-import org.mockito.kotlin.doAnswer
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
-import org.mockito.kotlin.whenever
-import org.mockito.stubbing.Answer
 
 @RunWith(MockitoJUnitRunner::class)
 class FirebaseAuthTest {
@@ -168,5 +169,26 @@ class FirebaseAuthTest {
 
         verify(mockFirebaseAuth).currentUser
         assertFalse(isVerified)
+    }
+
+    @Test
+    fun `re authenticate user successfully`() = runTest {
+        val email = "test@email.com"
+        val password = "Password123"
+        val user = mock<FirebaseUser>()
+        val completedTask: Task<Void> = Tasks.forResult(null)
+        val credential = mock<AuthCredential>()
+        val emailAuthProvider: MockedStatic<EmailAuthProvider> = mockStatic(EmailAuthProvider::class.java)
+        emailAuthProvider.`when`<AuthCredential> { EmailAuthProvider.getCredential(email, password) }.doReturn(credential)
+
+        mock<Task<AuthResult>> {
+            on { mockFirebaseAuth.currentUser } doReturn user
+            on { user.reauthenticate(credential) } doReturn completedTask
+        }
+
+        auth.reAuthenticate(email, password)
+
+        verify(mockFirebaseAuth).currentUser
+        verify(mockFirebaseAuth.currentUser!!).reauthenticate(credential)
     }
 }

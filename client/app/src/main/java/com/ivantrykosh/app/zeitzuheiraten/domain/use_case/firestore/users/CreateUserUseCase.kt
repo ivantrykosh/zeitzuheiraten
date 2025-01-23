@@ -36,7 +36,7 @@ class CreateUserUseCase @Inject constructor(
             if (userId.isNotEmpty()) {
                 userAuthRepository.deleteCurrentUser()
                 if (imageDownloadUrl.isNotEmpty()) {
-                    firebaseStorageRepository.deleteImageOrFolder("$userId/$imageName")
+                    firebaseStorageRepository.deleteImage("$userId/$imageName")
                 }
             }
             emit(Resource.Error(e))

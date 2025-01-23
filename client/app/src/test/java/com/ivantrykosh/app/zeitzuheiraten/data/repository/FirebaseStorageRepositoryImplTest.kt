@@ -41,20 +41,20 @@ class FirebaseStorageRepositoryImplTest {
     @Test
     fun `delete image successfully`() = runTest {
         val name = "userid/test.jpg"
-        whenever(mockFirebaseStorage.deleteImageOrFolder(name)).doReturn(Unit)
+        whenever(mockFirebaseStorage.deleteImage(name)).doReturn(Unit)
 
-        firebaseStorageRepositoryImpl.deleteImageOrFolder(name)
+        firebaseStorageRepositoryImpl.deleteImage(name)
 
-        verify(mockFirebaseStorage).deleteImageOrFolder(name)
+        verify(mockFirebaseStorage).deleteImage(name)
     }
 
     @Test
     fun `delete folder successfully`() = runTest {
         val name = "userid"
-        whenever(mockFirebaseStorage.deleteImageOrFolder(name)).doReturn(Unit)
+        whenever(mockFirebaseStorage.deleteFolder(name)).doReturn(Unit)
 
-        firebaseStorageRepositoryImpl.deleteImageOrFolder(name)
+        firebaseStorageRepositoryImpl.deleteFolder(name)
 
-        verify(mockFirebaseStorage).deleteImageOrFolder(name)
+        verify(mockFirebaseStorage).deleteFolder(name)
     }
 }

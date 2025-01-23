@@ -12,7 +12,11 @@ class FirebaseStorageRepositoryImpl @Inject constructor(
         return firebaseStorage.uploadImage(name, imageUri)
     }
 
-    override suspend fun deleteImageOrFolder(name: String) {
-        firebaseStorage.deleteImageOrFolder(name)
+    override suspend fun deleteImage(name: String) {
+        firebaseStorage.deleteImage(name)
+    }
+
+    override suspend fun deleteFolder(folderName: String) {
+        firebaseStorage.deleteFolder(folderName)
     }
 }

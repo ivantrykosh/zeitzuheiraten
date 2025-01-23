@@ -27,4 +27,12 @@
     <string name="email_already_in_use">Email already in use</string>
     <string name="home">Home</string>
     <string name="my_profile">My profile</string>
+    <string name="change_profile_image">Change profile image</string>
+    <string name="delete_profile_image">Delete profile image</string>
+    <string name="sign_out">Sign out</string>
+    <string name="edit_name">Edit name</string>
+    <string name="delete_account">Delete account</string>
+    <string name="cancel">Cancel</string>
+    <string name="new_name">New name</string>
+    <string name="delete_account_question">Do you really want to delete account?\nInput password to continue</string>
 </resources>

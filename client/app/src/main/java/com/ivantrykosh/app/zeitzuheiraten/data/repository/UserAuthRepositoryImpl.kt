@@ -38,4 +38,8 @@ class UserAuthRepositoryImpl @Inject constructor(
     override suspend fun isEmailVerified(): Boolean {
         return firebaseAuth.isEmailVerified()
     }
+
+    override suspend fun reAuthenticate(email: String, password: String) {
+        firebaseAuth.reAuthenticate(email, password)
+    }
 }

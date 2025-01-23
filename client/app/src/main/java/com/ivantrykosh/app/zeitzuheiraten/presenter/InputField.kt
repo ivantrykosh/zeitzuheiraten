@@ -1,4 +1,4 @@
-package com.ivantrykosh.app.zeitzuheiraten.presenter.auth
+package com.ivantrykosh.app.zeitzuheiraten.presenter
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes

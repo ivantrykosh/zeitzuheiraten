@@ -28,7 +28,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.ivantrykosh.app.zeitzuheiraten.R
-import com.ivantrykosh.app.zeitzuheiraten.presenter.auth.InputField
+import com.ivantrykosh.app.zeitzuheiraten.presenter.InputField
 import com.ivantrykosh.app.zeitzuheiraten.presenter.auth.PasswordInputField
 import com.ivantrykosh.app.zeitzuheiraten.presenter.ui.theme.PurpleGrey80
 import com.ivantrykosh.app.zeitzuheiraten.utils.isEmailValid

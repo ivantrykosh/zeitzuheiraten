@@ -106,4 +106,15 @@ class UserAuthRepositoryImplTest {
         verify(mockFirebaseAuth).isEmailVerified()
         assertEquals(verified, isVerified)
     }
+
+    @Test
+    fun `re authenticate successfully`() = runTest {
+        val email = "test@email.com"
+        val password = "Password123"
+        whenever(mockFirebaseAuth.reAuthenticate(email, password)).doReturn(Unit)
+
+        userAuthRepositoryImpl.reAuthenticate(email, password)
+
+        verify(mockFirebaseAuth).reAuthenticate(email, password)
+    }
 }

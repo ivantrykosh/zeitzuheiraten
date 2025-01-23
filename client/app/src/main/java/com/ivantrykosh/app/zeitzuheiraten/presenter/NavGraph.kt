@@ -52,7 +52,13 @@ fun NavGraph(navController: NavHostController) {
             }
         }
         composable(route = Screen.MainScreen.MainScreen.route) {
-            MainScreen()
+            MainScreen {
+                navController.navigate(Screen.AuthScreen.AuthMainScreen.route) {
+                    popUpTo(Screen.MainScreen.MainScreen.route) {
+                        inclusive = true
+                    }
+                }
+            }
         }
     }
 }

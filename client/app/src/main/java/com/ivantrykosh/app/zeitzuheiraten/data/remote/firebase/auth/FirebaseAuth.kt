@@ -2,6 +2,7 @@ package com.ivantrykosh.app.zeitzuheiraten.data.remote.firebase.auth
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.Firebase
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.auth
 import kotlinx.coroutines.tasks.await
 
@@ -42,5 +43,10 @@ class FirebaseAuth(private val firebaseAuth: FirebaseAuth = Firebase.auth) {
 
     fun isEmailVerified(): Boolean {
         return firebaseAuth.currentUser!!.isEmailVerified
+    }
+
+    suspend fun reAuthenticate(email: String, password: String) {
+        val credential = EmailAuthProvider.getCredential(email, password)
+        firebaseAuth.currentUser!!.reauthenticate(credential).await()
     }
 }

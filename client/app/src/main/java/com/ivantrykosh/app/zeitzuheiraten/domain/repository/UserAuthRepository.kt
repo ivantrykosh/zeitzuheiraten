@@ -17,4 +17,6 @@ interface UserAuthRepository {
     suspend fun sendVerificationEmail()
 
     suspend fun isEmailVerified(): Boolean
+
+    suspend fun reAuthenticate(email: String, password: String)
 }

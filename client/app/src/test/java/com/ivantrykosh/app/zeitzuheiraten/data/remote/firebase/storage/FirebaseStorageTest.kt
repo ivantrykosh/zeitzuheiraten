@@ -4,6 +4,7 @@ import android.net.Uri
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.ListResult
 import com.google.firebase.storage.StorageMetadata
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.UploadTask
@@ -16,6 +17,7 @@ import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 @RunWith(MockitoJUnitRunner::class)
 class FirebaseStorageTest {
@@ -75,7 +77,7 @@ class FirebaseStorageTest {
             on { it.exception } doReturn null
         }
 
-        firebaseStorage.deleteImageOrFolder(name)
+        firebaseStorage.deleteImage(name)
 
         verify(mockFirebaseStorage).reference
         verify(mockFirebaseStorage.reference).child(name)
@@ -84,22 +86,25 @@ class FirebaseStorageTest {
 
     @Test
     fun `delete user folder successfully`() = runTest {
-        val name = "userid"
-        val childRef = mock<StorageReference>()
-        mock<StorageReference> {
-            on { mockFirebaseStorage.reference } doReturn it
-            on { it.child(name) } doReturn childRef
-        }
-        mock<Task<Void>> {
-            on { childRef.delete() } doReturn it
-            on { it.isComplete } doReturn true
-            on { it.exception } doReturn null
-        }
+        val folderName = "userid"
+        val mockStorageReference: StorageReference = mock()
+        val mockFileRef: StorageReference = mock()
+        val mockListResult: ListResult = mock()
 
-        firebaseStorage.deleteImageOrFolder(name)
+        whenever(mockFirebaseStorage.reference).thenReturn(mockStorageReference)
+        whenever(mockStorageReference.child(folderName)).thenReturn(mockStorageReference)
+
+        whenever(mockStorageReference.listAll()).thenReturn(Tasks.forResult(mockListResult))
+        whenever(mockListResult.items).thenReturn(listOf(mockFileRef))
+        whenever(mockListResult.prefixes).thenReturn(emptyList())
+
+        whenever(mockFileRef.delete()).thenReturn(Tasks.forResult(mock()))
+
+        firebaseStorage.deleteFolder(folderName)
 
         verify(mockFirebaseStorage).reference
-        verify(mockFirebaseStorage.reference).child(name)
-        verify(mockFirebaseStorage.reference.child(name)).delete()
+        verify(mockStorageReference).child(folderName)
+        verify(mockStorageReference).listAll()
+        verify(mockFileRef).delete()
     }
 }
