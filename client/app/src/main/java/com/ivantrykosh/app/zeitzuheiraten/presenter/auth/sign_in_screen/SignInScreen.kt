@@ -10,8 +10,13 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -19,6 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -34,11 +40,13 @@ import com.ivantrykosh.app.zeitzuheiraten.presenter.ui.theme.PurpleGrey80
 import com.ivantrykosh.app.zeitzuheiraten.utils.isEmailValid
 import com.ivantrykosh.app.zeitzuheiraten.utils.isPasswordValid
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
 fun SignInScreen(
     signInViewModel: SignInViewModel = hiltViewModel(),
-    navigateToMainPage: () -> Unit = { }
+    navigateToMainPage: () -> Unit = { },
+    navigateToMainAuthPage: () -> Unit = { }
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -57,118 +65,134 @@ fun SignInScreen(
     var showAlertDialog by remember { mutableStateOf(false) }
     var textInAlertDialog by remember { mutableStateOf("") }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        Card(
-            modifier = Modifier.align(Alignment.Center),
-            colors = CardDefaults.cardColors(
-                containerColor = PurpleGrey80
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(text = stringResource(id = R.string.sign_in)) },
+                navigationIcon = {
+                    IconButton(
+                        onClick = { navigateToMainAuthPage() }
+                    ) {
+                        Icon(painter = painterResource(id = R.drawable.baseline_arrow_back_24), contentDescription = stringResource(id =R.string.return_to_auth))
+                    }
+                }
             )
+        }
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(horizontal = 16.dp)
         ) {
-            Column(
-                modifier = Modifier.padding(8.dp)
+            Card(
+                modifier = Modifier.align(Alignment.Center),
+                colors = CardDefaults.cardColors(
+                    containerColor = PurpleGrey80
+                )
             ) {
-                InputField(
-                    value = email,
-                    onValueChange = { email = it },
-                    label = R.string.email,
-                    icon = R.drawable.baseline_email_24,
-                    iconDescription = R.string.email_icon,
-                    onFocusChange = {
-                        if (!it.hasFocus && email.isNotEmpty()) {
+                Column(
+                    modifier = Modifier.padding(8.dp)
+                ) {
+                    InputField(
+                        value = email,
+                        onValueChange = { email = it },
+                        label = R.string.email,
+                        icon = R.drawable.baseline_email_24,
+                        iconDescription = R.string.email_icon,
+                        onFocusChange = {
+                            if (!it.hasFocus && email.isNotEmpty()) {
+                                if (!isEmailValid(email)) {
+                                    emailError = true
+                                    emailErrorMessage = standardEmailErrorMessage
+                                } else {
+                                    emailError = false
+                                    emailErrorMessage = ""
+                                }
+                            }
+                        },
+                        error = emailError,
+                        errorMessage = emailErrorMessage
+                    )
+
+                    PasswordInputField(
+                        value = password,
+                        onValueChange = { password = it },
+                        onFocusChange = {
+                            if (!it.hasFocus) {
+                                if (!isPasswordValid(password) && password.isNotEmpty()) {
+                                    passwordError = true
+                                    passwordErrorMessage = standardPasswordErrorMessage
+                                } else {
+                                    passwordError = false
+                                    passwordErrorMessage = ""
+                                }
+                            }
+                        },
+                        error = passwordError,
+                        errorMessage = passwordErrorMessage
+                    )
+
+                    FilledTonalButton(
+                        onClick = {
                             if (!isEmailValid(email)) {
                                 emailError = true
                                 emailErrorMessage = standardEmailErrorMessage
-                            } else {
-                                emailError = false
-                                emailErrorMessage = ""
-                            }
-                        }
-                    },
-                    error = emailError,
-                    errorMessage = emailErrorMessage
-                )
-
-                PasswordInputField(
-                    value = password,
-                    onValueChange = { password = it },
-                    onFocusChange = {
-                        if (!it.hasFocus) {
-                            if (!isPasswordValid(password) && password.isNotEmpty()) {
+                            } else if (!isPasswordValid(password)) {
                                 passwordError = true
                                 passwordErrorMessage = standardPasswordErrorMessage
                             } else {
+                                emailError = false
+                                emailErrorMessage = ""
                                 passwordError = false
                                 passwordErrorMessage = ""
+                                loaded = false
+                                signInViewModel.signIn(email, password)
                             }
-                        }
-                    },
-                    error = passwordError,
-                    errorMessage = passwordErrorMessage
-                )
-
-                FilledTonalButton(
-                    onClick = {
-                        if (!isEmailValid(email)) {
-                            emailError = true
-                            emailErrorMessage = standardEmailErrorMessage
-                        } else if (!isPasswordValid(password)) {
-                            passwordError = true
-                            passwordErrorMessage = standardPasswordErrorMessage
-                        } else {
-                            emailError = false
-                            emailErrorMessage = ""
-                            passwordError = false
-                            passwordErrorMessage = ""
-                            loaded = false
-                            signInViewModel.signIn(email, password)
-                        }
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp)
-                ) {
-                    Text(text = stringResource(id = R.string.sign_in_title), fontSize = 16.sp)
-                }
-            }
-        }
-
-
-        if (!loaded) {
-            when {
-                signInState.loading -> {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-                }
-                signInState.error != null -> {
-                    loaded = true
-                    when (signInState.error) {
-                        is FirebaseAuthInvalidCredentialsException -> {
-                            emailError = true
-                            emailErrorMessage = stringResource(id = R.string.email_or_password_invalid)
-                            passwordError = true
-                            passwordErrorMessage = stringResource(id = R.string.email_or_password_invalid)
-                        }
-                        is FirebaseNetworkException -> {
-                            textInAlertDialog = stringResource(id = R.string.no_internet_connection)
-                            showAlertDialog = true
-                        }
-                        else -> {
-                            textInAlertDialog = stringResource(id = R.string.error_occurred)
-                            showAlertDialog = true
-                        }
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp)
+                    ) {
+                        Text(text = stringResource(id = R.string.sign_in_title), fontSize = 16.sp)
                     }
                 }
-                signInState.data != null -> {
-                    loaded = true
-                    navigateToMainPage()
+            }
+
+
+            if (!loaded) {
+                when {
+                    signInState.loading -> {
+                        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                    }
+                    signInState.error != null -> {
+                        loaded = true
+                        when (signInState.error) {
+                            is FirebaseAuthInvalidCredentialsException -> {
+                                emailError = true
+                                emailErrorMessage = stringResource(id = R.string.email_or_password_invalid)
+                                passwordError = true
+                                passwordErrorMessage = stringResource(id = R.string.email_or_password_invalid)
+                            }
+                            is FirebaseNetworkException -> {
+                                textInAlertDialog = stringResource(id = R.string.no_internet_connection)
+                                showAlertDialog = true
+                            }
+                            else -> {
+                                textInAlertDialog = stringResource(id = R.string.error_occurred)
+                                showAlertDialog = true
+                            }
+                        }
+                    }
+                    signInState.data != null -> {
+                        loaded = true
+                        navigateToMainPage()
+                    }
                 }
             }
         }
     }
-
+    
     if (showAlertDialog) {
         AlertDialog(
             onDismissRequest = { },

@@ -35,4 +35,7 @@
     <string name="cancel">Cancel</string>
     <string name="new_name">New name</string>
     <string name="delete_account_question">Do you really want to delete account?\nInput password to continue</string>
+    <string name="sign_in">Sign in</string>
+    <string name="return_to_auth">Return to auth</string>
+    <string name="sign_up">Sign up</string>
 </resources>

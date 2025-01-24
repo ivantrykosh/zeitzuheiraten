@@ -38,18 +38,28 @@ fun NavGraph(navController: NavHostController) {
             )
         }
         composable(route = Screen.AuthScreen.SignUpScreen.route) {
-            SignUpScreen {
-                navController.navigate(Screen.MainScreen.MainScreen.route) {
-                    popUpTo(Screen.AuthScreen.AuthMainScreen.route) { inclusive = true }
+            SignUpScreen(
+                navigateToMainPage = {
+                    navController.navigate(Screen.MainScreen.MainScreen.route) {
+                        popUpTo(Screen.AuthScreen.AuthMainScreen.route) { inclusive = true }
+                    }
+                },
+                navigateToMainAuthPage = {
+                    navController.popBackStack()
                 }
-            }
+            )
         }
         composable(route = Screen.AuthScreen.SignInScreen.route) {
-            SignInScreen {
-                navController.navigate(Screen.MainScreen.MainScreen.route) {
-                    popUpTo(Screen.AuthScreen.AuthMainScreen.route) { inclusive = true }
+            SignInScreen(
+                navigateToMainPage = {
+                    navController.navigate(Screen.MainScreen.MainScreen.route) {
+                        popUpTo(Screen.AuthScreen.AuthMainScreen.route) { inclusive = true }
+                    }
+                },
+                navigateToMainAuthPage = {
+                    navController.popBackStack()
                 }
-            }
+            )
         }
         composable(route = Screen.MainScreen.MainScreen.route) {
             MainScreen {
