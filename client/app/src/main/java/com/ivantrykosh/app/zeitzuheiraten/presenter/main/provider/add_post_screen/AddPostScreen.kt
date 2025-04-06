@@ -1,0 +1,551 @@
+package com.ivantrykosh.app.zeitzuheiraten.presenter.main.provider.add_post_screen
+
+import android.net.Uri
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.StringRes
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DateRangePicker
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberDateRangePickerState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import coil3.compose.AsyncImage
+import com.google.firebase.FirebaseNetworkException
+import com.ivantrykosh.app.zeitzuheiraten.R
+import com.ivantrykosh.app.zeitzuheiraten.domain.model.DatePair
+import com.ivantrykosh.app.zeitzuheiraten.utils.Constants.MAX_CITIES_PER_POST
+import com.ivantrykosh.app.zeitzuheiraten.utils.Constants.MAX_IMAGES_PER_POST
+import com.ivantrykosh.app.zeitzuheiraten.utils.Constants.MAX_NOT_AVAILABLE_DATE_RANGES_PER_POST
+import com.ivantrykosh.app.zeitzuheiraten.utils.Constants.MAX_SYMBOLS_FOR_POST_DESCRIPTION
+import com.ivantrykosh.app.zeitzuheiraten.utils.isFileSizeAppropriate
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.Locale
+import kotlin.collections.forEach
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@Composable
+fun AddPostScreen(
+    addPostViewModel: AddPostViewModel = hiltViewModel(),
+    navigateBack: () -> Unit,
+) {
+    val context = LocalContext.current
+    val contentResolver = context.contentResolver
+
+    var categoryValue by rememberSaveable { mutableStateOf("") }
+    val categories = stringArrayResource(R.array.categories)
+    var citiesValue = remember { mutableStateListOf<String>() }
+    val cities = stringArrayResource(R.array.cities)
+    var isCitiesExpanded by rememberSaveable { mutableStateOf(false) }
+    var minPrice by rememberSaveable { mutableStateOf("") }
+    var description by rememberSaveable { mutableStateOf("") }
+    var notAvailableDateRanges = remember { mutableStateListOf<DatePair>() }
+    var isDateRangePickerShowed by rememberSaveable { mutableStateOf(false) }
+    var pickedImages = remember { mutableStateListOf<Uri>() }
+    val pickPostImages = rememberLauncherForActivityResult(contract = ActivityResultContracts.PickMultipleVisualMedia(maxItems = MAX_IMAGES_PER_POST)) { uris ->
+        if (uris.isNotEmpty()) {
+            uris.forEach {
+                if (isFileSizeAppropriate(it, contentResolver)) {
+                    pickedImages.add(it)
+                } else {
+                    Toast.makeText(context, R.string.file_is_larger_than_5_mb, Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
+    val createPostState by addPostViewModel.createPostState.collectAsState()
+    var loaded by remember { mutableStateOf(false) }
+    var showAlertDialog by remember { mutableStateOf(false) }
+    var textInAlertDialog by remember { mutableStateOf("") }
+    
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(text = stringResource(R.string.add_post)) },
+                navigationIcon = {
+                    IconButton(
+                        onClick = navigateBack
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = stringResource(R.string.back)
+                        )
+                    }
+                },
+                windowInsets = WindowInsets(top = 0.dp)
+            )
+        },
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(it)
+                .padding(horizontal = 16.dp)
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            ItemWithDropdownMenu(
+                currentValue = categoryValue,
+                onValueChange = { categoryValue = it },
+                label = R.string.category,
+                values = categories.toList(),
+            )
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.city),
+                    fontSize = 20.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxRowHeight()
+                        .wrapContentHeight(),
+                )
+                for (city in citiesValue) {
+                    OutlinedButton(
+                        onClick = { citiesValue.remove(city) },
+                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = city,
+                                fontSize = 16.sp,
+                            )
+                            Icon(
+                                imageVector = Icons.Default.Clear,
+                                modifier = Modifier.size(20.dp),
+                                contentDescription = stringResource(R.string.remove_city),
+                            )
+                        }
+                    }
+                }
+                if (citiesValue.size < MAX_CITIES_PER_POST) {
+                    OutlinedButton(
+                        onClick = { isCitiesExpanded = true },
+                        contentPadding = PaddingValues(0.dp),
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                        ) {
+                            Text(
+                                text = stringResource(R.string.add_city),
+                                fontSize = 16.sp,
+                            )
+                            Icon(
+                                imageVector = Icons.Default.Add,
+                                modifier = Modifier.size(20.dp),
+                                contentDescription = stringResource(R.string.add_city),
+                            )
+                        }
+                        DropdownMenu(
+                            expanded = isCitiesExpanded,
+                            onDismissRequest = { isCitiesExpanded = false},
+                        ) {
+                            for (city in cities.filter { !citiesValue.contains(it) }) {
+                                DropdownMenuItem(
+                                    text = {
+                                        Text(
+                                            text = city,
+                                            fontSize = 16.sp
+                                        )
+                                    },
+                                    onClick = {
+                                        isCitiesExpanded = false
+                                        citiesValue.add(city)
+                                    }
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = stringResource(R.string.min_price),
+                    fontSize = 20.sp,
+                    modifier = Modifier.weight(1f)
+                )
+                TextField(
+                    value = minPrice,
+                    onValueChange = {
+                        minPrice = it.filter { it.isDigit() }
+                    },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number,
+                    ),
+                    suffix = {
+                        Text("₴")
+                    },
+                    modifier = Modifier.weight(1f)
+                )
+            }
+            TextField(
+                value = description,
+                onValueChange = { description = it.take(MAX_SYMBOLS_FOR_POST_DESCRIPTION) },
+                minLines = 4,
+                maxLines = 4,
+                label = {
+                    Text(text = stringResource(R.string.description))
+                },
+                modifier = Modifier.fillMaxWidth(),
+                supportingText = {
+                    Text(
+                        text = "${description.length}/$MAX_SYMBOLS_FOR_POST_DESCRIPTION",
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.End
+                    )
+                }
+            )
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.not_available_dates),
+                    fontSize = 20.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier,
+                )
+                for (date in notAvailableDateRanges) {
+                    OutlinedButton(
+                        onClick = { notAvailableDateRanges.remove(date) },
+                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "${date.startDate.toStringDate()}-${date.endDate.toStringDate()}",
+                                fontSize = 16.sp,
+                            )
+                            Icon(
+                                imageVector = Icons.Default.Clear,
+                                modifier = Modifier.size(20.dp),
+                                contentDescription = stringResource(R.string.remove_dates),
+                            )
+                        }
+                    }
+                }
+                if (notAvailableDateRanges.size < MAX_NOT_AVAILABLE_DATE_RANGES_PER_POST) {
+                    OutlinedButton(
+                        onClick = { isDateRangePickerShowed = true },
+                        contentPadding = PaddingValues(0.dp),
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                        ) {
+                            Text(
+                                text = stringResource(R.string.add_date_range),
+                                fontSize = 16.sp,
+                            )
+                            Icon(
+                                imageVector = Icons.Default.Add,
+                                modifier = Modifier.size(20.dp),
+                                contentDescription = stringResource(R.string.add_date_range),
+                            )
+                        }
+                    }
+                }
+            }
+            Column {
+                if (pickedImages.isEmpty()) {
+                    OutlinedButton(
+                        onClick = {
+                            pickPostImages.launch(
+                                PickVisualMediaRequest(
+                                    ActivityResultContracts.PickVisualMedia.ImageOnly
+                                )
+                            )
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = stringResource(R.string.add_images),
+                            fontSize = 20.sp
+                        )
+                    }
+                }
+                for (index in 0..pickedImages.lastIndex step 2) {
+                    Row {
+                        AsyncImage(
+                            model = pickedImages[index],
+                            contentDescription = stringResource(id = R.string.picked_image),
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .height(150.dp)
+                                .weight(1f)
+                                .padding(8.dp)
+                        )
+                        if (index + 1 <= pickedImages.lastIndex)
+                        AsyncImage(
+                            model = pickedImages[index+1],
+                            contentDescription = stringResource(id = R.string.picked_image),
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .height(150.dp)
+                                .weight(1f)
+                                .padding(8.dp)
+                        )
+                    }
+                }
+                if (pickedImages.isNotEmpty()) {
+                    OutlinedButton(
+                        onClick = { pickedImages.clear() },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = stringResource(R.string.remove_images),
+                            fontSize = 20.sp
+                        )
+                    }
+                }
+            }
+            FilledTonalButton(
+                onClick = { addPostViewModel.createPost(categoryValue, citiesValue, minPrice.toInt(), description, notAvailableDateRanges, pickedImages) },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = stringResource(R.string.add_post),
+                    fontSize = 20.sp
+                )
+            }
+        }
+        if (isDateRangePickerShowed) {
+            DateRangePicker(
+                onDateRangeSelected = {
+                    notAvailableDateRanges.add(it)
+                },
+                onDismiss = { isDateRangePickerShowed = false }
+            )
+        }
+    }
+
+    if (!loaded) {
+        when {
+            createPostState.loading -> {
+                CircularProgressIndicator(modifier = Modifier.fillMaxSize().wrapContentSize())
+            }
+
+            createPostState.error != null -> {
+                loaded = true
+                when (createPostState.error) {
+                    is FirebaseNetworkException -> {
+                        textInAlertDialog =
+                            stringResource(id = R.string.no_internet_connection)
+                        showAlertDialog = true
+                    }
+
+                    else -> {
+                        textInAlertDialog = stringResource(id = R.string.error_occurred)
+                        showAlertDialog = true
+                    }
+                }
+            }
+
+            createPostState.data != null -> {
+                loaded = true
+                navigateBack()
+            }
+        }
+    }
+
+    if (showAlertDialog) {
+        AlertDialog(
+            onDismissRequest = { },
+            confirmButton = { Text(text = stringResource(id = R.string.ok_title), modifier = Modifier.clickable { showAlertDialog = false }) },
+            title = { Text(text = stringResource(id = R.string.error)) },
+            text = { Text(text = textInAlertDialog) }
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DateRangePicker(
+    onDateRangeSelected: (DatePair) -> Unit,
+    onDismiss: () -> Unit
+) {
+    val dateRangePickerState = rememberDateRangePickerState()
+
+    DatePickerDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onDateRangeSelected(
+                        DatePair(
+                            dateRangePickerState.selectedStartDateMillis!!,
+                            dateRangePickerState.selectedEndDateMillis!!
+                        )
+                    )
+                    onDismiss()
+                }
+            ) {
+                Text(stringResource(R.string.ok_title))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.cancel))
+            }
+        }
+    ) {
+        DateRangePicker(
+            state = dateRangePickerState,
+            title = {
+                Text(
+                    text = "Select date range"
+                )
+            },
+            showModeToggle = false,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(500.dp)
+                .padding(16.dp)
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ItemWithDropdownMenu(
+    currentValue: String,
+    onValueChange: (String) -> Unit,
+    @StringRes label: Int,
+    values: List<String>,
+) {
+    var expanded by rememberSaveable { mutableStateOf(false) }
+
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = stringResource(label),
+            fontSize = 20.sp,
+            modifier = Modifier.weight(1f)
+        )
+        ExposedDropdownMenuBox(
+            expanded = expanded,
+            onExpandedChange = { expanded = it },
+            modifier = Modifier.weight(1f)
+        ) {
+            TextField(
+                value = currentValue,
+                onValueChange = {},
+                label = {
+                    Text(
+                        text = stringResource(label)
+                    )
+                },
+                readOnly = true,
+                singleLine = true,
+                modifier = Modifier.menuAnchor(),
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                colors = ExposedDropdownMenuDefaults.textFieldColors(),
+            )
+            ExposedDropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+            ) {
+                values.forEach { option ->
+                    DropdownMenuItem(
+                        text = {
+                            Text(
+                                text = option
+                            )
+                        },
+                        onClick = {
+                            onValueChange(option)
+                            expanded = false
+                        },
+                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
+                    )
+                }
+            }
+        }
+    }
+}
+
+fun Long.toStringDate(): String {
+    val formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd", Locale.getDefault())
+    val date = LocalDateTime.ofInstant(Instant.ofEpochSecond(this / 1000), ZoneId.systemDefault())
+    return date.format(formatter)
+}
+
+@Composable
+@Preview(showBackground = true)
+fun AddPostScreenPreview() {
+    AddPostScreen(
+        navigateBack = {}
+    )
+}

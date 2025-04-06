@@ -11,12 +11,16 @@ class GetCurrentUserUseCase @Inject constructor(
     private val userAuthRepository: UserAuthRepository,
     private val userRepository: UserRepository,
 ) {
-    operator fun invoke() = flow<Resource<User>> {
+    operator fun invoke() = flow<Resource<User?>> {
         try {
             emit(Resource.Loading())
             val userId = userAuthRepository.getCurrentUserId()
-            val user = userRepository.getUserById(userId)
-            emit(Resource.Success(user))
+            if (userId.isNotEmpty()) {
+                val user = userRepository.getUserById(userId)
+                emit(Resource.Success(user))
+            } else {
+                emit(Resource.Success(null))
+            }
         } catch (e: Exception) {
             emit(Resource.Error(e))
         }

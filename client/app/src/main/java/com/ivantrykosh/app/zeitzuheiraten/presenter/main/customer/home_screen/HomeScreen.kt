@@ -1,4 +1,4 @@
-package com.ivantrykosh.app.zeitzuheiraten.presenter.main.home_screen
+package com.ivantrykosh.app.zeitzuheiraten.presenter.main.customer.home_screen
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable

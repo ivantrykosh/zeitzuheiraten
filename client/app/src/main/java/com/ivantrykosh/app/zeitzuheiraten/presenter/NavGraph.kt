@@ -7,7 +7,8 @@ import androidx.navigation.compose.composable
 import com.ivantrykosh.app.zeitzuheiraten.presenter.auth.auth_main_screen.AuthMainScreen
 import com.ivantrykosh.app.zeitzuheiraten.presenter.auth.sign_in_screen.SignInScreen
 import com.ivantrykosh.app.zeitzuheiraten.presenter.auth.sign_up_screen.SignUpScreen
-import com.ivantrykosh.app.zeitzuheiraten.presenter.main.MainScreen
+import com.ivantrykosh.app.zeitzuheiraten.presenter.main.customer.MainCustomerScreen
+import com.ivantrykosh.app.zeitzuheiraten.presenter.main.provider.MainProviderScreen
 import com.ivantrykosh.app.zeitzuheiraten.presenter.splash_screen.SplashScreen
 
 @Composable
@@ -20,8 +21,13 @@ fun NavGraph(navController: NavHostController) {
                         popUpTo(Screen.SplashScreen.route) { inclusive = true }
                     }
                 },
-                navigateToMainPage = {
-                    navController.navigate(Screen.MainScreen.MainScreen.route) {
+                navigateToMainPage = { isProvider ->
+                    val route =
+                        if (isProvider)
+                            Screen.MainProviderScreen.MainProviderScreen.route
+                        else
+                            Screen.MainCustomerScreen.MainCustomerScreen.route
+                    navController.navigate(route) {
                         popUpTo(Screen.SplashScreen.route) { inclusive = true }
                     }
                 }
@@ -39,8 +45,13 @@ fun NavGraph(navController: NavHostController) {
         }
         composable(route = Screen.AuthScreen.SignUpScreen.route) {
             SignUpScreen(
-                navigateToMainPage = {
-                    navController.navigate(Screen.MainScreen.MainScreen.route) {
+                navigateToMainPage = { isProvider ->
+                    val route =
+                        if (isProvider)
+                            Screen.MainProviderScreen.MainProviderScreen.route
+                        else
+                            Screen.MainCustomerScreen.MainCustomerScreen.route
+                    navController.navigate(route) {
                         popUpTo(Screen.AuthScreen.AuthMainScreen.route) { inclusive = true }
                     }
                 },
@@ -51,8 +62,13 @@ fun NavGraph(navController: NavHostController) {
         }
         composable(route = Screen.AuthScreen.SignInScreen.route) {
             SignInScreen(
-                navigateToMainPage = {
-                    navController.navigate(Screen.MainScreen.MainScreen.route) {
+                navigateToMainPage = { isProvider ->
+                    val route =
+                        if (isProvider)
+                            Screen.MainProviderScreen.MainProviderScreen.route
+                        else
+                            Screen.MainCustomerScreen.MainCustomerScreen.route
+                    navController.navigate(route) {
                         popUpTo(Screen.AuthScreen.AuthMainScreen.route) { inclusive = true }
                     }
                 },
@@ -61,10 +77,19 @@ fun NavGraph(navController: NavHostController) {
                 }
             )
         }
-        composable(route = Screen.MainScreen.MainScreen.route) {
-            MainScreen {
+        composable(route = Screen.MainCustomerScreen.MainCustomerScreen.route) {
+            MainCustomerScreen {
                 navController.navigate(Screen.AuthScreen.AuthMainScreen.route) {
-                    popUpTo(Screen.MainScreen.MainScreen.route) {
+                    popUpTo(Screen.MainCustomerScreen.MainCustomerScreen.route) {
+                        inclusive = true
+                    }
+                }
+            }
+        }
+        composable(route = Screen.MainProviderScreen.MainProviderScreen.route) {
+            MainProviderScreen {
+                navController.navigate(Screen.AuthScreen.AuthMainScreen.route) {
+                    popUpTo(Screen.MainProviderScreen.MainProviderScreen.route) {
                         inclusive = true
                     }
                 }

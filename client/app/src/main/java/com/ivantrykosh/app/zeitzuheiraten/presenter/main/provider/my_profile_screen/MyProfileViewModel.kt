@@ -1,4 +1,4 @@
-package com.ivantrykosh.app.zeitzuheiraten.presenter.main.my_profile_screen
+package com.ivantrykosh.app.zeitzuheiraten.presenter.main.provider.my_profile_screen
 
 import android.net.Uri
 import androidx.lifecycle.ViewModel

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="categories">
+        <item>@string/photography_category</item>
+        <item>@string/cakes_category</item>
+    </string-array>
+
+    <string-array name="cities">
+        <item>@string/simferopol_city</item>
+        <item>@string/vinnytsia_city</item>
+        <item>@string/lutsk_city</item>
+        <item>@string/dnipro_city</item>
+        <item>@string/donetsk_city</item>
+        <item>@string/zhytomyr_city</item>
+        <item>@string/uzhhorod_city</item>
+        <item>@string/zaporizhzhia_city</item>
+        <item>@string/ivano_frankivsk_city</item>
+        <item>@string/kyiv_city</item>
+        <item>@string/kropyvnytskyi_city</item>
+        <item>@string/luhansk_city</item>
+        <item>@string/lviv_city</item>
+        <item>@string/mykolaiv_city</item>
+        <item>@string/odesa_city</item>
+        <item>@string/poltava_city</item>
+        <item>@string/rivne_city</item>
+        <item>@string/sumy_city</item>
+        <item>@string/ternopil_city</item>
+        <item>@string/kharkiv_city</item>
+        <item>@string/kherson_city</item>
+        <item>@string/khmelnytskyi_city</item>
+        <item>@string/cherkasy_city</item>
+        <item>@string/chernivtsi_city</item>
+        <item>@string/chernihiv_city</item>
+    </string-array>
+</resources>

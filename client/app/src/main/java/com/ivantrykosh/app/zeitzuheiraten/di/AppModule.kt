@@ -1,12 +1,15 @@
 package com.ivantrykosh.app.zeitzuheiraten.di
 
 import com.ivantrykosh.app.zeitzuheiraten.data.remote.firebase.auth.FirebaseAuth
+import com.ivantrykosh.app.zeitzuheiraten.data.remote.firebase.firestore.FirestorePosts
 import com.ivantrykosh.app.zeitzuheiraten.data.remote.firebase.firestore.FirestoreUsers
 import com.ivantrykosh.app.zeitzuheiraten.data.remote.firebase.storage.FirebaseStorage
 import com.ivantrykosh.app.zeitzuheiraten.data.repository.FirebaseStorageRepositoryImpl
+import com.ivantrykosh.app.zeitzuheiraten.data.repository.PostRepositoryImpl
 import com.ivantrykosh.app.zeitzuheiraten.data.repository.UserAuthRepositoryImpl
 import com.ivantrykosh.app.zeitzuheiraten.data.repository.UserRepositoryImpl
 import com.ivantrykosh.app.zeitzuheiraten.domain.repository.FirebaseStorageRepository
+import com.ivantrykosh.app.zeitzuheiraten.domain.repository.PostRepository
 import com.ivantrykosh.app.zeitzuheiraten.domain.repository.UserAuthRepository
 import com.ivantrykosh.app.zeitzuheiraten.domain.repository.UserRepository
 import dagger.Binds
@@ -30,6 +33,10 @@ abstract class AppModuleBindings {
 
     @Singleton
     @Binds
+    abstract fun bindPostRepository(postRepositoryImpl: PostRepositoryImpl): PostRepository
+
+    @Singleton
+    @Binds
     abstract fun bindFirebaseStorageRepository(firebaseStorageRepositoryImpl: FirebaseStorageRepositoryImpl): FirebaseStorageRepository
 }
 
@@ -47,6 +54,12 @@ object AppModuleProvidings {
     @Provides
     fun provideFirestoreUsers(): FirestoreUsers {
         return FirestoreUsers()
+    }
+
+    @Singleton
+    @Provides
+    fun provideFirestorePosts(): FirestorePosts {
+        return FirestorePosts()
     }
 
     @Singleton

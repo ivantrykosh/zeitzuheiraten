@@ -7,9 +7,15 @@ sealed class Screen(val route: String) {
         data object SignUpScreen: AuthScreen("sign_up_screen")
         data object SignInScreen: AuthScreen("sign_in_screen")
     }
-    sealed class MainScreen(route: String): Screen(route) {
-        data object MainScreen: Screen.MainScreen("main_screen")
-        data object HomeScreen: Screen.MainScreen("home_screen")
-        data object MyProfileScreen: Screen.MainScreen("my_profile_screen")
+    sealed class MainCustomerScreen(route: String): Screen(route) {
+        data object MainCustomerScreen: Screen.MainCustomerScreen("main_customer_screen")
+        data object HomeScreen: Screen.MainCustomerScreen("home_customer_screen")
+        data object MyProfileScreen: Screen.MainCustomerScreen("my_profile_customer_screen")
+    }
+    sealed class MainProviderScreen(route: String): Screen(route) {
+        data object MainProviderScreen: Screen.MainProviderScreen("main_provider_screen")
+        data object HomeScreen: Screen.MainProviderScreen("home_provider_screen")
+        data object MyProfileScreen: Screen.MainProviderScreen("my_profile_provider_screen")
+        data object AddPostScreen: Screen.MainProviderScreen("add_post_provider_screen")
     }
 }

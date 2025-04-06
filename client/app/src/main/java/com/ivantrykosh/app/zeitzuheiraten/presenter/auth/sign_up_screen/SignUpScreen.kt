@@ -62,7 +62,7 @@ import com.ivantrykosh.app.zeitzuheiraten.utils.isPasswordValid
 @Composable
 fun SignUpScreen(
     signUpViewModel: SignUpViewModel = hiltViewModel(),
-    navigateToMainPage: () -> Unit = { },
+    navigateToMainPage: (Boolean) -> Unit = { },
     navigateToMainAuthPage: () -> Unit = { }
 ) {
     val context = LocalContext.current
@@ -304,7 +304,7 @@ fun SignUpScreen(
 
                     createUserState.data != null -> {
                         loaded = true
-                        navigateToMainPage()
+                        navigateToMainPage(isProvider)
                     }
                 }
             }

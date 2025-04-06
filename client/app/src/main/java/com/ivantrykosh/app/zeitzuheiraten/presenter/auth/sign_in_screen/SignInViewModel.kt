@@ -16,7 +16,7 @@ class SignInViewModel @Inject constructor(
     private val signInUseCase: SignInUseCase
 ) : ViewModel() {
 
-    var signInState = MutableStateFlow(State<Unit>())
+    var signInState = MutableStateFlow(State<Boolean>())
         private set
 
     fun signIn(email: String, password: String) {
@@ -24,7 +24,7 @@ class SignInViewModel @Inject constructor(
             signInState.value = when (result) {
                 is Resource.Error -> State(error = result.error)
                 is Resource.Loading -> State(loading = true)
-                is Resource.Success -> State(data = Unit)
+                is Resource.Success -> State(data = result.data!!)
             }
         }.launchIn(viewModelScope)
     }

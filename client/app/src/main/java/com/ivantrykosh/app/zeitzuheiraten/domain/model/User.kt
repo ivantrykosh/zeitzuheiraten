@@ -8,7 +8,8 @@ data class User(
     val name: String = "",
     val email: String = "",
     val imageUrl: String = "",
-    val isProvider: Boolean = false,
+    @field:JvmField
+    var isProvider: Boolean = false,
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString()!!,

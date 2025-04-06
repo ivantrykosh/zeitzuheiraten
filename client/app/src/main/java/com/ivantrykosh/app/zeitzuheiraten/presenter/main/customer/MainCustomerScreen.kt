@@ -1,4 +1,4 @@
-package com.ivantrykosh.app.zeitzuheiraten.presenter.main
+package com.ivantrykosh.app.zeitzuheiraten.presenter.main.customer
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -28,14 +28,14 @@ import com.ivantrykosh.app.zeitzuheiraten.presenter.Screen
 @Preview
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(
+fun MainCustomerScreen(
     navController: NavHostController = rememberNavController(),
     navigateToAuth: () -> Unit = { }
 ) {
     var selectedNavBarItemIndex by rememberSaveable { mutableIntStateOf(0) }
 
-    val homeNavBarItem = NavBarItem(title = R.string.home, selectedIcon = R.drawable.baseline_home_24, unselectedIcon = R.drawable.outline_home_24, navRoute = Screen.MainScreen.HomeScreen.route)
-    val myProfileNavBarItem = NavBarItem(title = R.string.my_profile, selectedIcon = R.drawable.baseline_account_circle_24, unselectedIcon = R.drawable.outline_account_circle_24, navRoute = Screen.MainScreen.MyProfileScreen.route)
+    val homeNavBarItem = NavBarItem(title = R.string.home, selectedIcon = R.drawable.baseline_home_24, unselectedIcon = R.drawable.outline_home_24, navRoute = Screen.MainCustomerScreen.HomeScreen.route)
+    val myProfileNavBarItem = NavBarItem(title = R.string.my_profile, selectedIcon = R.drawable.baseline_account_circle_24, unselectedIcon = R.drawable.outline_account_circle_24, navRoute = Screen.MainCustomerScreen.MyProfileScreen.route)
     val navBarItems = listOf(homeNavBarItem, myProfileNavBarItem)
 
     Scaffold(
@@ -67,7 +67,7 @@ fun MainScreen(
         }
     ) { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues)) {
-            MainNavGraph(navController = navController, navigateToAuth = navigateToAuth)
+            MainCustomerNavGraph(navController = navController, navigateToAuth = navigateToAuth)
         }
     }
 }

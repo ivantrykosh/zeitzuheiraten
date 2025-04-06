@@ -45,7 +45,7 @@ import com.ivantrykosh.app.zeitzuheiraten.utils.isPasswordValid
 @Composable
 fun SignInScreen(
     signInViewModel: SignInViewModel = hiltViewModel(),
-    navigateToMainPage: () -> Unit = { },
+    navigateToMainPage: (Boolean) -> Unit = { },
     navigateToMainAuthPage: () -> Unit = { }
 ) {
     var email by remember { mutableStateOf("") }
@@ -186,7 +186,7 @@ fun SignInScreen(
                     }
                     signInState.data != null -> {
                         loaded = true
-                        navigateToMainPage()
+                        navigateToMainPage(signInState.data!!)
                     }
                 }
             }

@@ -2,7 +2,7 @@ package com.ivantrykosh.app.zeitzuheiraten.presenter.splash_screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.auth.GetCurrentUserIdUseCase
+import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.users.GetCurrentUserUseCase
 import com.ivantrykosh.app.zeitzuheiraten.utils.Resource
 import com.ivantrykosh.app.zeitzuheiraten.utils.State
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,19 +13,23 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SplashViewModel @Inject constructor(
-    private val getCurrentUserIdUseCase: GetCurrentUserIdUseCase
+    private val getCurrentUserUseCase: GetCurrentUserUseCase
 ) : ViewModel() {
 
     var isUserLoggedInState = MutableStateFlow(State<Boolean>())
         private set
 
+    var isUserProvider: Boolean = false
+        private set
+
     fun isUserLoggedIn() {
-        getCurrentUserIdUseCase().onEach { result ->
+        getCurrentUserUseCase().onEach { result ->
             isUserLoggedInState.value = when (result) {
                 is Resource.Error -> State(error = result.error)
                 is Resource.Loading -> State(loading = true)
                 is Resource.Success -> {
-                    val isLoggedIn = result.data!!.isNotEmpty()
+                    val isLoggedIn = result.data != null
+                    isUserProvider = result.data?.isProvider == true
                     State(data = isLoggedIn)
                 }
             }

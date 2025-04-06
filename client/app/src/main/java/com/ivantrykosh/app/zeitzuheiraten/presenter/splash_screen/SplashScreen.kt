@@ -32,7 +32,7 @@ import kotlinx.coroutines.delay
 fun SplashScreen(
     splashViewModel: SplashViewModel = hiltViewModel(),
     navigateToAuthPage: () -> Unit = { },
-    navigateToMainPage: () -> Unit = { }
+    navigateToMainPage: (Boolean) -> Unit = { }
 ) {
     val isUserLoggedIn by splashViewModel.isUserLoggedInState.collectAsStateWithLifecycle()
     var loaded by remember { mutableStateOf(false) }
@@ -80,7 +80,7 @@ fun SplashScreen(
             isUserLoggedIn.data != null -> {
                 loaded = true
                 if (isUserLoggedIn.data!!) {
-                    navigateToMainPage()
+                    navigateToMainPage(splashViewModel.isUserProvider)
                 } else {
                     navigateToAuthPage()
                 }

@@ -1,4 +1,4 @@
-package com.ivantrykosh.app.zeitzuheiraten.presenter.main.my_profile_screen
+package com.ivantrykosh.app.zeitzuheiraten.presenter.main.customer.my_profile_screen
 
 import android.net.Uri
 import android.widget.Toast

@@ -38,4 +38,50 @@
     <string name="sign_in">Sign in</string>
     <string name="return_to_auth">Return to auth</string>
     <string name="sign_up">Sign up</string>
+    <string name="from_price">from %d₴</string>
+    <string name="add_post">Add post</string>
+    <string name="my_posts">My posts</string>
+    <string name="back">Back</string>
+    
+    <string name="category">Category</string>
+    <string name="photography_category">Photography</string>
+    <string name="cakes_category">Cakes</string>
+
+    <string name="city">City</string>
+    <string name="simferopol_city">Simferopol</string>
+    <string name="vinnytsia_city">Vinnytsia</string>
+    <string name="lutsk_city">Lutsk</string>
+    <string name="dnipro_city">Dnipro</string>
+    <string name="donetsk_city">Donetsk</string>
+    <string name="zhytomyr_city">Zhytomyr</string>
+    <string name="uzhhorod_city">Uzhhorod</string>
+    <string name="zaporizhzhia_city">Zaporizhzhia</string>
+    <string name="ivano_frankivsk_city">Ivano-Frankivsk</string>
+    <string name="kyiv_city">Kyiv</string>
+    <string name="kropyvnytskyi_city">Kropyvnytskyi</string>
+    <string name="luhansk_city">Luhansk</string>
+    <string name="lviv_city">Lviv</string>
+    <string name="mykolaiv_city">Mykolaiv</string>
+    <string name="odesa_city">Odesa</string>
+    <string name="poltava_city">Poltava</string>
+    <string name="rivne_city">Rivne</string>
+    <string name="sumy_city">Sumy</string>
+    <string name="ternopil_city">Ternopil</string>
+    <string name="kharkiv_city">Kharkiv</string>
+    <string name="kherson_city">Kherson</string>
+    <string name="khmelnytskyi_city">Khmelnytskyi</string>
+    <string name="cherkasy_city">Cherkasy</string>
+    <string name="chernivtsi_city">Chernivtsi</string>
+    <string name="chernihiv_city">Chernihiv</string>
+
+    <string name="add_city">Add city</string>
+    <string name="remove_city">Remove city</string>
+    <string name="min_price">Min price</string>
+    <string name="description">Description</string>
+    <string name="not_available_dates">Not available dates</string>
+    <string name="remove_dates">Remove dates</string>
+    <string name="add_date_range">Add date range</string>
+    <string name="picked_image">Picked image</string>
+    <string name="add_images">Add images</string>
+    <string name="remove_images">Remove images</string>
 </resources>
