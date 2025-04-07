@@ -48,7 +48,6 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDateRangePickerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -67,6 +66,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.google.firebase.FirebaseNetworkException
 import com.ivantrykosh.app.zeitzuheiraten.R
@@ -76,11 +76,7 @@ import com.ivantrykosh.app.zeitzuheiraten.utils.Constants.MAX_IMAGES_PER_POST
 import com.ivantrykosh.app.zeitzuheiraten.utils.Constants.MAX_NOT_AVAILABLE_DATE_RANGES_PER_POST
 import com.ivantrykosh.app.zeitzuheiraten.utils.Constants.MAX_SYMBOLS_FOR_POST_DESCRIPTION
 import com.ivantrykosh.app.zeitzuheiraten.utils.isFileSizeAppropriate
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
-import java.util.Locale
+import com.ivantrykosh.app.zeitzuheiraten.utils.toStringDate
 import kotlin.collections.forEach
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
@@ -93,15 +89,25 @@ fun AddPostScreen(
     val contentResolver = context.contentResolver
 
     var categoryValue by rememberSaveable { mutableStateOf("") }
+    val categoryValueError = stringResource(R.string.category_cannot_be_empty)
     val categories = stringArrayResource(R.array.categories)
+
     var citiesValue = remember { mutableStateListOf<String>() }
+    val citiesValueError = stringResource(R.string.you_need_to_add_at_least_one_city)
     val cities = stringArrayResource(R.array.cities)
     var isCitiesExpanded by rememberSaveable { mutableStateOf(false) }
+
     var minPrice by rememberSaveable { mutableStateOf("") }
+    val minPriceError = stringResource(R.string.min_price_is_required)
+
     var description by rememberSaveable { mutableStateOf("") }
+    val descriptionError = stringResource(R.string.you_need_to_add_description)
+
     var notAvailableDateRanges = remember { mutableStateListOf<DatePair>() }
     var isDateRangePickerShowed by rememberSaveable { mutableStateOf(false) }
+
     var pickedImages = remember { mutableStateListOf<Uri>() }
+    val pickedImagesError = stringResource(R.string.you_need_to_add_at_least_one_image)
     val pickPostImages = rememberLauncherForActivityResult(contract = ActivityResultContracts.PickMultipleVisualMedia(maxItems = MAX_IMAGES_PER_POST)) { uris ->
         if (uris.isNotEmpty()) {
             uris.forEach {
@@ -114,7 +120,7 @@ fun AddPostScreen(
         }
     }
 
-    val createPostState by addPostViewModel.createPostState.collectAsState()
+    val createPostState by addPostViewModel.createPostState.collectAsStateWithLifecycle()
     var loaded by remember { mutableStateOf(false) }
     var showAlertDialog by remember { mutableStateOf(false) }
     var textInAlertDialog by remember { mutableStateOf("") }
@@ -370,7 +376,26 @@ fun AddPostScreen(
                 }
             }
             FilledTonalButton(
-                onClick = { addPostViewModel.createPost(categoryValue, citiesValue, minPrice.toInt(), description, notAvailableDateRanges, pickedImages) },
+                onClick = {
+                    if (categoryValue.isEmpty()) {
+                        showAlertDialog = true
+                        textInAlertDialog = categoryValueError
+                    } else if (citiesValue.isEmpty()) {
+                        showAlertDialog = true
+                        textInAlertDialog = citiesValueError
+                    } else if (minPrice.isEmpty()) {
+                        showAlertDialog = true
+                        textInAlertDialog = minPriceError
+                    } else if (description.isEmpty()) {
+                        showAlertDialog = true
+                        textInAlertDialog = descriptionError
+                    } else if (pickedImages.isEmpty()) {
+                        showAlertDialog = true
+                        textInAlertDialog = pickedImagesError
+                    } else {
+                        addPostViewModel.createPost(categoryValue, citiesValue, minPrice.toInt(), description, notAvailableDateRanges, pickedImages)
+                    }
+                },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
@@ -399,8 +424,7 @@ fun AddPostScreen(
                 loaded = true
                 when (createPostState.error) {
                     is FirebaseNetworkException -> {
-                        textInAlertDialog =
-                            stringResource(id = R.string.no_internet_connection)
+                        textInAlertDialog = stringResource(id = R.string.no_internet_connection)
                         showAlertDialog = true
                     }
 
@@ -534,12 +558,6 @@ fun ItemWithDropdownMenu(
             }
         }
     }
-}
-
-fun Long.toStringDate(): String {
-    val formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd", Locale.getDefault())
-    val date = LocalDateTime.ofInstant(Instant.ofEpochSecond(this / 1000), ZoneId.systemDefault())
-    return date.format(formatter)
 }
 
 @Composable

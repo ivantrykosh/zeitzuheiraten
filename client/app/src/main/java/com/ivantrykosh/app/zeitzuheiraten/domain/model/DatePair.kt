@@ -4,8 +4,8 @@ import android.os.Parcel
 import android.os.Parcelable
 
 data class DatePair(
-    val startDate: Long,
-    val endDate: Long,
+    val startDate: Long = 0,
+    val endDate: Long = 0,
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readLong(),

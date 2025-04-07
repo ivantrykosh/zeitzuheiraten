@@ -84,4 +84,10 @@
     <string name="picked_image">Picked image</string>
     <string name="add_images">Add images</string>
     <string name="remove_images">Remove images</string>
+    <string name="category_cannot_be_empty">Category cannot be empty</string>
+    <string name="you_need_to_add_at_least_one_city">You need to add at least one city</string>
+    <string name="min_price_is_required">You need to add a minimal price</string>
+    <string name="you_need_to_add_description">You have to add description</string>
+    <string name="you_need_to_add_at_least_one_image">You need to add at least one image</string>
+    <string name="you_have_no_posts">You don\'t have any posts yet</string>
 </resources>

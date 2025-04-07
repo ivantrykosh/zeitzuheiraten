@@ -12,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -38,9 +39,10 @@ fun PostItem(
         AsyncImage(
             model = post.photosUrl[0],
             contentDescription = null,
+            contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(200.dp) // todo delete this
+                .height(200.dp)
         )
         Column(
             modifier = Modifier.padding(16.dp)
