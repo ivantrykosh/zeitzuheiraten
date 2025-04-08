@@ -10,6 +10,8 @@ interface PostRepository {
 
     suspend fun getPostById(id: String): Post
 
+    suspend fun getPostByCategory(category: String, pageIndex: Int, pageSize: Int): List<Post>
+
     suspend fun updatePost(post: Post)
 
     suspend fun deletePost(postId: String)

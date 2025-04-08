@@ -45,6 +45,19 @@ class FirestorePosts(private val firestore: FirebaseFirestore = Firebase.firesto
             .copy(id = id)
     }
 
+    suspend fun getPostsByCategory(category: String, pageIndex: Int, pageSize: Int): List<Post> {
+        return firestore.collection(Collections.POSTS)
+            .whereEqualTo(Post::category.name, category)
+            .orderBy(Post::category.name)
+            .startAt(pageIndex * pageSize)
+            .limit(pageSize.toLong())
+            .get()
+            .await()
+            .map { doc ->
+                doc.toObject(Post::class.java).copy(id = doc.id)
+            }
+    }
+
     suspend fun updatePost(post: Post) {
         val postData = mapOf(
             Post::cities.name to post.cities,

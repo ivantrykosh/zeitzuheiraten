@@ -102,4 +102,6 @@
     <string name="price_from">Price: from %d₴</string>
     <string name="open_chat">Open chat</string>
     <string name="book">Book</string>
+    <string name="no_posts_found">No posts was found</string>
+    <string name="posts">Posts</string>
 </resources>

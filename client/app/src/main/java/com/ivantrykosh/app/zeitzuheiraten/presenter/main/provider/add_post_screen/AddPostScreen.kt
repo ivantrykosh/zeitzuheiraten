@@ -64,7 +64,7 @@ import coil3.compose.AsyncImage
 import com.google.firebase.FirebaseNetworkException
 import com.ivantrykosh.app.zeitzuheiraten.R
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.DatePair
-import com.ivantrykosh.app.zeitzuheiraten.presenter.main.provider.DateRangePicker
+import com.ivantrykosh.app.zeitzuheiraten.presenter.main.DateRangePicker
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.provider.ItemWithDropdownMenu
 import com.ivantrykosh.app.zeitzuheiraten.utils.Constants.MAX_CITIES_PER_POST
 import com.ivantrykosh.app.zeitzuheiraten.utils.Constants.MAX_IMAGES_PER_POST
