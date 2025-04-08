@@ -16,6 +16,10 @@ class PostRepositoryImpl @Inject constructor(
         return firestorePosts.getPostsByUserId(userId)
     }
 
+    override suspend fun getPostById(id: String): Post {
+        return firestorePosts.getPostById(id)
+    }
+
     override suspend fun updatePost(post: Post) {
         firestorePosts.updatePost(post)
     }

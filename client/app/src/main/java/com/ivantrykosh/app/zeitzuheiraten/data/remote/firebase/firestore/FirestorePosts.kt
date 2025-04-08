@@ -21,7 +21,7 @@ class FirestorePosts(private val firestore: FirebaseFirestore = Firebase.firesto
             Post::notAvailableDates.name to post.notAvailableDates,
         )
         firestore.collection(Collections.POSTS)
-            .document()
+            .document(post.id)
             .set(postData)
             .await()
     }
@@ -34,6 +34,15 @@ class FirestorePosts(private val firestore: FirebaseFirestore = Firebase.firesto
             .map { doc ->
                 doc.toObject(Post::class.java).copy(id = doc.id)
             }
+    }
+
+    suspend fun getPostById(id: String): Post {
+        return firestore.collection(Collections.POSTS)
+            .document(id)
+            .get()
+            .await()
+            .toObject(Post::class.java)!!
+            .copy(id = id)
     }
 
     suspend fun updatePost(post: Post) {

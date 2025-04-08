@@ -8,6 +8,8 @@ interface PostRepository {
 
     suspend fun getPostsByUserId(userId: String): List<Post>
 
+    suspend fun getPostById(id: String): Post
+
     suspend fun updatePost(post: Post)
 
     suspend fun deletePost(postId: String)

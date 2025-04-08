@@ -90,4 +90,10 @@
     <string name="you_need_to_add_description">You have to add description</string>
     <string name="you_need_to_add_at_least_one_image">You need to add at least one image</string>
     <string name="you_have_no_posts">You don\'t have any posts yet</string>
+    <string name="delete_post">Delete post</string>
+    <string name="edit_post">Edit post</string>
+    <string name="post_was_created">Post was created!</string>
+    <string name="post_was_updated">Post was updated!</string>
+    <string name="post_was_deleted">Post was deleted</string>
+    <string name="you_want_to_delete_post">You really want to delete post?</string>
 </resources>

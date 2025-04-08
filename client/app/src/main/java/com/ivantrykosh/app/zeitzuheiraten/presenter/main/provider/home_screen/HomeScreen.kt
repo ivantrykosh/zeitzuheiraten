@@ -46,6 +46,7 @@ import com.ivantrykosh.app.zeitzuheiraten.R
 fun HomeScreen(
     homeScreenViewModel: HomeScreenViewModel = hiltViewModel(),
     navigateToAddPostScreen: () -> Unit,
+    navigateToEditPostScreen: (String) -> Unit,
 ) {
     val posts by homeScreenViewModel.getPostsState.collectAsStateWithLifecycle()
     var loaded by rememberSaveable { mutableStateOf(false) }
@@ -87,7 +88,7 @@ fun HomeScreen(
                             PostItem(
                                 post = post,
                                 onPostClick = {
-                                    /* todo */
+                                    navigateToEditPostScreen(post.id)
                                 }
                             )
                         }
@@ -157,6 +158,7 @@ fun HomeScreen(
 @Preview(showBackground = true)
 fun HomeScreenPreview() {
     HomeScreen(
-        navigateToAddPostScreen = {}
+        navigateToAddPostScreen = {},
+        navigateToEditPostScreen = {}
     )
 }
