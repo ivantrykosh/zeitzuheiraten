@@ -96,4 +96,10 @@
     <string name="post_was_updated">Post was updated!</string>
     <string name="post_was_deleted">Post was deleted</string>
     <string name="you_want_to_delete_post">You really want to delete post?</string>
+    <string name="post_view">Post view</string>
+    <string name="post_image">Post image</string>
+    <string name="cities">Cities</string>
+    <string name="price_from">Price: from %d₴</string>
+    <string name="open_chat">Open chat</string>
+    <string name="book">Book</string>
 </resources>
