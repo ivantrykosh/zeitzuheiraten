@@ -1,8 +1,9 @@
-package com.ivantrykosh.app.zeitzuheiraten.presenter.main.provider
+package com.ivantrykosh.app.zeitzuheiraten.presenter.main
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -17,6 +18,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -27,6 +29,8 @@ fun ItemWithDropdownMenu(
     @StringRes label: Int,
     values: List<String>,
     enabled: Boolean = true,
+    isError: Boolean = false,
+    maxDropdownMenuHeight: Dp = Dp.Unspecified
 ) {
     var expanded by rememberSaveable { mutableStateOf(false) }
 
@@ -55,6 +59,7 @@ fun ItemWithDropdownMenu(
                 readOnly = true,
                 singleLine = true,
                 enabled = enabled,
+                isError = isError,
                 modifier = Modifier.menuAnchor(),
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                 colors = ExposedDropdownMenuDefaults.textFieldColors(),
@@ -62,6 +67,7 @@ fun ItemWithDropdownMenu(
             ExposedDropdownMenu(
                 expanded = expanded,
                 onDismissRequest = { expanded = false },
+                modifier = Modifier.heightIn(max = maxDropdownMenuHeight)
             ) {
                 values.forEach { option ->
                     DropdownMenuItem(

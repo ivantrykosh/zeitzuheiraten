@@ -2,6 +2,21 @@
 <resources>
     <string-array name="categories">
         <item>@string/photography_category</item>
+        <item>@string/videography_category</item>
+        <item>@string/music_category</item>
+        <item>@string/officiants_category</item>
+        <item>@string/venue_category</item>
+        <item>@string/catering_category</item>
+        <item>@string/transportation_category</item>
+        <item>@string/hair_and_makeup_category</item>
+        <item>@string/event_rentals_category</item>
+        <item>@string/entertainment_category</item>
+        <item>@string/wedding_planner_category</item>
+        <item>@string/flowers_category</item>
+        <item>@string/dresses_category</item>
+        <item>@string/fireworks_category</item>
+        <item>@string/invitations_category</item>
+        <item>@string/venue_decoration_category</item>
         <item>@string/cakes_category</item>
     </string-array>
 
@@ -31,5 +46,13 @@
         <item>@string/cherkasy_city</item>
         <item>@string/chernivtsi_city</item>
         <item>@string/chernihiv_city</item>
+    </string-array>
+
+    <string-array name="importance">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
     </string-array>
 </resources>

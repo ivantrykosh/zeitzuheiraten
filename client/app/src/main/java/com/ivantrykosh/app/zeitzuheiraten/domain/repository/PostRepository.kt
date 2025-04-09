@@ -10,7 +10,7 @@ interface PostRepository {
 
     suspend fun getPostById(id: String): Post
 
-    suspend fun getPostByFilters(category: String, city: String, maxPrice: Int?, startAfterLast: Boolean, pageSize: Int): List<Post>
+    suspend fun getPostByFilters(category: String, city: String, minPrice: Int?, maxPrice: Int?, startAfterLast: Boolean, pageSize: Int): List<Post>
 
     suspend fun updatePost(post: Post)
 

@@ -71,13 +71,13 @@ import com.ivantrykosh.app.zeitzuheiraten.domain.model.DatePair
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FullPostScreen(
-    postViewModel: PostViewModel = hiltViewModel(),
+    fullPostScreenModel: FullPostScreenModel = hiltViewModel(),
     postId: String,
     navigateBack: () -> Unit,
     onProviderClicked: (String) -> Unit,
     onOpenChatClicked: (String) -> Unit,
 ) {
-    val getPostState by postViewModel.getPostByIdState.collectAsStateWithLifecycle()
+    val getPostState by fullPostScreenModel.getPostByIdState.collectAsStateWithLifecycle()
     var loaded by remember { mutableStateOf(false) }
     var showErrorDialog by remember { mutableStateOf(false) }
     var textInErrorDialog by remember { mutableStateOf("") }
@@ -88,7 +88,7 @@ fun FullPostScreen(
     var clickedImage by rememberSaveable { mutableStateOf<String?>(null) }
 
     LaunchedEffect(0) {
-        postViewModel.getPostById(postId)
+        fullPostScreenModel.getPostById(postId)
     }
 
     Scaffold(

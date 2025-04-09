@@ -12,7 +12,7 @@ class GetPostsByFiltersUseCase @Inject constructor(
     operator fun invoke(category: String, city: String, maxPrice: Int?, startAfterLast: Boolean, pageSize: Int) = flow<Resource<List<Post>>> {
         try {
             emit(Resource.Loading())
-            val posts = postRepository.getPostByFilters(category, city, maxPrice, startAfterLast, pageSize)
+            val posts = postRepository.getPostByFilters(category, city, minPrice = null, maxPrice, startAfterLast, pageSize)
             emit(Resource.Success(posts))
         } catch (e: Exception) {
             emit(Resource.Error(e))

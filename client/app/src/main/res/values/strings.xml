@@ -45,6 +45,22 @@
     
     <string name="category">Category</string>
     <string name="photography_category">Photography</string>
+    <string name="videography_category">Videography</string>
+    <string name="music_category">Music</string>
+    <string name="officiants_category">Officiants</string>
+    <string name="venue_category">Venus</string>
+    <string name="catering_category">Catering</string>
+    <string name="transportation_category">Transportation</string>
+    <string name="hair_and_makeup_category">Hair &amp; Makeup</string>
+    <string name="event_rentals_category">Event Rentals</string>
+    <string name="entertainment_category">Entertainment</string>
+<!--    todo for categories below booking will be different -->
+    <string name="wedding_planner_category">Wedding planner</string>
+    <string name="flowers_category">Flowers</string>
+    <string name="dresses_category">Wedding dresses</string>
+    <string name="fireworks_category">Fireworks and specials effects</string>
+    <string name="invitations_category">Invitations</string>
+    <string name="venue_decoration_category">Venue decoration</string>
     <string name="cakes_category">Cakes</string>
 
     <string name="city">City</string>
@@ -109,4 +125,15 @@
     <string name="max_price">Max price</string>
     <string name="load_more">Load more</string>
     <string name="clear_filters">Clear filters</string>
+    <string name="budget_picker">Budget picker</string>
+    <string name="you_need_to_choose_city">You need to choose city</string>
+    <string name="budget">Budget</string>
+    <string name="add_category">Add category</string>
+    <string name="you_need_to_choose_budget">You need to choose budget</string>
+    <string name="importance">Importance</string>
+    <string name="field_is_required">Field is required</string>
+    <string name="delete_category">Delete category</string>
+    <string name="find_posts">Find posts</string>
+    <string name="you_need_to_choose_at_least_one_category">You need to choose at least one category</string>
+    <string name="posts_with_budget">Posts with budget</string>
 </resources>

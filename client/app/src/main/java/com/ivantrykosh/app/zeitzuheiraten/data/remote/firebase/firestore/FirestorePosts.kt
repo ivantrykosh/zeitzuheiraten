@@ -49,7 +49,7 @@ class FirestorePosts(private val firestore: FirebaseFirestore = Firebase.firesto
             .copy(id = id)
     }
 
-    suspend fun getPostsByFilters(category: String, city: String, maxPrice: Int?, startAfterLast: Boolean, pageSize: Int): List<Post> {
+    suspend fun getPostsByFilters(category: String, city: String, minPrice: Int?, maxPrice: Int?, startAfterLast: Boolean, pageSize: Int): List<Post> {
         return firestore.collection(Collections.POSTS)
             .let {
                 var query: Query? = null
@@ -58,6 +58,9 @@ class FirestorePosts(private val firestore: FirebaseFirestore = Firebase.firesto
                 }
                 if (city.isNotEmpty()) {
                     query = (query ?: it).whereArrayContains(Post::cities.name, city)
+                }
+                if (minPrice != null && minPrice >= 0) {
+                    query = (query ?: it).whereGreaterThanOrEqualTo(Post::minPrice.name, minPrice)
                 }
                 if (maxPrice != null && maxPrice > 0) {
                     query = (query ?: it).whereLessThanOrEqualTo(Post::minPrice.name, maxPrice)

@@ -34,8 +34,9 @@ fun MainCustomerScreen(
     var selectedNavBarItemIndex by rememberSaveable { mutableIntStateOf(0) }
 
     val homeNavBarItem = NavBarItem(title = R.string.home, selectedIcon = R.drawable.baseline_home_24, unselectedIcon = R.drawable.outline_home_24, navRoute = Screen.MainCustomerScreen.HomeScreen.route)
+    val budgetPickerNavBarItem = NavBarItem(title = R.string.budget_picker, selectedIcon = R.drawable.baseline_savings_24, unselectedIcon = R.drawable.outline_savings_24, navRoute = Screen.MainCustomerScreen.BudgetPickerScreen.route)
     val myProfileNavBarItem = NavBarItem(title = R.string.my_profile, selectedIcon = R.drawable.baseline_account_circle_24, unselectedIcon = R.drawable.outline_account_circle_24, navRoute = Screen.MainCustomerScreen.MyProfileScreen.route)
-    val navBarItems = listOf(homeNavBarItem, myProfileNavBarItem)
+    val navBarItems = listOf(homeNavBarItem, budgetPickerNavBarItem, myProfileNavBarItem)
 
     Scaffold(
         bottomBar = {

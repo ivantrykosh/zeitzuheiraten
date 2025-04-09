@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 @HiltViewModel
-class PostViewModel @Inject constructor(
+class FullPostScreenModel @Inject constructor(
     private val getPostByIdUseCase: GetPostByIdUseCase,
 ) : ViewModel() {
 
