@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,33 +13,42 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.google.firebase.FirebaseNetworkException
 import com.ivantrykosh.app.zeitzuheiraten.R
+import com.ivantrykosh.app.zeitzuheiraten.presenter.main.customer.FilterItemDropdown
+import com.ivantrykosh.app.zeitzuheiraten.presenter.main.customer.FilterItemInputNumber
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.provider.home_screen.PostItem
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -47,20 +57,27 @@ fun HomeScreen(
     homeScreenViewModel: HomeScreenViewModel = hiltViewModel(),
     navigateToPost: (String) -> Unit,
 ) {
-    val posts by homeScreenViewModel.getPosts.collectAsStateWithLifecycle()
+    val postsState by homeScreenViewModel.getPosts.collectAsStateWithLifecycle()
+    val posts by homeScreenViewModel.lastPosts.collectAsStateWithLifecycle()
     var loaded by rememberSaveable { mutableStateOf(false) }
     var showAlertDialog by rememberSaveable { mutableStateOf(false) }
     var textInAlertDialog by rememberSaveable { mutableStateOf("") }
 
-    val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = posts.loading)
+    var categoryValue by rememberSaveable { mutableStateOf("") }
+    val categories = stringArrayResource(R.array.categories)
+    var cityValue by rememberSaveable { mutableStateOf("") }
+    val cities = stringArrayResource(R.array.cities)
+    var maxPriceValue by rememberSaveable { mutableStateOf("") }
 
-    LaunchedEffect(Unit) {
-        homeScreenViewModel.getPostsByCategory("Photography") // todo change category
-    }
+    var showFiltersDialog by rememberSaveable { mutableStateOf(false) }
+    val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = postsState.loading)
 
     SwipeRefresh(
         state = swipeRefreshState,
-        onRefresh = { homeScreenViewModel.getPostsByCategory("Photography") },
+        onRefresh = {
+            loaded = false
+            homeScreenViewModel.getPostsByFilters(categoryValue, cityValue, maxPriceValue.toIntOrNull())
+        },
         indicator = { state, _ ->
             if (state.isRefreshing) {
                 CircularProgressIndicator(modifier = Modifier.fillMaxSize().wrapContentSize())
@@ -72,20 +89,46 @@ fun HomeScreen(
         ) {
             TopAppBar(
                 title = { Text(text = stringResource(R.string.posts)) },
-                windowInsets = WindowInsets(top = 0.dp)
+                windowInsets = WindowInsets(top = 0.dp),
+                actions = {
+                    IconButton(
+                        onClick = { showFiltersDialog = true }
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.baseline_filter_alt_24),
+                            contentDescription = stringResource(R.string.filter_posts)
+                        )
+                    }
+                }
             )
             LazyColumn(
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                if (posts.data?.isNotEmpty() == true) {
-                    items(posts.data!!) { post ->
+                if (posts.isNotEmpty()) {
+                    items(posts) { post ->
                         PostItem(
                             post = post,
                             onPostClick = {
                                 navigateToPost(post.id)
                             }
                         )
+                    }
+                    if (homeScreenViewModel.anyNewPosts) {
+                        item {
+                            Divider(modifier = Modifier.fillMaxWidth())
+                            Text(
+                                text = stringResource(R.string.load_more),
+                                fontSize = 16.sp,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.fillMaxWidth()
+                                    .clickable {
+                                        loaded = false
+                                        homeScreenViewModel.getNewPostsByFilters(categoryValue, cityValue, maxPriceValue.toIntOrNull())
+                                    }
+                                    .padding(8.dp)
+                            )
+                        }
                     }
                 } else {
                     item {
@@ -103,13 +146,13 @@ fun HomeScreen(
 
     if (!loaded) {
         when {
-            posts.loading -> {
+            postsState.loading -> {
                 CircularProgressIndicator(modifier = Modifier.fillMaxSize().wrapContentSize())
             }
 
-            posts.error != null -> {
+            postsState.error != null -> {
                 loaded = true
-                when (posts.error) {
+                when (postsState.error) {
                     is FirebaseNetworkException -> {
                         textInAlertDialog = stringResource(id = R.string.no_internet_connection)
                         showAlertDialog = true
@@ -122,7 +165,7 @@ fun HomeScreen(
                 }
             }
 
-            posts.data != null -> {
+            postsState.data != null -> {
                 loaded = true
             }
         }
@@ -136,4 +179,94 @@ fun HomeScreen(
             text = { Text(text = textInAlertDialog) }
         )
     }
+    if (showFiltersDialog) {
+        val onDismiss = {
+            showFiltersDialog = false
+            categoryValue = homeScreenViewModel.lastCategory
+            cityValue = homeScreenViewModel.lastCity
+            maxPriceValue = homeScreenViewModel.lastMaxPrice?.toString() ?: ""
+        }
+        Dialog(onDismissRequest = onDismiss) {
+            Surface(
+                shape = RoundedCornerShape(16.dp),
+                tonalElevation = 8.dp,
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth()
+            ) {
+                Column(
+                    modifier = Modifier
+                        .padding(24.dp)
+                        .verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.filter_posts),
+                        style = MaterialTheme.typography.titleLarge
+                    )
+
+                    FilterItemDropdown(
+                        currentValue = categoryValue,
+                        onValueChange = { categoryValue = it },
+                        label = stringResource(R.string.category),
+                        values = categories.toList(),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    FilterItemDropdown(
+                        currentValue = cityValue,
+                        onValueChange = { cityValue = it },
+                        label = stringResource(R.string.city),
+                        values = cities.toList(),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    FilterItemInputNumber(
+                        currentValue = maxPriceValue,
+                        onValueChange = { maxPriceValue = it.filter { it.isDigit() } },
+                        label = stringResource(R.string.max_price),
+                        modifier = Modifier.fillMaxWidth(),
+                        suffix = "₴"
+                    )
+
+                    // todo add sort parameter
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        Box(modifier = Modifier.weight(1f)) {
+                            TextButton(
+                                onClick = {
+                                    categoryValue = ""
+                                    cityValue = ""
+                                    maxPriceValue = ""
+                                }
+                            ) {
+                                Text(text = stringResource(R.string.clear_filters))
+                            }
+                        }
+                        TextButton(onClick = onDismiss) {
+                            Text(text = stringResource(R.string.cancel))
+                        }
+                        TextButton(
+                            onClick = {
+                                showFiltersDialog = false
+                                loaded = false
+                                homeScreenViewModel.getPostsByFilters(categoryValue, cityValue, maxPriceValue.toIntOrNull())
+                            }
+                        ) {
+                            Text(text = stringResource(R.string.ok_title))
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+@Preview(showBackground = true)
+fun HomeScreenPreview() {
+    HomeScreen {  }
 }

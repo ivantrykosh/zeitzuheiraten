@@ -20,8 +20,8 @@ class PostRepositoryImpl @Inject constructor(
         return firestorePosts.getPostById(id)
     }
 
-    override suspend fun getPostByCategory(category: String, pageIndex: Int, pageSize: Int): List<Post> {
-        return firestorePosts.getPostsByCategory(category, pageIndex, pageSize)
+    override suspend fun getPostByFilters(category: String, city: String, maxPrice: Int?, startAfterLast: Boolean, pageSize: Int): List<Post> {
+        return firestorePosts.getPostsByFilters(category, city, maxPrice, startAfterLast, pageSize)
     }
 
     override suspend fun updatePost(post: Post) {

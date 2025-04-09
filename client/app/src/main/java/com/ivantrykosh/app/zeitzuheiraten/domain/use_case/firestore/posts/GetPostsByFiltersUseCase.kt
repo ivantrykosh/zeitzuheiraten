@@ -6,13 +6,13 @@ import com.ivantrykosh.app.zeitzuheiraten.utils.Resource
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class GetPostsByCategoryUseCase @Inject constructor(
+class GetPostsByFiltersUseCase @Inject constructor(
     private val postRepository: PostRepository,
 ) {
-    operator fun invoke(category: String, pageIndex: Int, pageSize: Int) = flow<Resource<List<Post>>> {
+    operator fun invoke(category: String, city: String, maxPrice: Int?, startAfterLast: Boolean, pageSize: Int) = flow<Resource<List<Post>>> {
         try {
             emit(Resource.Loading())
-            val posts = postRepository.getPostByCategory(category, pageIndex, pageSize)
+            val posts = postRepository.getPostByFilters(category, city, maxPrice, startAfterLast, pageSize)
             emit(Resource.Success(posts))
         } catch (e: Exception) {
             emit(Resource.Error(e))

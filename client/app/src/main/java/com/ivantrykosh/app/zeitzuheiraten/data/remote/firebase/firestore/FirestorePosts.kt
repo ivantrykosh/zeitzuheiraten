@@ -1,13 +1,17 @@
 package com.ivantrykosh.app.zeitzuheiraten.data.remote.firebase.firestore
 
 import com.google.firebase.Firebase
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.Post
 import com.ivantrykosh.app.zeitzuheiraten.utils.Collections
 import kotlinx.coroutines.tasks.await
 
 class FirestorePosts(private val firestore: FirebaseFirestore = Firebase.firestore) {
+
+    private lateinit var lastVisiblePost: DocumentSnapshot
 
     suspend fun createPost(post: Post) {
         val postData = mapOf(
@@ -45,14 +49,37 @@ class FirestorePosts(private val firestore: FirebaseFirestore = Firebase.firesto
             .copy(id = id)
     }
 
-    suspend fun getPostsByCategory(category: String, pageIndex: Int, pageSize: Int): List<Post> {
+    suspend fun getPostsByFilters(category: String, city: String, maxPrice: Int?, startAfterLast: Boolean, pageSize: Int): List<Post> {
         return firestore.collection(Collections.POSTS)
-            .whereEqualTo(Post::category.name, category)
-            .orderBy(Post::category.name)
-            .startAt(pageIndex * pageSize)
+            .let {
+                var query: Query? = null
+                if (category.isNotEmpty()) {
+                    query = it.whereEqualTo(Post::category.name, category)
+                }
+                if (city.isNotEmpty()) {
+                    query = (query ?: it).whereArrayContains(Post::cities.name, city)
+                }
+                if (maxPrice != null && maxPrice > 0) {
+                    query = (query ?: it).whereLessThanOrEqualTo(Post::minPrice.name, maxPrice)
+                }
+                query ?: it
+            }
+            .orderBy(Post::category.name) // todo change order
+            .let {
+                if (startAfterLast) {
+                    it.startAfter(lastVisiblePost)
+                } else {
+                    it
+                }
+            }
             .limit(pageSize.toLong())
             .get()
             .await()
+            .also {
+                 if (!it.isEmpty) {
+                     lastVisiblePost = it.documents[it.size() - 1]
+                }
+            }
             .map { doc ->
                 doc.toObject(Post::class.java).copy(id = doc.id)
             }

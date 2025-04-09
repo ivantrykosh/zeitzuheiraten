@@ -104,4 +104,9 @@
     <string name="book">Book</string>
     <string name="no_posts_found">No posts was found</string>
     <string name="posts">Posts</string>
+    <string name="filter_posts">Filter posts</string>
+    <string name="sort_posts">Sort posts</string>
+    <string name="max_price">Max price</string>
+    <string name="load_more">Load more</string>
+    <string name="clear_filters">Clear filters</string>
 </resources>

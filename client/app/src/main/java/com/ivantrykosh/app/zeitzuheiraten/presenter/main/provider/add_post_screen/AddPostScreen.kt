@@ -272,8 +272,7 @@ fun AddPostScreen(
                 Text(
                     text = stringResource(R.string.not_available_dates),
                     fontSize = 20.sp,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier,
+                    modifier = Modifier.align(Alignment.CenterVertically),
                 )
                 for (date in notAvailableDateRanges) {
                     OutlinedButton(
