@@ -226,7 +226,7 @@ fun HomeScreen(
                         suffix = "₴"
                     )
 
-                    // todo add sort parameter
+                    // todo add sort parameter: by rating, by popularity (number of bookings for last 30 days), by price
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
