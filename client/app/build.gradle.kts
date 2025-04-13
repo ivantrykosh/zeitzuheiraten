@@ -90,6 +90,8 @@ dependencies {
 
     implementation("com.google.accompanist:accompanist-swiperefresh:0.27.0")
 
+    implementation("androidx.compose.material3:material3:1.2.0-beta01")
+
     testImplementation("org.mockito:mockito-core:3.4.0")
     testImplementation("org.mockito:mockito-inline:4.5.1")
     testImplementation("org.mockito.kotlin:mockito-kotlin:3.0.0")

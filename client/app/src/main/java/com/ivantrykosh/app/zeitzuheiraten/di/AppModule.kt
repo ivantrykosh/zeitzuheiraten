@@ -1,15 +1,18 @@
 package com.ivantrykosh.app.zeitzuheiraten.di
 
 import com.ivantrykosh.app.zeitzuheiraten.data.remote.firebase.auth.FirebaseAuth
+import com.ivantrykosh.app.zeitzuheiraten.data.remote.firebase.firestore.FirestoreBookings
 import com.ivantrykosh.app.zeitzuheiraten.data.remote.firebase.firestore.FirestoreFeedbacks
 import com.ivantrykosh.app.zeitzuheiraten.data.remote.firebase.firestore.FirestorePosts
 import com.ivantrykosh.app.zeitzuheiraten.data.remote.firebase.firestore.FirestoreUsers
 import com.ivantrykosh.app.zeitzuheiraten.data.remote.firebase.storage.FirebaseStorage
+import com.ivantrykosh.app.zeitzuheiraten.data.repository.BookingRepositoryImpl
 import com.ivantrykosh.app.zeitzuheiraten.data.repository.FeedbackRepositoryImpl
 import com.ivantrykosh.app.zeitzuheiraten.data.repository.FirebaseStorageRepositoryImpl
 import com.ivantrykosh.app.zeitzuheiraten.data.repository.PostRepositoryImpl
 import com.ivantrykosh.app.zeitzuheiraten.data.repository.UserAuthRepositoryImpl
 import com.ivantrykosh.app.zeitzuheiraten.data.repository.UserRepositoryImpl
+import com.ivantrykosh.app.zeitzuheiraten.domain.repository.BookingRepository
 import com.ivantrykosh.app.zeitzuheiraten.domain.repository.FeedbackRepository
 import com.ivantrykosh.app.zeitzuheiraten.domain.repository.FirebaseStorageRepository
 import com.ivantrykosh.app.zeitzuheiraten.domain.repository.PostRepository
@@ -44,6 +47,10 @@ abstract class AppModuleBindings {
 
     @Singleton
     @Binds
+    abstract fun bindBookingRepository(bookingRepositoryImpl: BookingRepositoryImpl): BookingRepository
+
+    @Singleton
+    @Binds
     abstract fun bindFirebaseStorageRepository(firebaseStorageRepositoryImpl: FirebaseStorageRepositoryImpl): FirebaseStorageRepository
 }
 
@@ -73,6 +80,12 @@ object AppModuleProvidings {
     @Provides
     fun provideFirestoreFeedbacks(): FirestoreFeedbacks {
         return FirestoreFeedbacks()
+    }
+
+    @Singleton
+    @Provides
+    fun provideFirestoreBookings(): FirestoreBookings {
+        return FirestoreBookings()
     }
 
     @Singleton

@@ -136,4 +136,5 @@
     <string name="find_posts">Find posts</string>
     <string name="you_need_to_choose_at_least_one_category">You need to choose at least one category</string>
     <string name="posts_with_budget">Posts with budget</string>
+    <string name="the_service_was_booked">The service was booked</string>
 </resources>

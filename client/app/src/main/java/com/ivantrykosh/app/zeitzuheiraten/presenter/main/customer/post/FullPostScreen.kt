@@ -1,5 +1,6 @@
 package com.ivantrykosh.app.zeitzuheiraten.presenter.main.customer.post
 
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -47,6 +48,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -66,29 +68,32 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.google.firebase.FirebaseNetworkException
 import com.ivantrykosh.app.zeitzuheiraten.R
-import com.ivantrykosh.app.zeitzuheiraten.domain.model.DatePair
+import com.ivantrykosh.app.zeitzuheiraten.presenter.main.BookingSelectableDates
+import com.ivantrykosh.app.zeitzuheiraten.presenter.main.DateRangePicker
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FullPostScreen(
-    fullPostScreenModel: FullPostScreenModel = hiltViewModel(),
+    fullPostScreenViewModel: FullPostScreenModel = hiltViewModel(),
     postId: String,
     navigateBack: () -> Unit,
     onProviderClicked: (String) -> Unit,
     onOpenChatClicked: (String) -> Unit,
 ) {
-    val getPostState by fullPostScreenModel.getPostByIdState.collectAsStateWithLifecycle()
+    val getPostState by fullPostScreenViewModel.getPostByIdState.collectAsStateWithLifecycle()
+    val getNotAvailableDatesState by fullPostScreenViewModel.getNotAvailableDatesState.collectAsStateWithLifecycle()
+    val createBookingState by fullPostScreenViewModel.createBookingState.collectAsStateWithLifecycle()
     var loaded by remember { mutableStateOf(false) }
+    var dateLoaded by remember { mutableStateOf(false) }
     var showErrorDialog by remember { mutableStateOf(false) }
     var textInErrorDialog by remember { mutableStateOf("") }
 
-    var pickedDateRange by remember { mutableStateOf<DatePair?>(null) }
     var isDateRangePickerShowed by rememberSaveable { mutableStateOf(false) }
 
     var clickedImage by rememberSaveable { mutableStateOf<String?>(null) }
 
     LaunchedEffect(0) {
-        fullPostScreenModel.getPostById(postId)
+        fullPostScreenViewModel.getPostById(postId)
     }
 
     Scaffold(
@@ -199,8 +204,9 @@ fun FullPostScreen(
                     Spacer(modifier = Modifier.width(8.dp))
                     Button(
                         onClick = {
-                            // todo open date range dialog with available dates
-//                        postViewModel.bookService(postId)
+                            loaded = false
+                            dateLoaded = false
+                            fullPostScreenViewModel.getNotAvailableDates(postId)
                         },
                         modifier = Modifier.weight(1f),
                         shape = RectangleShape,
@@ -236,7 +242,7 @@ fun FullPostScreen(
 
     if (!loaded) {
         when {
-            getPostState.loading -> {
+            getPostState.loading || getNotAvailableDatesState.loading || createBookingState.loading -> {
                 CircularProgressIndicator(modifier = Modifier.fillMaxSize().wrapContentSize())
             }
             getPostState.error != null -> {
@@ -253,8 +259,48 @@ fun FullPostScreen(
                     }
                 }
             }
-            getPostState.data != null -> {
+            getNotAvailableDatesState.error != null -> {
                 loaded = true
+                when (getNotAvailableDatesState.error) {
+                    is FirebaseNetworkException -> {
+                        textInErrorDialog = stringResource(id = R.string.no_internet_connection)
+                        showErrorDialog = true
+                    }
+
+                    else -> {
+                        textInErrorDialog = stringResource(id = R.string.error_occurred)
+                        showErrorDialog = true
+                    }
+                }
+            }
+            createBookingState.error != null -> {
+                loaded = true
+                when (createBookingState.error) {
+                    is FirebaseNetworkException -> {
+                        textInErrorDialog = stringResource(id = R.string.no_internet_connection)
+                        showErrorDialog = true
+                    }
+
+                    else -> {
+                        textInErrorDialog = stringResource(id = R.string.error_occurred)
+                        showErrorDialog = true
+                    }
+                }
+            }
+            else -> {
+                if (createBookingState.data != null) {
+                    loaded = true
+                    Toast.makeText(LocalContext.current, R.string.the_service_was_booked, Toast.LENGTH_LONG).show()
+                    navigateBack()
+                }
+                if (getPostState.data != null) {
+                    loaded = true
+                }
+                if (getNotAvailableDatesState.data != null && !dateLoaded) {
+                    loaded = true
+                    dateLoaded = true
+                    isDateRangePickerShowed = true
+                }
             }
         }
     }
@@ -265,6 +311,17 @@ fun FullPostScreen(
             confirmButton = { Text(text = stringResource(id = R.string.ok_title), modifier = Modifier.clickable { showErrorDialog = false }) },
             title = { Text(text = stringResource(id = R.string.error)) },
             text = { Text(text = textInErrorDialog) }
+        )
+    }
+
+    if (isDateRangePickerShowed) {
+        DateRangePicker(
+            onDateRangeSelected = {
+                loaded = false
+                fullPostScreenViewModel.bookService(postId, it)
+            },
+            onDismiss = { isDateRangePickerShowed = false },
+            selectableDates = BookingSelectableDates(getNotAvailableDatesState.data!!)
         )
     }
 }
