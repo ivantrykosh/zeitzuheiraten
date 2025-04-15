@@ -12,6 +12,7 @@ import com.ivantrykosh.app.zeitzuheiraten.presenter.main.customer.budget_picker.
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.customer.budget_picker.BudgetPickerViewModel
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.customer.budget_picker.posts_with_budget.PostsWithBudgetScreen
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.customer.home_screen.HomeScreen
+import com.ivantrykosh.app.zeitzuheiraten.presenter.main.customer.my_bookings.MyBookingsScreen
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.customer.my_profile_screen.MyProfileScreen
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.customer.post.FullPostScreen
 
@@ -65,6 +66,11 @@ fun MainCustomerNavGraph(navController: NavHostController, navigateToAuth: () ->
                     navController.navigate(Screen.MainCustomerScreen.FullPostScreen.route + "?postId=$postId")
                 }
             )
+        }
+        composable(route = Screen.MainCustomerScreen.MyBookingsScreen.route) {
+            MyBookingsScreen { postId ->
+                navController.navigate(Screen.MainCustomerScreen.FullPostScreen.route + "?postId=$postId")
+            }
         }
     }
 }

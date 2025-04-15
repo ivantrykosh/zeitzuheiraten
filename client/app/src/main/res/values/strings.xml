@@ -137,4 +137,27 @@
     <string name="you_need_to_choose_at_least_one_category">You need to choose at least one category</string>
     <string name="posts_with_budget">Posts with budget</string>
     <string name="the_service_was_booked">The service was booked</string>
+    
+    <string name="customer_menu_change_date">Change date</string>
+    <string name="customer_menu_cancel">Cancel booking</string>
+    <string name="customer_menu_leave_feedback">Leave feedback</string>
+    <string name="customer_menu_confirm_service_providing">Confirm service providing</string>
+    <string name="service_provided">Service provided</string>
+    <string name="booking_canceled">Booking canceled</string>
+    <string name="booking_confirmed">Booking confirmed</string>
+    <string name="booking_not_confirmed">Booking not confirmed</string>
+    <string name="my_bookings">My bookings</string>
+    <string name="no_bookings_found">No bookings found</string>
+    <string name="the_date_was_changed">The date was changed</string>
+    <string name="the_booking_was_canceled">The booking was canceled</string>
+    <string name="the_service_was_provided">The service was provided</string>
+    <string name="the_feedback_was_leaved">The feedback was leaved</string>
+    <string name="confirm_service_providing">Confirm service providing</string>
+    <string name="confirm_service_providing_question">Confirm service providing?</string>
+    <string name="cancel_booking">Cancel booking</string>
+    <string name="cancel_booking_question">Cancel booking?</string>
+    <string name="you_need_to_choose_rating">You need to choose rating</string>
+    <string name="leave_feedback">Leave feedback</string>
+    <string name="rating">Rating</string>
+    <string name="description_optional">Description (optional)</string>
 </resources>

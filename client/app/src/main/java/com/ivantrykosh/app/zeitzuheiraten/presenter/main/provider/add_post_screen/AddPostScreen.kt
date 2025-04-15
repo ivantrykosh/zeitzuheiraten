@@ -380,7 +380,7 @@ fun AddPostScreen(
                     } else if (minPrice.isEmpty()) {
                         showAlertDialog = true
                         textInAlertDialog = minPriceError
-                    } else if (description.isEmpty()) {
+                    } else if (description.isEmpty()) { // todo trim description
                         showAlertDialog = true
                         textInAlertDialog = descriptionError
                     } else if (pickedImages.isEmpty()) {

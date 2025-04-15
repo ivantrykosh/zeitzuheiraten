@@ -47,7 +47,7 @@ class FirestoreBookings(private val firestore: FirebaseFirestore = Firebase.fire
         }
         firestore.collection(Collections.BOOKINGS)
             .document(bookingId)
-            .set(updatedData)
+            .update(updatedData)
             .await()
     }
 

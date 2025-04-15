@@ -10,4 +10,5 @@ object Constants {
     const val MAX_SYMBOLS_FOR_POST_DESCRIPTION = 500
     const val MAX_NOT_AVAILABLE_DATE_RANGES_PER_POST = 5
     const val MAX_IMAGES_PER_POST = 10
+    const val MAX_SYMBOLS_FOR_FEEDBACK_DESCRIPTION = 200
 }

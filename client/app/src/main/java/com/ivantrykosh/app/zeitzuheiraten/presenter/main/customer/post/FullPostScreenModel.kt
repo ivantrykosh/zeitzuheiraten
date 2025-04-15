@@ -42,7 +42,7 @@ class FullPostScreenModel @Inject constructor(
     }
 
     fun getNotAvailableDates(id: String) {
-        getNotAvailableDatesForBookingUseCase(id, getPostByIdState.value.data!!.notAvailableDates).onEach { result ->
+        getNotAvailableDatesForBookingUseCase(id).onEach { result ->
             getNotAvailableDatesState.value = when (result) {
                 is Resource.Error -> State(error = result.error)
                 is Resource.Loading -> State(loading = true)
