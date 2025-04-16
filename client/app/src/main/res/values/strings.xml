@@ -142,6 +142,8 @@
     <string name="customer_menu_cancel">Cancel booking</string>
     <string name="customer_menu_leave_feedback">Leave feedback</string>
     <string name="customer_menu_confirm_service_providing">Confirm service providing</string>
+    <string name="provider_menu_cancel">Cancel booking</string>
+    <string name="provider_menu_confirm_booking">Confirm booking</string>
     <string name="service_provided">Service provided</string>
     <string name="booking_canceled">Booking canceled</string>
     <string name="booking_confirmed">Booking confirmed</string>
@@ -160,4 +162,8 @@
     <string name="leave_feedback">Leave feedback</string>
     <string name="rating">Rating</string>
     <string name="description_optional">Description (optional)</string>
+    <string name="bookings">Bookings</string>
+    <string name="the_booking_was_confirmed">The booking was confirmed</string>
+    <string name="confirm_booking">Confirm booking</string>
+    <string name="confirm_booking_question">Confirm booking?</string>
 </resources>

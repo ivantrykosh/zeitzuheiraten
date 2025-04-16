@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.ivantrykosh.app.zeitzuheiraten.presenter.Screen
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.provider.add_post_screen.AddPostScreen
+import com.ivantrykosh.app.zeitzuheiraten.presenter.main.provider.bookings.BookingsScreen
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.provider.edit_post_screen.EditPostScreen
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.provider.home_screen.HomeScreen
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.provider.my_profile_screen.MyProfileScreen
@@ -47,6 +48,13 @@ fun MainProviderNavGraph(navController: NavHostController, navigateToAuth: () ->
             EditPostScreen(postId = it.arguments!!.getString("postId")!!) {
                 navController.popBackStack()
             }
+        }
+        composable(route = Screen.MainProviderScreen.BookingsScreen.route) {
+            BookingsScreen(
+                navigateToEditPost = { postId ->
+                    navController.navigate(Screen.MainProviderScreen.EditPostScreen.route + "?postId=$postId")
+                }
+            )
         }
     }
 }

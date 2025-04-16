@@ -77,7 +77,7 @@ class FirestoreBookings(private val firestore: FirebaseFirestore = Firebase.fire
 
     suspend fun getBookingsForPost(postId: String, startAfterLast: Boolean, pageSize: Int): List<Booking> {
         return firestore.collection(Collections.BOOKINGS)
-            .whereEqualTo(Booking::postId.name, postId)
+            .whereEqualTo(Booking::postId.name, postId) // todo maybe use where in and pass list of postIds that provider has
             .orderBy(Booking::category.name) // todo sort by another field
             .let {
                 if (startAfterLast) {
