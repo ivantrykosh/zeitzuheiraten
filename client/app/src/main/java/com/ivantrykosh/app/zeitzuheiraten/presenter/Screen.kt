@@ -16,6 +16,7 @@ sealed class Screen(val route: String) {
         data object PostsWithBudgetScreen: Screen.MainCustomerScreen("posts_with_budget_customer_screen")
         data object MyBookingsScreen: Screen.MainCustomerScreen("my_bookings_customer_screen")
         data object PostFeedbacksScreen: Screen.MainCustomerScreen("post_feedbacks_customer_screen")
+        data object MyFeedbacksScreen: Screen.MainCustomerScreen("my_feedbacks_customer_screen")
     }
     sealed class MainProviderScreen(route: String): Screen(route) {
         data object MainProviderScreen: Screen.MainProviderScreen("main_provider_screen")

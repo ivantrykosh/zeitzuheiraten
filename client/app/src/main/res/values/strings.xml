@@ -169,4 +169,9 @@
     <string name="feedbacks">%d feedbacks</string>
     <string name="no_feedbacks_found">No feedbacks found</string>
     <string name="feedbacks_title">Feedbacks</string>
+    <string name="delete_feedback">Delete feedback</string>
+    <string name="for_provider">For %s</string>
+    <string name="my_feedbacks">My feedbacks</string>
+    <string name="feedback_was_deleted">Feedback was deleted</string>
+    <string name="delete_feedback_question">Delete feedback?</string>
 </resources>

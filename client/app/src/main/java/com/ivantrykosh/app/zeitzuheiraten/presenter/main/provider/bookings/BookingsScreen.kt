@@ -64,7 +64,7 @@ fun BookingsScreen(
     var pickedBookingId by rememberSaveable { mutableStateOf<String?>(null) }
     var pickedPostId by rememberSaveable { mutableStateOf<String?>(null) }
 
-    val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = bookingsState.loading)
+    val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = postsState.loading || bookingsState.loading || cancelBookingState.loading || confirmBookingState.loading)
 
     SwipeRefresh(
         state = swipeRefreshState,
@@ -167,11 +167,7 @@ fun BookingsScreen(
 
     if (!loaded) {
         when {
-            postsState.loading || bookingsState.loading || cancelBookingState.loading || confirmBookingState.loading -> {
-                CircularProgressIndicator(modifier = Modifier
-                    .fillMaxSize()
-                    .wrapContentSize())
-            }
+            postsState.loading || bookingsState.loading || cancelBookingState.loading || confirmBookingState.loading -> { }
             postsState.error != null -> {
                 loaded = true
                 when (postsState.error) {

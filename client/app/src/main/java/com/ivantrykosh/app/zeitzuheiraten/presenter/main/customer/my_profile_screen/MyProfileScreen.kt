@@ -54,7 +54,8 @@ import com.ivantrykosh.app.zeitzuheiraten.utils.isPasswordValid
 @Composable
 fun MyProfileScreen(
     myProfileViewModel: MyProfileViewModel = hiltViewModel(),
-    onSignOut: () -> Unit = { }
+    onSignOut: () -> Unit = { },
+    navigateToMyFeedbacks: () -> Unit = { },
 ) {
     val context = LocalContext.current
     val contentResolver = context.contentResolver
@@ -133,6 +134,16 @@ fun MyProfileScreen(
                     .fillMaxSize()
                     .padding(vertical = 16.dp, horizontal = 8.dp)
             ) {
+                ButtonView(
+                    onClick = {
+                        navigateToMyFeedbacks()
+                    },
+                    iconRes = R.drawable.baseline_feedback_24,
+                    title = R.string.my_feedbacks
+                )
+                Divider(modifier = Modifier
+                    .fillMaxWidth()
+                    .height(2.dp))
                 ButtonView(
                     onClick = {
                         pickUserProfileImage.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))

@@ -14,6 +14,7 @@ import com.ivantrykosh.app.zeitzuheiraten.presenter.main.customer.budget_picker.
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.shared.feedbacks.FeedbackScreen
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.customer.home_screen.HomeScreen
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.customer.my_bookings.MyBookingsScreen
+import com.ivantrykosh.app.zeitzuheiraten.presenter.main.customer.my_feedbacks.MyFeedbacksScreen
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.customer.my_profile_screen.MyProfileScreen
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.customer.post.FullPostScreen
 
@@ -29,9 +30,14 @@ fun MainCustomerNavGraph(navController: NavHostController, navigateToAuth: () ->
             )
         }
         composable(route = Screen.MainCustomerScreen.MyProfileScreen.route) {
-            MyProfileScreen {
-                navigateToAuth()
-            }
+            MyProfileScreen(
+                onSignOut = {
+                    navigateToAuth()
+                },
+                navigateToMyFeedbacks = {
+                    navController.navigate(Screen.MainCustomerScreen.MyFeedbacksScreen.route)
+                }
+            )
         }
         composable(
             route = Screen.MainCustomerScreen.FullPostScreen.route + "?postId={postId}",
@@ -92,6 +98,11 @@ fun MainCustomerNavGraph(navController: NavHostController, navigateToAuth: () ->
                     navController.popBackStack()
                 }
             )
+        }
+        composable(route = Screen.MainCustomerScreen.MyFeedbacksScreen.route) {
+            MyFeedbacksScreen {
+                navController.popBackStack()
+            }
         }
     }
 }
