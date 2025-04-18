@@ -68,8 +68,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.google.firebase.FirebaseNetworkException
 import com.ivantrykosh.app.zeitzuheiraten.R
+import com.ivantrykosh.app.zeitzuheiraten.domain.model.PostWithRating
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.BookingSelectableDates
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.DateRangePicker
+import com.ivantrykosh.app.zeitzuheiraten.presenter.main.RatingView
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -79,8 +81,10 @@ fun FullPostScreen(
     navigateBack: () -> Unit,
     onProviderClicked: (String) -> Unit,
     onOpenChatClicked: (String) -> Unit,
+    navigateToPostFeedbacks: (String) -> Unit,
 ) {
     val getPostState by fullPostScreenViewModel.getPostByIdState.collectAsStateWithLifecycle()
+    var post by remember { mutableStateOf<PostWithRating?>(null) }
     val getNotAvailableDatesState by fullPostScreenViewModel.getNotAvailableDatesState.collectAsStateWithLifecycle()
     val createBookingState by fullPostScreenViewModel.createBookingState.collectAsStateWithLifecycle()
     var loaded by remember { mutableStateOf(false) }
@@ -93,6 +97,7 @@ fun FullPostScreen(
     var clickedImage by rememberSaveable { mutableStateOf<String?>(null) }
 
     LaunchedEffect(0) {
+        loaded = false
         fullPostScreenViewModel.getPostById(postId)
     }
 
@@ -114,7 +119,7 @@ fun FullPostScreen(
             )
         },
     ) {
-        if (getPostState.data != null) {
+        if (post != null) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -122,14 +127,14 @@ fun FullPostScreen(
                     .padding(horizontal = 16.dp)
                     .verticalScroll(rememberScrollState()),
             ) {
-                if (getPostState.data!!.photosUrl.isNotEmpty()) {
+                if (post!!.photosUrl.isNotEmpty()) {
                     LazyRow(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(250.dp),
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        items(getPostState.data!!.photosUrl) { url ->
+                        items(post!!.photosUrl) { url ->
                             AsyncImage(
                                 model = url,
                                 contentDescription = stringResource(R.string.post_image),
@@ -146,15 +151,15 @@ fun FullPostScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    text = getPostState.data!!.providerName,
+                    text = post!!.providerName,
                     fontSize = 25.sp,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.clickable { onProviderClicked(getPostState.data!!.providerId) }
+                    modifier = Modifier.clickable { onProviderClicked(post!!.providerId) }
                 )
                 Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
-                    text = getPostState.data!!.category,
+                    text = post!!.category,
                     fontSize = 20.sp,
                     fontStyle = FontStyle.Italic
                 )
@@ -168,20 +173,26 @@ fun FullPostScreen(
                         contentDescription = stringResource(R.string.cities)
                     )
                     Text(
-                        text = getPostState.data!!.cities.joinToString(),
+                        text = post!!.cities.joinToString(),
                         fontSize = 18.sp,
                     )
                 }
                 Spacer(modifier = Modifier.height(12.dp))
 
                 Text(
-                    text = stringResource(R.string.price_from, getPostState.data!!.minPrice),
+                    text = stringResource(R.string.price_from, post!!.minPrice),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.SemiBold,
                 )
                 Spacer(modifier = Modifier.height(12.dp))
 
-                TextWithLinks(text = getPostState.data!!.description)
+                RatingView(
+                    post!!.rating,
+                    clickable = true,
+                    onClick = { navigateToPostFeedbacks(postId) })
+                Spacer(modifier = Modifier.height(12.dp))
+
+                TextWithLinks(text = post!!.description)
 
                 Row(
                     modifier = Modifier.weight(1f),
@@ -189,7 +200,7 @@ fun FullPostScreen(
                 ) {
                     Button(
                         onClick = {
-                            onOpenChatClicked(getPostState.data!!.providerId)
+                            onOpenChatClicked(post!!.providerId)
                         },
                         modifier = Modifier.weight(1f),
                         shape = RectangleShape,
@@ -295,6 +306,7 @@ fun FullPostScreen(
                 }
                 if (getPostState.data != null) {
                     loaded = true
+                    post = getPostState.data
                 }
                 if (getNotAvailableDatesState.data != null && !dateLoaded) {
                     loaded = true
@@ -378,6 +390,7 @@ fun FullPostScreenPreview() {
         postId = "someId",
         navigateBack = {},
         onProviderClicked = {},
-        onOpenChatClicked = {}
+        onOpenChatClicked = {},
+        navigateToPostFeedbacks = {}
     )
 }

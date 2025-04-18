@@ -23,6 +23,8 @@ class FirestoreFeedbacks(private val firestore: FirebaseFirestore = Firebase.fir
             Feedback::rating.name to feedback.rating,
             Feedback::description.name to feedback.description,
             Feedback::date.name to feedback.date,
+            Feedback::category.name to feedback.category,
+            Feedback::provider.name to feedback.provider,
         )
         firestore.collection(Collections.FEEDBACKS)
             .document()
@@ -37,7 +39,7 @@ class FirestoreFeedbacks(private val firestore: FirebaseFirestore = Firebase.fir
             .get(AggregateSource.SERVER)
             .await()
         return Rating(
-            result.get(AggregateField.average(Feedback::rating.name))!!,
+            result.get(AggregateField.average(Feedback::rating.name)) ?: 0.0,
             result.get(AggregateField.count()),
         )
     }

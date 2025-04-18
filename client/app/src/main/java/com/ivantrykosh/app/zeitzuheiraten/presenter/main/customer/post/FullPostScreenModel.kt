@@ -3,7 +3,7 @@ package com.ivantrykosh.app.zeitzuheiraten.presenter.main.customer.post
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.DatePair
-import com.ivantrykosh.app.zeitzuheiraten.domain.model.Post
+import com.ivantrykosh.app.zeitzuheiraten.domain.model.PostWithRating
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.bookings.CreateBookingUseCase
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.bookings.GetNotAvailableDatesForBookingUseCase
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.posts.GetPostByIdUseCase
@@ -22,7 +22,7 @@ class FullPostScreenModel @Inject constructor(
     private val createBookingUseCase: CreateBookingUseCase,
 ) : ViewModel() {
 
-    var getPostByIdState = MutableStateFlow(State<Post>())
+    var getPostByIdState = MutableStateFlow(State<PostWithRating>())
         private set
 
     var getNotAvailableDatesState = MutableStateFlow(State<List<DatePair>>())

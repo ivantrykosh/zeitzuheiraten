@@ -72,6 +72,8 @@ fun MyBookingsScreen(
 
     var pickedBookingId by rememberSaveable { mutableStateOf<String?>(null) }
     var pickedPostId by rememberSaveable { mutableStateOf<String?>(null) }
+    var category by rememberSaveable { mutableStateOf("") }
+    var provider by rememberSaveable { mutableStateOf("") }
 
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = bookingsState.loading)
 
@@ -117,6 +119,8 @@ fun MyBookingsScreen(
                                 pickedBookingId = it
                             },
                             onLeaveFeedback = {
+                                category = booking.category
+                                provider = booking.provider
                                 isFeedbackShowed = true
                                 pickedPostId = it
                             },
@@ -335,7 +339,7 @@ fun MyBookingsScreen(
             onOkPressed = { rating, description ->
                 loaded = false
                 isFeedbackShowed = false
-                myBookingsViewModel.createFeedback(pickedPostId!!, rating, description)
+                myBookingsViewModel.createFeedback(pickedPostId!!, category, provider, rating, description)
             },
             onDismiss = {
                 isFeedbackShowed = false

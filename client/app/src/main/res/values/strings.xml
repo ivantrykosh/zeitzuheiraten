@@ -166,4 +166,7 @@
     <string name="the_booking_was_confirmed">The booking was confirmed</string>
     <string name="confirm_booking">Confirm booking</string>
     <string name="confirm_booking_question">Confirm booking?</string>
+    <string name="feedbacks">%d feedbacks</string>
+    <string name="no_feedbacks_found">No feedbacks found</string>
+    <string name="feedbacks_title">Feedbacks</string>
 </resources>

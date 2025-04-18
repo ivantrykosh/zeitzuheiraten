@@ -4,7 +4,7 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.DatePair
-import com.ivantrykosh.app.zeitzuheiraten.domain.model.Post
+import com.ivantrykosh.app.zeitzuheiraten.domain.model.PostWithRating
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.posts.DeletePostByIdUseCase
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.posts.GetPostByIdUseCase
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.posts.UpdatePostUseCase
@@ -26,7 +26,7 @@ class EditPostViewModel @Inject constructor(
     var updatePostState = MutableStateFlow(State<Unit>())
         private set
 
-    var getPostByIdState = MutableStateFlow(State<Post>())
+    var getPostByIdState = MutableStateFlow(State<PostWithRating>())
         private set
 
     var deletePostState = MutableStateFlow(State<Unit>())

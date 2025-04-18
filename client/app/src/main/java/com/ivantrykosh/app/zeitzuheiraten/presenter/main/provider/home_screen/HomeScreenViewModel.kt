@@ -2,7 +2,7 @@ package com.ivantrykosh.app.zeitzuheiraten.presenter.main.provider.home_screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ivantrykosh.app.zeitzuheiraten.domain.model.Post
+import com.ivantrykosh.app.zeitzuheiraten.domain.model.PostWithRating
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.posts.GetPostsForCurrentUserUseCase
 import com.ivantrykosh.app.zeitzuheiraten.utils.Constants.MAX_POSTS_PER_USER
 import com.ivantrykosh.app.zeitzuheiraten.utils.Resource
@@ -18,7 +18,7 @@ class HomeScreenViewModel @Inject constructor(
     private val getPostsForCurrentUserUseCase: GetPostsForCurrentUserUseCase,
 ) : ViewModel() {
 
-    var getPostsState = MutableStateFlow(State<List<Post>>())
+    var getPostsState = MutableStateFlow(State<List<PostWithRating>>())
         private set
 
     fun getPosts() {

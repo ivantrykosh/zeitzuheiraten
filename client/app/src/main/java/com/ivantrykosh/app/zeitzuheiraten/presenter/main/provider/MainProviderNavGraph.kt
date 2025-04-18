@@ -12,6 +12,7 @@ import com.ivantrykosh.app.zeitzuheiraten.presenter.main.provider.bookings.Booki
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.provider.edit_post_screen.EditPostScreen
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.provider.home_screen.HomeScreen
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.provider.my_profile_screen.MyProfileScreen
+import com.ivantrykosh.app.zeitzuheiraten.presenter.main.shared.feedbacks.FeedbackScreen
 
 @Composable
 fun MainProviderNavGraph(navController: NavHostController, navigateToAuth: () -> Unit) {
@@ -45,14 +46,35 @@ fun MainProviderNavGraph(navController: NavHostController, navigateToAuth: () ->
                 }
             )
         ) {
-            EditPostScreen(postId = it.arguments!!.getString("postId")!!) {
-                navController.popBackStack()
-            }
+            val postId = it.arguments!!.getString("postId")!!
+            EditPostScreen(
+                postId = postId,
+                navigateBack = { navController.popBackStack() },
+                navigateToPostFeedbacks = {
+                    navController.navigate(Screen.MainProviderScreen.PostFeedbacksScreen.route + "?postId=$postId")
+                }
+            )
         }
         composable(route = Screen.MainProviderScreen.BookingsScreen.route) {
             BookingsScreen(
                 navigateToEditPost = { postId ->
                     navController.navigate(Screen.MainProviderScreen.EditPostScreen.route + "?postId=$postId")
+                }
+            )
+        }
+        composable(
+            route = Screen.MainProviderScreen.PostFeedbacksScreen.route + "?postId={postId}",
+            arguments = listOf(
+                navArgument("postId") {
+                    type = NavType.StringType
+                    nullable = false
+                }
+            )
+        ) {
+            FeedbackScreen(
+                postId = it.arguments!!.getString("postId")!!,
+                navigateBack = {
+                    navController.popBackStack()
                 }
             )
         }

@@ -2,7 +2,7 @@ package com.ivantrykosh.app.zeitzuheiraten.presenter.main.customer.budget_picker
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ivantrykosh.app.zeitzuheiraten.domain.model.Post
+import com.ivantrykosh.app.zeitzuheiraten.domain.model.PostWithRating
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.posts.GetPostsByBudgetUseCase
 import com.ivantrykosh.app.zeitzuheiraten.utils.CategoryAndWeight
 import com.ivantrykosh.app.zeitzuheiraten.utils.Resource
@@ -20,10 +20,10 @@ class BudgetPickerViewModel @Inject constructor(
     private val getPostsByBudgetUseCase: GetPostsByBudgetUseCase,
 ) : ViewModel() {
 
-    var getPosts = MutableStateFlow(State<List<Post>>())
+    var getPosts = MutableStateFlow(State<List<PostWithRating>>())
         private set
 
-    var lastPosts = MutableStateFlow(emptyList<Post>())
+    var lastPosts = MutableStateFlow(emptyList<PostWithRating>())
         private set
 
     var anyNewPosts: Boolean = true

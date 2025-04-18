@@ -67,8 +67,10 @@ import coil3.compose.AsyncImage
 import com.google.firebase.FirebaseNetworkException
 import com.ivantrykosh.app.zeitzuheiraten.R
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.DatePair
+import com.ivantrykosh.app.zeitzuheiraten.domain.model.PostWithRating
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.DateRangePicker
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.ItemWithDropdownMenu
+import com.ivantrykosh.app.zeitzuheiraten.presenter.main.RatingView
 import com.ivantrykosh.app.zeitzuheiraten.utils.Constants.MAX_CITIES_PER_POST
 import com.ivantrykosh.app.zeitzuheiraten.utils.Constants.MAX_IMAGES_PER_POST
 import com.ivantrykosh.app.zeitzuheiraten.utils.Constants.MAX_NOT_AVAILABLE_DATE_RANGES_PER_POST
@@ -83,6 +85,7 @@ fun EditPostScreen(
     editPostViewModel: EditPostViewModel = hiltViewModel(),
     postId: String,
     navigateBack: () -> Unit,
+    navigateToPostFeedbacks: (String) -> Unit,
 ) {
     val context = LocalContext.current
     val contentResolver = context.contentResolver
@@ -116,6 +119,7 @@ fun EditPostScreen(
     }
 
     val getPostState by editPostViewModel.getPostByIdState.collectAsStateWithLifecycle()
+    var post by remember { mutableStateOf<PostWithRating?>(null) }
     val updatePostState by editPostViewModel.updatePostState.collectAsStateWithLifecycle()
     val deletePostState by editPostViewModel.deletePostState.collectAsStateWithLifecycle()
     var loaded by remember { mutableStateOf(false) }
@@ -125,6 +129,7 @@ fun EditPostScreen(
     var showDeletePostDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(0) {
+        loaded = false
         editPostViewModel.getPostById(postId)
     }
     
@@ -166,12 +171,13 @@ fun EditPostScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 ItemWithDropdownMenu(
-                    currentValue = getPostState.data!!.category,
+                    currentValue = post!!.category,
                     onValueChange = { },
                     label = R.string.category,
                     values = emptyList(),
                     enabled = false,
                 )
+                RatingView(post!!.rating, clickable = true, onClick = { navigateToPostFeedbacks(postId) })
                 FlowRow(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -499,6 +505,7 @@ fun EditPostScreen(
             }
             getPostState.data != null -> {
                 loaded = true
+                post = getPostState.data!!
                 citiesValue.addAll(getPostState.data!!.cities)
                 minPrice = getPostState.data!!.minPrice.toString()
                 description = getPostState.data!!.description
@@ -548,6 +555,7 @@ fun EditPostScreen(
 fun EditPostScreenPreview() {
     EditPostScreen(
         navigateBack = {},
-        postId = "33fkjto43j"
+        postId = "33fkjto43j",
+        navigateToPostFeedbacks = {}
     )
 }

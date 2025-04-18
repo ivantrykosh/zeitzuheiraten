@@ -2,7 +2,7 @@ package com.ivantrykosh.app.zeitzuheiraten.presenter.main.customer.home_screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ivantrykosh.app.zeitzuheiraten.domain.model.Post
+import com.ivantrykosh.app.zeitzuheiraten.domain.model.PostWithRating
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.posts.GetPostsByFiltersUseCase
 import com.ivantrykosh.app.zeitzuheiraten.utils.Resource
 import com.ivantrykosh.app.zeitzuheiraten.utils.State
@@ -17,10 +17,10 @@ class HomeScreenViewModel @Inject constructor(
     private val getPostsByFiltersUseCase: GetPostsByFiltersUseCase,
 ) : ViewModel() {
 
-    var getPosts = MutableStateFlow(State<List<Post>>())
+    var getPosts = MutableStateFlow(State<List<PostWithRating>>())
         private set
 
-    var lastPosts = MutableStateFlow(emptyList<Post>())
+    var lastPosts = MutableStateFlow(emptyList<PostWithRating>())
         private set
 
     var anyNewPosts: Boolean = true

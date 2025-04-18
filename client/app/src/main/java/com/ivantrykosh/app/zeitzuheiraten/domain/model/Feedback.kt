@@ -8,11 +8,15 @@ data class Feedback(
     val userId: String = "",
     val username: String = "",
     val postId: String = "",
+    val category: String = "",
+    val provider: String = "",
     val rating: Int = 0,
     val description: String = "",
     val date: Long = 0,
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
+        parcel.readString()!!,
+        parcel.readString()!!,
         parcel.readString()!!,
         parcel.readString()!!,
         parcel.readString()!!,
@@ -28,6 +32,8 @@ data class Feedback(
         parcel.writeString(userId)
         parcel.writeString(username)
         parcel.writeString(postId)
+        parcel.writeString(category)
+        parcel.writeString(provider)
         parcel.writeInt(rating)
         parcel.writeString(description)
         parcel.writeLong(date)

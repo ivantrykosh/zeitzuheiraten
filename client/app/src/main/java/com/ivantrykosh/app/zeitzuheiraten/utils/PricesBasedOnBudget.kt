@@ -51,7 +51,7 @@ class PricesBasedOnBudget(
         val defaultWeight = defaultWeights[category]!!
         val coefficient = weight / sumOfWeights.toFloat()
         val defaultCoefficient = defaultWeight / sumOfDefaultWeights.toFloat()
-        val finalCoefficient = (coefficient + defaultCoefficient) / 2.0
+        val finalCoefficient = (coefficient + defaultCoefficient) / 2.0  // todo coefficient * 0.3 + defaultCoefficient * 0.7
         val finalPrice = finalCoefficient * budget
         return finalPrice.toInt()
     }

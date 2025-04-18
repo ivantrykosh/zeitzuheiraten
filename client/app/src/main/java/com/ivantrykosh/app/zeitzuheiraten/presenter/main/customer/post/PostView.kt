@@ -25,11 +25,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.ivantrykosh.app.zeitzuheiraten.R
-import com.ivantrykosh.app.zeitzuheiraten.domain.model.Post
+import com.ivantrykosh.app.zeitzuheiraten.domain.model.PostWithRating
+import com.ivantrykosh.app.zeitzuheiraten.domain.model.Rating
+import com.ivantrykosh.app.zeitzuheiraten.presenter.main.RatingView
 
 @Composable
 fun PostView(
-    post: Post,
+    post: PostWithRating,
     onPostClick: (String) -> Unit,
 ) {
     Card(
@@ -70,6 +72,7 @@ fun PostView(
                     fontSize = 18.sp,
                 )
             }
+            RatingView(post.rating)
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -97,7 +100,7 @@ fun PostView(
 @Preview
 fun PostViewPreview() {
     PostView(
-        post = Post(
+        post = PostWithRating(
             id = "ssdpu482489gh9",
             providerId = "dddkljie",
             providerName = "Поздняк Павло",
@@ -109,6 +112,7 @@ fun PostViewPreview() {
             minPrice = 4000,
             photosUrl = listOf("https://vesilla.com.ua/uploads/posts/2022-08/1659343626_1926x2894.jpg", "https://vesilla.com.ua/uploads/posts/2022-08/1659343699_4158x2767.jpg", "https://vesilla.com.ua/uploads/posts/2022-08/1659343656_2699x4056.jpg"),
             notAvailableDates = emptyList(),
+            rating = Rating(rating = 4.3, 20)
         ),
         onPostClick = {}
     )

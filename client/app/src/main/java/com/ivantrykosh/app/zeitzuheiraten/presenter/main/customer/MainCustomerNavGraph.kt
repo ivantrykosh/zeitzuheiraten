@@ -11,6 +11,7 @@ import com.ivantrykosh.app.zeitzuheiraten.presenter.Screen
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.customer.budget_picker.BudgetPickerScreen
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.customer.budget_picker.BudgetPickerViewModel
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.customer.budget_picker.posts_with_budget.PostsWithBudgetScreen
+import com.ivantrykosh.app.zeitzuheiraten.presenter.main.shared.feedbacks.FeedbackScreen
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.customer.home_screen.HomeScreen
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.customer.my_bookings.MyBookingsScreen
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.customer.my_profile_screen.MyProfileScreen
@@ -41,11 +42,15 @@ fun MainCustomerNavGraph(navController: NavHostController, navigateToAuth: () ->
                 }
             )
         ) {
+            val postId = it.arguments!!.getString("postId")!!
             FullPostScreen(
-                postId = it.arguments!!.getString("postId")!!,
+                postId = postId,
                 navigateBack = { navController.popBackStack() },
                 onProviderClicked = { /* todo */},
-                onOpenChatClicked = { /* todo */ }
+                onOpenChatClicked = { /* todo */ },
+                navigateToPostFeedbacks = {
+                    navController.navigate(Screen.MainCustomerScreen.PostFeedbacksScreen.route + "?postId=$postId")
+                }
             )
         }
         composable(route = Screen.MainCustomerScreen.BudgetPickerScreen.route) {
@@ -71,6 +76,22 @@ fun MainCustomerNavGraph(navController: NavHostController, navigateToAuth: () ->
             MyBookingsScreen { postId ->
                 navController.navigate(Screen.MainCustomerScreen.FullPostScreen.route + "?postId=$postId")
             }
+        }
+        composable(
+            route = Screen.MainCustomerScreen.PostFeedbacksScreen.route + "?postId={postId}",
+            arguments = listOf(
+                navArgument("postId") {
+                    type = NavType.StringType
+                    nullable = false
+                }
+            )
+        ) {
+            FeedbackScreen(
+                postId = it.arguments!!.getString("postId")!!,
+                navigateBack = {
+                    navController.popBackStack()
+                }
+            )
         }
     }
 }

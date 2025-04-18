@@ -3,7 +3,7 @@ package com.ivantrykosh.app.zeitzuheiraten.presenter.main.provider.bookings
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.Booking
-import com.ivantrykosh.app.zeitzuheiraten.domain.model.Post
+import com.ivantrykosh.app.zeitzuheiraten.domain.model.PostWithRating
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.bookings.GetBookingsForPostUseCase
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.bookings.UpdateBookingUseCase
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.posts.GetPostsForCurrentUserUseCase
@@ -22,7 +22,7 @@ class BookingsViewModel @Inject constructor(
     private val updateBookingUseCase: UpdateBookingUseCase,
 ) : ViewModel() {
 
-    var getPostsState = MutableStateFlow(State<List<Post>>())
+    var getPostsState = MutableStateFlow(State<List<PostWithRating>>())
         private set
 
     var getBookings = MutableStateFlow(State<List<Booking>>())

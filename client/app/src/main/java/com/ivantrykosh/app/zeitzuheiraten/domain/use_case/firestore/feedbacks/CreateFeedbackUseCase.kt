@@ -16,7 +16,7 @@ class CreateFeedbackUseCase @Inject constructor(
     private val userRepository: UserRepository,
     private val feedbackRepository: FeedbackRepository,
 ) {
-    operator fun invoke(postId: String, rating: Int, description: String) = flow<Resource<Unit>> {
+    operator fun invoke(postId: String, category: String, provider: String, rating: Int, description: String) = flow<Resource<Unit>> {
         try {
             emit(Resource.Loading())
             val userId = userAuthRepository.getCurrentUserId()
@@ -26,6 +26,8 @@ class CreateFeedbackUseCase @Inject constructor(
                 userId = userId,
                 username = user.name,
                 postId = postId,
+                category = category,
+                provider = provider,
                 rating = rating,
                 description = description,
                 date = date

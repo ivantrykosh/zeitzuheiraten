@@ -22,11 +22,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.ivantrykosh.app.zeitzuheiraten.R
-import com.ivantrykosh.app.zeitzuheiraten.domain.model.Post
+import com.ivantrykosh.app.zeitzuheiraten.domain.model.PostWithRating
+import com.ivantrykosh.app.zeitzuheiraten.domain.model.Rating
+import com.ivantrykosh.app.zeitzuheiraten.presenter.main.RatingView
 
 @Composable
 fun PostItem(
-    post: Post,
+    post: PostWithRating,
     onPostClick: (String) -> Unit,
 ) {
     Card(
@@ -62,6 +64,7 @@ fun PostItem(
                     fontSize = 18.sp,
                 )
             }
+            RatingView(post.rating)
             Text(
                 text = post.cities.joinToString(", "),
                 fontSize = 18.sp,
@@ -81,7 +84,7 @@ fun PostItem(
 @Preview
 fun PostItemPreview() {
     PostItem(
-        post = Post(
+        post = PostWithRating(
             id = "ddd",
             providerId = "ddksl",
             providerName = "somename",
@@ -90,7 +93,8 @@ fun PostItemPreview() {
             description = "someDescriptionsomeDescriptionsomeDescriptionsomeDescriptionsomeDescriptionsomeDescriptionsomeDescriptionsomeDescriptionsomeDescriptionsomeDescriptionsomeDescriptionsomeDescriptionsomeDescriptionsomeDescriptionsomeDescriptionsomeDescriptionsomeDescriptionsomeDescriptionsomeDescriptionsomeDescriptionsomeDescriptionsomeDescription",
             minPrice = 1000,
             photosUrl = listOf("imageUrl"),
-            notAvailableDates = listOf()
+            notAvailableDates = listOf(),
+            rating = Rating(3.3, 40)
         ),
         onPostClick = {}
     )

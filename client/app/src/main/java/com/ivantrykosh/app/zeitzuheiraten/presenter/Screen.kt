@@ -11,10 +11,11 @@ sealed class Screen(val route: String) {
         data object MainCustomerScreen: Screen.MainCustomerScreen("main_customer_screen")
         data object HomeScreen: Screen.MainCustomerScreen("home_customer_screen")
         data object MyProfileScreen: Screen.MainCustomerScreen("my_profile_customer_screen")
-        data object FullPostScreen: Screen.MainCustomerScreen("full_post_screen")
-        data object BudgetPickerScreen: Screen.MainCustomerScreen("budget_picker_screen")
-        data object PostsWithBudgetScreen: Screen.MainCustomerScreen("posts_with_budget_screen")
-        data object MyBookingsScreen: Screen.MainCustomerScreen("my_bookings_screen")
+        data object FullPostScreen: Screen.MainCustomerScreen("full_post_customer_screen")
+        data object BudgetPickerScreen: Screen.MainCustomerScreen("budget_picker_customer_screen")
+        data object PostsWithBudgetScreen: Screen.MainCustomerScreen("posts_with_budget_customer_screen")
+        data object MyBookingsScreen: Screen.MainCustomerScreen("my_bookings_customer_screen")
+        data object PostFeedbacksScreen: Screen.MainCustomerScreen("post_feedbacks_customer_screen")
     }
     sealed class MainProviderScreen(route: String): Screen(route) {
         data object MainProviderScreen: Screen.MainProviderScreen("main_provider_screen")
@@ -22,6 +23,7 @@ sealed class Screen(val route: String) {
         data object MyProfileScreen: Screen.MainProviderScreen("my_profile_provider_screen")
         data object AddPostScreen: Screen.MainProviderScreen("add_post_provider_screen")
         data object EditPostScreen: Screen.MainProviderScreen("edit_post_provider_screen")
-        data object BookingsScreen: Screen.MainProviderScreen("bookings_screen")
+        data object BookingsScreen: Screen.MainProviderScreen("bookings_provider_screen")
+        data object PostFeedbacksScreen: Screen.MainProviderScreen("post_feedbacks_provider_screen")
     }
 }

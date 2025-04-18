@@ -145,8 +145,8 @@ class MyBookingsViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    fun createFeedback(postId: String, rating: Int, description: String) {
-        createFeedbackUseCase(postId, rating, description).onEach { result ->
+    fun createFeedback(postId: String, category: String, provider: String, rating: Int, description: String) {
+        createFeedbackUseCase(postId, category, provider, rating, description).onEach { result ->
             createFeedbackState.value = when (result) {
                 is Resource.Error -> State(error = result.error)
                 is Resource.Loading -> State(loading = true)
