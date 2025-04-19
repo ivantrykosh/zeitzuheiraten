@@ -12,6 +12,8 @@ import com.ivantrykosh.app.zeitzuheiraten.presenter.main.provider.bookings.Booki
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.provider.edit_post_screen.EditPostScreen
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.provider.home_screen.HomeScreen
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.provider.my_profile_screen.MyProfileScreen
+import com.ivantrykosh.app.zeitzuheiraten.presenter.main.shared.chats.ChatsScreen
+import com.ivantrykosh.app.zeitzuheiraten.presenter.main.shared.chats.chat.ChatScreen
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.shared.feedbacks.FeedbackScreen
 
 @Composable
@@ -73,6 +75,39 @@ fun MainProviderNavGraph(navController: NavHostController, navigateToAuth: () ->
         ) {
             FeedbackScreen(
                 postId = it.arguments!!.getString("postId")!!,
+                navigateBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
+        composable(route = Screen.MainProviderScreen.ChatsScreen.route) {
+            ChatsScreen(
+                navigateToChat = { chatId, userId, username ->
+                    navController.navigate(Screen.MainProviderScreen.ChatScreen.route + "?chatId=$chatId&userId=$userId&username=$username")
+                }
+            )
+        }
+        composable(
+            route = Screen.MainProviderScreen.ChatScreen.route + "?chatId={chatId}&userId={userId}&username={username}",
+            arguments = listOf(
+                navArgument("chatId") {
+                    type = NavType.StringType
+                    nullable = true
+                },
+                navArgument("userId") {
+                    type = NavType.StringType
+                    nullable = false
+                },
+                navArgument("username") {
+                    type = NavType.StringType
+                    nullable = false
+                }
+            )
+        ) {
+            ChatScreen(
+                chatId = it.arguments!!.getString("chatId"),
+                withUserId = it.arguments!!.getString("userId")!!,
+                withUserName = it.arguments!!.getString("username")!!,
                 navigateBack = {
                     navController.popBackStack()
                 }

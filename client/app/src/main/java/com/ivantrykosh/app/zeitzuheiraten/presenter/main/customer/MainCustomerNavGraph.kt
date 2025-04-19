@@ -17,6 +17,8 @@ import com.ivantrykosh.app.zeitzuheiraten.presenter.main.customer.my_bookings.My
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.customer.my_feedbacks.MyFeedbacksScreen
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.customer.my_profile_screen.MyProfileScreen
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.customer.post.FullPostScreen
+import com.ivantrykosh.app.zeitzuheiraten.presenter.main.shared.chats.ChatsScreen
+import com.ivantrykosh.app.zeitzuheiraten.presenter.main.shared.chats.chat.ChatScreen
 
 @Composable
 fun MainCustomerNavGraph(navController: NavHostController, navigateToAuth: () -> Unit) {
@@ -53,7 +55,9 @@ fun MainCustomerNavGraph(navController: NavHostController, navigateToAuth: () ->
                 postId = postId,
                 navigateBack = { navController.popBackStack() },
                 onProviderClicked = { /* todo */},
-                onOpenChatClicked = { /* todo */ },
+                onOpenChatClicked = { userId, username ->
+                    navController.navigate(Screen.MainCustomerScreen.ChatScreen.route + "?chatId=${null}&userId=$userId&username=$username")
+                },
                 navigateToPostFeedbacks = {
                     navController.navigate(Screen.MainCustomerScreen.PostFeedbacksScreen.route + "?postId=$postId")
                 }
@@ -103,6 +107,39 @@ fun MainCustomerNavGraph(navController: NavHostController, navigateToAuth: () ->
             MyFeedbacksScreen {
                 navController.popBackStack()
             }
+        }
+        composable(route = Screen.MainCustomerScreen.ChatsScreen.route) {
+            ChatsScreen(
+                navigateToChat = { chatId, userId, username ->
+                    navController.navigate(Screen.MainCustomerScreen.ChatScreen.route + "?chatId=$chatId&userId=$userId&username=$username")
+                }
+            )
+        }
+        composable(
+            route = Screen.MainCustomerScreen.ChatScreen.route + "?chatId={chatId}&userId={userId}&username={username}",
+            arguments = listOf(
+                navArgument("chatId") {
+                    type = NavType.StringType
+                    nullable = true
+                },
+                navArgument("userId") {
+                    type = NavType.StringType
+                    nullable = false
+                },
+                navArgument("username") {
+                    type = NavType.StringType
+                    nullable = false
+                }
+            )
+        ) {
+            ChatScreen(
+                chatId = it.arguments!!.getString("chatId"),
+                withUserId = it.arguments!!.getString("userId")!!,
+                withUserName = it.arguments!!.getString("username")!!,
+                navigateBack = {
+                    navController.popBackStack()
+                }
+            )
         }
     }
 }

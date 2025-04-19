@@ -174,4 +174,9 @@
     <string name="my_feedbacks">My feedbacks</string>
     <string name="feedback_was_deleted">Feedback was deleted</string>
     <string name="delete_feedback_question">Delete feedback?</string>
+    <string name="chats">Chats</string>
+    <string name="no_chats_found">No chats found</string>
+    <string name="no_messages_found">No messages</string>
+    <string name="send_message">Send message</string>
+    <string name="type_a_message">Type a message</string>
 </resources>

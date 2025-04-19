@@ -37,7 +37,8 @@ fun MainCustomerScreen(
     val budgetPickerNavBarItem = NavBarItem(title = R.string.budget_picker, selectedIcon = R.drawable.baseline_savings_24, unselectedIcon = R.drawable.outline_savings_24, navRoute = Screen.MainCustomerScreen.BudgetPickerScreen.route)
     val myBookingsNavBarItem = NavBarItem(title = R.string.my_bookings, selectedIcon = R.drawable.baseline_book_24, unselectedIcon = R.drawable.outline_book_24, navRoute = Screen.MainCustomerScreen.MyBookingsScreen.route)
     val myProfileNavBarItem = NavBarItem(title = R.string.my_profile, selectedIcon = R.drawable.baseline_account_circle_24, unselectedIcon = R.drawable.outline_account_circle_24, navRoute = Screen.MainCustomerScreen.MyProfileScreen.route)
-    val navBarItems = listOf(homeNavBarItem, budgetPickerNavBarItem, myBookingsNavBarItem, myProfileNavBarItem)
+    val chatsNavBarItem = NavBarItem(title = R.string.chats, selectedIcon = R.drawable.baseline_chat_24, unselectedIcon = R.drawable.outline_chat_24, navRoute = Screen.MainCustomerScreen.ChatsScreen.route)
+    val navBarItems = listOf(homeNavBarItem, budgetPickerNavBarItem, myBookingsNavBarItem, chatsNavBarItem, myProfileNavBarItem)
 
     Scaffold(
         bottomBar = {

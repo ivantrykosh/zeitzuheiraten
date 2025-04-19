@@ -2,19 +2,25 @@ package com.ivantrykosh.app.zeitzuheiraten.di
 
 import com.ivantrykosh.app.zeitzuheiraten.data.remote.firebase.auth.FirebaseAuth
 import com.ivantrykosh.app.zeitzuheiraten.data.remote.firebase.firestore.FirestoreBookings
+import com.ivantrykosh.app.zeitzuheiraten.data.remote.firebase.firestore.FirestoreChats
 import com.ivantrykosh.app.zeitzuheiraten.data.remote.firebase.firestore.FirestoreFeedbacks
+import com.ivantrykosh.app.zeitzuheiraten.data.remote.firebase.firestore.FirestoreMessages
 import com.ivantrykosh.app.zeitzuheiraten.data.remote.firebase.firestore.FirestorePosts
 import com.ivantrykosh.app.zeitzuheiraten.data.remote.firebase.firestore.FirestoreUsers
 import com.ivantrykosh.app.zeitzuheiraten.data.remote.firebase.storage.FirebaseStorage
 import com.ivantrykosh.app.zeitzuheiraten.data.repository.BookingRepositoryImpl
+import com.ivantrykosh.app.zeitzuheiraten.data.repository.ChatRepositoryImpl
 import com.ivantrykosh.app.zeitzuheiraten.data.repository.FeedbackRepositoryImpl
 import com.ivantrykosh.app.zeitzuheiraten.data.repository.FirebaseStorageRepositoryImpl
+import com.ivantrykosh.app.zeitzuheiraten.data.repository.MessageRepositoryImpl
 import com.ivantrykosh.app.zeitzuheiraten.data.repository.PostRepositoryImpl
 import com.ivantrykosh.app.zeitzuheiraten.data.repository.UserAuthRepositoryImpl
 import com.ivantrykosh.app.zeitzuheiraten.data.repository.UserRepositoryImpl
 import com.ivantrykosh.app.zeitzuheiraten.domain.repository.BookingRepository
+import com.ivantrykosh.app.zeitzuheiraten.domain.repository.ChatRepository
 import com.ivantrykosh.app.zeitzuheiraten.domain.repository.FeedbackRepository
 import com.ivantrykosh.app.zeitzuheiraten.domain.repository.FirebaseStorageRepository
+import com.ivantrykosh.app.zeitzuheiraten.domain.repository.MessageRepository
 import com.ivantrykosh.app.zeitzuheiraten.domain.repository.PostRepository
 import com.ivantrykosh.app.zeitzuheiraten.domain.repository.UserAuthRepository
 import com.ivantrykosh.app.zeitzuheiraten.domain.repository.UserRepository
@@ -48,6 +54,14 @@ abstract class AppModuleBindings {
     @Singleton
     @Binds
     abstract fun bindBookingRepository(bookingRepositoryImpl: BookingRepositoryImpl): BookingRepository
+
+    @Singleton
+    @Binds
+    abstract fun bindChatRepository(chatRepositoryImpl: ChatRepositoryImpl): ChatRepository
+
+    @Singleton
+    @Binds
+    abstract fun bindMessageRepository(messageRepositoryImpl: MessageRepositoryImpl): MessageRepository
 
     @Singleton
     @Binds
@@ -86,6 +100,18 @@ object AppModuleProvidings {
     @Provides
     fun provideFirestoreBookings(): FirestoreBookings {
         return FirestoreBookings()
+    }
+
+    @Singleton
+    @Provides
+    fun provideFirestoreChats(): FirestoreChats {
+        return FirestoreChats()
+    }
+
+    @Singleton
+    @Provides
+    fun provideFirestoreMessages(): FirestoreMessages {
+        return FirestoreMessages()
     }
 
     @Singleton

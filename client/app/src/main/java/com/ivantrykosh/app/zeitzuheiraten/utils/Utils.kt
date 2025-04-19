@@ -11,3 +11,9 @@ fun Long.toStringDate(): String {
     val date = LocalDateTime.ofInstant(Instant.ofEpochSecond(this / 1000), ZoneId.systemDefault())
     return date.format(formatter)
 }
+
+fun Long.toStringDateTime(): String {
+    val formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm", Locale.getDefault())
+    val date = LocalDateTime.ofInstant(Instant.ofEpochSecond(this / 1000), ZoneId.systemDefault())
+    return date.format(formatter)
+}
