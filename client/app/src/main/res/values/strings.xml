@@ -179,4 +179,7 @@
     <string name="no_messages_found">No messages</string>
     <string name="send_message">Send message</string>
     <string name="type_a_message">Type a message</string>
+    <string name="select_date">Select date</string>
+    <string name="select_date_range">Select date range</string>
+    <string name="deadline_to">Deadline: %s</string>
 </resources>

@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -51,6 +52,8 @@ fun BookingView(
     var pressOffset by remember { mutableStateOf(DpOffset.Zero) }
     var itemHeight by remember { mutableStateOf(0.dp) }
     val density = LocalDensity.current
+
+    val categoriesWithStandardBooking = stringArrayResource(R.array.categories_with_standard_booking)
 
     val interactionSource = remember { MutableInteractionSource() }
 
@@ -95,8 +98,14 @@ fun BookingView(
                 fontStyle = FontStyle.Italic,
                 fontSize = 18.sp,
             )
+            val dateText = if (categoriesWithStandardBooking.contains(booking.category)) {
+                "${booking.dateRange.startDate.toStringDate()}-${booking.dateRange.endDate.toStringDate()}"
+            } else {
+                stringResource(R.string.deadline_to, booking.dateRange.startDate.toStringDate())
+            }
+
             Text(
-                text = "${booking.dateRange.startDate.toStringDate()}-${booking.dateRange.endDate.toStringDate()}",
+                text = dateText,
                 fontSize = 16.sp
             )
             val color = when {

@@ -47,6 +47,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -62,6 +63,7 @@ import com.google.firebase.FirebaseNetworkException
 import com.ivantrykosh.app.zeitzuheiraten.R
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.PostWithRating
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.BookingSelectableDates
+import com.ivantrykosh.app.zeitzuheiraten.presenter.main.DatePicker
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.DateRangePicker
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.RatingView
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.TextWithLinks
@@ -85,7 +87,10 @@ fun FullPostScreen(
     var showErrorDialog by remember { mutableStateOf(false) }
     var textInErrorDialog by remember { mutableStateOf("") }
 
+    val categoriesWithStandardBooking = stringArrayResource(R.array.categories_with_standard_booking)
+
     var isDateRangePickerShowed by rememberSaveable { mutableStateOf(false) }
+    var isDatePickerShowed by rememberSaveable { mutableStateOf(false) }
 
     var clickedImage by rememberSaveable { mutableStateOf<String?>(null) }
 
@@ -208,9 +213,13 @@ fun FullPostScreen(
                     Spacer(modifier = Modifier.width(8.dp))
                     Button(
                         onClick = {
-                            loaded = false
-                            dateLoaded = false
-                            fullPostScreenViewModel.getNotAvailableDates(postId)
+                            if (categoriesWithStandardBooking.contains(post!!.category)) {
+                                loaded = false
+                                dateLoaded = false
+                                fullPostScreenViewModel.getNotAvailableDates(postId)
+                            } else {
+                                isDatePickerShowed = true
+                            }
                         },
                         modifier = Modifier.weight(1f),
                         shape = RectangleShape,
@@ -327,6 +336,17 @@ fun FullPostScreen(
             },
             onDismiss = { isDateRangePickerShowed = false },
             selectableDates = BookingSelectableDates(getNotAvailableDatesState.data!!)
+        )
+    }
+
+    if (isDatePickerShowed) {
+        DatePicker(
+            onDateSelected = {
+                loaded = false
+                fullPostScreenViewModel.bookService(postId, it)
+            },
+            onDismiss = { isDateRangePickerShowed = false },
+            selectableDates = BookingSelectableDates(post!!.notAvailableDates)
         )
     }
 }

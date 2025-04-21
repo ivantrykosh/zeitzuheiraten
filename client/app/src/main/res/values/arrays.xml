@@ -20,6 +20,19 @@
         <item>@string/cakes_category</item>
     </string-array>
 
+    <string-array name="categories_with_standard_booking">
+        <item>@string/photography_category</item>
+        <item>@string/videography_category</item>
+        <item>@string/music_category</item>
+        <item>@string/officiants_category</item>
+        <item>@string/venue_category</item>
+        <item>@string/catering_category</item>
+        <item>@string/transportation_category</item>
+        <item>@string/hair_and_makeup_category</item>
+        <item>@string/event_rentals_category</item>
+        <item>@string/entertainment_category</item>
+    </string-array>
+
     <string-array name="cities">
         <item>@string/simferopol_city</item>
         <item>@string/vinnytsia_city</item>
