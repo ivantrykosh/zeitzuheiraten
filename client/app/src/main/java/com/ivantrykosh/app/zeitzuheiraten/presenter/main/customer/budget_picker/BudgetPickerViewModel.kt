@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.PostWithRating
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.posts.GetPostsByBudgetUseCase
 import com.ivantrykosh.app.zeitzuheiraten.utils.CategoryAndWeight
+import com.ivantrykosh.app.zeitzuheiraten.utils.OrderType
 import com.ivantrykosh.app.zeitzuheiraten.utils.Resource
 import com.ivantrykosh.app.zeitzuheiraten.utils.State
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -41,6 +42,9 @@ class BudgetPickerViewModel @Inject constructor(
     val categories
         get() = chosenCategories.value.map { it.category }
 
+    var lastOrderType: OrderType = OrderType.BY_CATEGORY
+        private set
+
     fun updateCity(city: String) {
         this.city.value = city
     }
@@ -57,11 +61,11 @@ class BudgetPickerViewModel @Inject constructor(
         chosenCategories.value = chosenCategories.value.plus(category)
     }
 
-    fun updateBudgetAndGetPosts(category: String) {
+    fun updateBudgetAndGetPosts(category: String, orderType: OrderType) {
         anyNewPosts = true
         viewModelScope.launch {
             getPostsByBudgetUseCase.updateBudget(budget.value.toInt(), chosenCategories.value)
-            getPostsByBudgetUseCase(category, city.value, false, pageSize).collect { result ->
+            getPostsByBudgetUseCase(category, city.value, false, pageSize, orderType).collect { result ->
                 getPosts.value = when (result) {
                     is Resource.Error -> State(error = result.error)
                     is Resource.Loading -> State(loading = true)
@@ -77,9 +81,10 @@ class BudgetPickerViewModel @Inject constructor(
         }
     }
 
-    fun getPosts(category: String) {
+    fun getPosts(category: String, orderType: OrderType) {
+        lastOrderType = orderType
         anyNewPosts = true
-        getPostsByBudgetUseCase(category, city.value, false, pageSize).onEach { result ->
+        getPostsByBudgetUseCase(category, city.value, false, pageSize, orderType).onEach { result ->
             getPosts.value = when (result) {
                 is Resource.Error -> State(error = result.error)
                 is Resource.Loading -> State(loading = true)
@@ -94,8 +99,8 @@ class BudgetPickerViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    fun getNewPosts(category: String) {
-        getPostsByBudgetUseCase(category, city.value, true, pageSize).onEach { result ->
+    fun getNewPosts(category: String, orderType: OrderType) {
+        getPostsByBudgetUseCase(category, city.value, true, pageSize, orderType).onEach { result ->
             getPosts.value = when (result) {
                 is Resource.Error -> State(error = result.error)
                 is Resource.Loading -> State(loading = true)

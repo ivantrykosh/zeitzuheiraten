@@ -5,24 +5,28 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
-import com.ivantrykosh.app.zeitzuheiraten.domain.model.Post
+import com.ivantrykosh.app.zeitzuheiraten.domain.model.PostWithRating
+import com.ivantrykosh.app.zeitzuheiraten.domain.model.Rating
 import com.ivantrykosh.app.zeitzuheiraten.utils.Collections
+import com.ivantrykosh.app.zeitzuheiraten.utils.OrderType
 import kotlinx.coroutines.tasks.await
 
 class FirestorePosts(private val firestore: FirebaseFirestore = Firebase.firestore) {
 
     private lateinit var lastVisiblePost: DocumentSnapshot
 
-    suspend fun createPost(post: Post) {
+    suspend fun createPost(post: PostWithRating) {
         val postData = mapOf(
-            Post::providerId.name to post.providerId,
-            Post::providerName.name to post.providerName,
-            Post::category.name to post.category,
-            Post::cities.name to post.cities,
-            Post::description.name to post.description,
-            Post::minPrice.name to post.minPrice,
-            Post::photosUrl.name to post.photosUrl,
-            Post::notAvailableDates.name to post.notAvailableDates,
+            PostWithRating::providerId.name to post.providerId,
+            PostWithRating::providerName.name to post.providerName,
+            PostWithRating::category.name to post.category,
+            PostWithRating::cities.name to post.cities,
+            PostWithRating::description.name to post.description,
+            PostWithRating::minPrice.name to post.minPrice,
+            PostWithRating::photosUrl.name to post.photosUrl,
+            PostWithRating::notAvailableDates.name to post.notAvailableDates,
+            PostWithRating::enabled.name to post.enabled,
+            PostWithRating::rating.name to post.rating,
         )
         firestore.collection(Collections.POSTS)
             .document(post.id)
@@ -30,44 +34,51 @@ class FirestorePosts(private val firestore: FirebaseFirestore = Firebase.firesto
             .await()
     }
 
-    suspend fun getPostsByUserId(userId: String): List<Post> {
+    suspend fun getPostsByUserId(userId: String): List<PostWithRating> {
         return firestore.collection(Collections.POSTS)
-            .whereEqualTo(Post::providerId.name, userId)
+            .whereEqualTo(PostWithRating::providerId.name, userId)
             .get()
             .await()
             .map { doc ->
-                doc.toObject(Post::class.java).copy(id = doc.id)
+                doc.toObject(PostWithRating::class.java).copy(id = doc.id)
             }
     }
 
-    suspend fun getPostById(id: String): Post {
+    suspend fun getPostById(id: String): PostWithRating {
         return firestore.collection(Collections.POSTS)
             .document(id)
             .get()
             .await()
-            .toObject(Post::class.java)!!
+            .toObject(PostWithRating::class.java)!!
             .copy(id = id)
     }
 
-    suspend fun getPostsByFilters(category: String, city: String, minPrice: Int?, maxPrice: Int?, startAfterLast: Boolean, pageSize: Int): List<Post> {
+    suspend fun getPostsByFilters(category: String, city: String, minPrice: Int?, maxPrice: Int?, startAfterLast: Boolean, pageSize: Int, orderType: OrderType): List<PostWithRating> {
         return firestore.collection(Collections.POSTS)
             .let {
-                var query: Query? = null
+                var query: Query = it.whereEqualTo(PostWithRating::enabled.name, true)
                 if (category.isNotEmpty()) {
-                    query = it.whereEqualTo(Post::category.name, category)
+                    query = query.whereEqualTo(PostWithRating::category.name, category)
                 }
                 if (city.isNotEmpty()) {
-                    query = (query ?: it).whereArrayContains(Post::cities.name, city)
+                    query = query.whereArrayContains(PostWithRating::cities.name, city)
                 }
                 if (minPrice != null && minPrice >= 0) {
-                    query = (query ?: it).whereGreaterThanOrEqualTo(Post::minPrice.name, minPrice)
+                    query = query.whereGreaterThanOrEqualTo(PostWithRating::minPrice.name, minPrice)
                 }
                 if (maxPrice != null && maxPrice > 0) {
-                    query = (query ?: it).whereLessThanOrEqualTo(Post::minPrice.name, maxPrice)
+                    query = query.whereLessThanOrEqualTo(PostWithRating::minPrice.name, maxPrice)
                 }
-                query ?: it
+                query
             }
-            .orderBy(Post::category.name) // todo change order
+            .let {
+                when (orderType) {
+                    OrderType.BY_CATEGORY -> it.orderBy(PostWithRating::category.name)
+                    OrderType.BY_RATING_DESC -> it.orderBy("${PostWithRating::rating.name}.${Rating::rating.name}", Query.Direction.DESCENDING)
+                    OrderType.BY_PRICE_ASC -> it.orderBy(PostWithRating::minPrice.name, Query.Direction.ASCENDING)
+                    OrderType.BY_PRICE_DESC -> it.orderBy(PostWithRating::minPrice.name, Query.Direction.DESCENDING)
+                }
+            }
             .let {
                 if (startAfterLast) {
                     it.startAfter(lastVisiblePost)
@@ -84,17 +95,18 @@ class FirestorePosts(private val firestore: FirebaseFirestore = Firebase.firesto
                 }
             }
             .map { doc ->
-                doc.toObject(Post::class.java).copy(id = doc.id)
+                doc.toObject(PostWithRating::class.java).copy(id = doc.id)
             }
     }
 
-    suspend fun updatePost(post: Post) {
+    suspend fun updatePost(post: PostWithRating) {
         val postData = mapOf(
-            Post::cities.name to post.cities,
-            Post::description.name to post.description,
-            Post::minPrice.name to post.minPrice,
-            Post::photosUrl.name to post.photosUrl,
-            Post::notAvailableDates.name to post.notAvailableDates,
+            PostWithRating::cities.name to post.cities,
+            PostWithRating::description.name to post.description,
+            PostWithRating::minPrice.name to post.minPrice,
+            PostWithRating::photosUrl.name to post.photosUrl,
+            PostWithRating::notAvailableDates.name to post.notAvailableDates,
+            PostWithRating::enabled.name to post.enabled,
         )
         firestore.collection(Collections.POSTS)
             .document(post.id)

@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -30,9 +31,11 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
@@ -50,6 +53,8 @@ import com.ivantrykosh.app.zeitzuheiraten.R
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.customer.FilterItemDropdown
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.customer.FilterItemInputNumber
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.provider.home_screen.PostItem
+import com.ivantrykosh.app.zeitzuheiraten.utils.OrderType
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -68,6 +73,11 @@ fun HomeScreen(
     var cityValue by rememberSaveable { mutableStateOf("") }
     val cities = stringArrayResource(R.array.cities)
     var maxPriceValue by rememberSaveable { mutableStateOf("") }
+    var orderType by rememberSaveable { mutableStateOf(OrderType.BY_CATEGORY) }
+
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+    val lazyListState = rememberLazyListState()
 
     var showFiltersDialog by rememberSaveable { mutableStateOf(false) }
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = postsState.loading)
@@ -76,7 +86,7 @@ fun HomeScreen(
         state = swipeRefreshState,
         onRefresh = {
             loaded = false
-            homeScreenViewModel.getPostsByFilters(categoryValue, cityValue, maxPriceValue.toIntOrNull())
+            homeScreenViewModel.getPostsByFilters(categoryValue, cityValue, maxPriceValue.toIntOrNull(), orderType)
         },
         indicator = { state, _ ->
             if (state.isRefreshing) {
@@ -102,6 +112,7 @@ fun HomeScreen(
                 }
             )
             LazyColumn(
+                state = lazyListState,
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
@@ -124,7 +135,7 @@ fun HomeScreen(
                                 modifier = Modifier.fillMaxWidth()
                                     .clickable {
                                         loaded = false
-                                        homeScreenViewModel.getNewPostsByFilters(categoryValue, cityValue, maxPriceValue.toIntOrNull())
+                                        homeScreenViewModel.getNewPostsByFilters(categoryValue, cityValue, maxPriceValue.toIntOrNull(), orderType)
                                     }
                                     .padding(8.dp)
                             )
@@ -181,7 +192,7 @@ fun HomeScreen(
             categoryValue = homeScreenViewModel.lastCategory
             cityValue = homeScreenViewModel.lastCity
             maxPriceValue = homeScreenViewModel.lastMaxPrice?.toString() ?: ""
-            // todo return sort parameter that used before
+            orderType = homeScreenViewModel.lastOrderType
         }
         Dialog(onDismissRequest = onDismiss) {
             Surface(
@@ -226,7 +237,13 @@ fun HomeScreen(
                         suffix = "₴"
                     )
 
-                    // todo add sort parameter: by rating, by popularity (number of bookings for last 30 days), by price
+                    FilterItemDropdown(
+                        currentValue = orderType.getString(context),
+                        onValueChange = { orderType = OrderType.getObjectByString(context, it)},
+                        label = stringResource(R.string.order),
+                        values = OrderType.toStringList(context),
+                        modifier = Modifier.fillMaxWidth()
+                    )
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -250,7 +267,10 @@ fun HomeScreen(
                             onClick = {
                                 showFiltersDialog = false
                                 loaded = false
-                                homeScreenViewModel.getPostsByFilters(categoryValue, cityValue, maxPriceValue.toIntOrNull())
+                                coroutineScope.launch {
+                                    lazyListState.scrollToItem(0)
+                                }
+                                homeScreenViewModel.getPostsByFilters(categoryValue, cityValue, maxPriceValue.toIntOrNull(), orderType)
                             }
                         ) {
                             Text(text = stringResource(R.string.ok_title))

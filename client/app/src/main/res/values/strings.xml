@@ -54,7 +54,6 @@
     <string name="hair_and_makeup_category">Hair &amp; Makeup</string>
     <string name="event_rentals_category">Event Rentals</string>
     <string name="entertainment_category">Entertainment</string>
-<!--    todo for categories below booking will be different -->
     <string name="wedding_planner_category">Wedding planner</string>
     <string name="flowers_category">Flowers</string>
     <string name="dresses_category">Wedding dresses</string>
@@ -182,4 +181,12 @@
     <string name="select_date">Select date</string>
     <string name="select_date_range">Select date range</string>
     <string name="deadline_to">Deadline: %s</string>
+    <string name="hide_post">Hide post</string>
+    <string name="post_is_not_enabled">Post is not enabled</string>
+
+    <string name="by_category">By category</string>
+    <string name="by_rating">By rating</string>
+    <string name="by_price_asc">By price ascending</string>
+    <string name="by_price_desc">By price descending</string>
+    <string name="order">Order</string>
 </resources>

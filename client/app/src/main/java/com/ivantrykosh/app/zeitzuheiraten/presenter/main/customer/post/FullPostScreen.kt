@@ -51,6 +51,7 @@ import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -125,6 +126,16 @@ fun FullPostScreen(
                     .padding(horizontal = 16.dp)
                     .verticalScroll(rememberScrollState()),
             ) {
+                if (!post!!.enabled) {
+                    Text(
+                        text = stringResource(R.string.post_is_not_enabled),
+                        fontSize = 18.sp,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+
                 if (post!!.photosUrl.isNotEmpty()) {
                     LazyRow(
                         modifier = Modifier
@@ -210,26 +221,28 @@ fun FullPostScreen(
                     ) {
                         Text(text = stringResource(R.string.open_chat).uppercase())
                     }
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Button(
-                        onClick = {
-                            if (categoriesWithStandardBooking.contains(post!!.category)) {
-                                loaded = false
-                                dateLoaded = false
-                                fullPostScreenViewModel.getNotAvailableDates(postId)
-                            } else {
-                                isDatePickerShowed = true
-                            }
-                        },
-                        modifier = Modifier.weight(1f),
-                        shape = RectangleShape,
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Black,
-                            contentColor = Color.White
-                        ),
-                        border = BorderStroke(2.dp, color = Color.Black)
-                    ) {
-                        Text(text = stringResource(R.string.book).uppercase())
+                    if (post!!.enabled) {
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Button(
+                            onClick = {
+                                if (categoriesWithStandardBooking.contains(post!!.category)) {
+                                    loaded = false
+                                    dateLoaded = false
+                                    fullPostScreenViewModel.getNotAvailableDates(postId)
+                                } else {
+                                    isDatePickerShowed = true
+                                }
+                            },
+                            modifier = Modifier.weight(1f),
+                            shape = RectangleShape,
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color.Black,
+                                contentColor = Color.White
+                            ),
+                            border = BorderStroke(2.dp, color = Color.Black)
+                        ) {
+                            Text(text = stringResource(R.string.book).uppercase())
+                        }
                     }
                 }
             }

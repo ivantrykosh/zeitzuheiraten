@@ -2,7 +2,8 @@ package com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.posts
 
 import android.net.Uri
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.DatePair
-import com.ivantrykosh.app.zeitzuheiraten.domain.model.Post
+import com.ivantrykosh.app.zeitzuheiraten.domain.model.PostWithRating
+import com.ivantrykosh.app.zeitzuheiraten.domain.model.Rating
 import com.ivantrykosh.app.zeitzuheiraten.domain.repository.FirebaseStorageRepository
 import com.ivantrykosh.app.zeitzuheiraten.domain.repository.PostRepository
 import com.ivantrykosh.app.zeitzuheiraten.domain.repository.UserAuthRepository
@@ -31,7 +32,7 @@ class CreatePostUseCase @Inject constructor(
                     downloadUrls.add(firebaseStorageRepository.uploadImage(name, image))
                 }
             }
-            val post = Post(
+            val post = PostWithRating(
                 id = postId,
                 providerId = userId,
                 providerName = user.name,
@@ -41,6 +42,8 @@ class CreatePostUseCase @Inject constructor(
                 minPrice = minPrice,
                 photosUrl = downloadUrls,
                 notAvailableDates = notAvailableDates,
+                enabled = true,
+                rating = Rating(0.0, 0)
             )
             postRepository.createPost(post)
             emit(Resource.Success())

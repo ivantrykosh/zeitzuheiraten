@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.PostWithRating
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.posts.GetPostsByFiltersUseCase
+import com.ivantrykosh.app.zeitzuheiraten.utils.OrderType
 import com.ivantrykosh.app.zeitzuheiraten.utils.Resource
 import com.ivantrykosh.app.zeitzuheiraten.utils.State
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -32,19 +33,22 @@ class HomeScreenViewModel @Inject constructor(
         private set
     var lastMaxPrice: Int? = null
         private set
+    var lastOrderType: OrderType = OrderType.BY_CATEGORY
+        private set
 
     private var pageSize = 10
 
     init {
-        getPostsByFilters(lastCategory, lastCity, lastMaxPrice)
+        getPostsByFilters(lastCategory, lastCity, lastMaxPrice, lastOrderType)
     }
 
-    fun getPostsByFilters(category: String, city: String, maxPrice: Int?) {
+    fun getPostsByFilters(category: String, city: String, maxPrice: Int?, orderType: OrderType) {
         lastCategory = category
         lastCity = city
         lastMaxPrice = maxPrice
+        lastOrderType = orderType
         anyNewPosts = true
-        getPostsByFiltersUseCase(category, city, maxPrice, false, pageSize).onEach { result ->
+        getPostsByFiltersUseCase(category, city, maxPrice, false, pageSize, orderType).onEach { result ->
             getPosts.value = when (result) {
                 is Resource.Error -> State(error = result.error)
                 is Resource.Loading -> State(loading = true)
@@ -59,8 +63,8 @@ class HomeScreenViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    fun getNewPostsByFilters(category: String, city: String, maxPrice: Int?) {
-        getPostsByFiltersUseCase(category, city, maxPrice, true, pageSize).onEach { result ->
+    fun getNewPostsByFilters(category: String, city: String, maxPrice: Int?, orderType: OrderType) {
+        getPostsByFiltersUseCase(category, city, maxPrice, true, pageSize, orderType).onEach { result ->
             getPosts.value = when (result) {
                 is Resource.Error -> State(error = result.error)
                 is Resource.Loading -> State(loading = true)

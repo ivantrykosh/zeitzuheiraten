@@ -2,7 +2,6 @@ package com.ivantrykosh.app.zeitzuheiraten.data.repository
 
 import com.ivantrykosh.app.zeitzuheiraten.data.remote.firebase.firestore.FirestoreFeedbacks
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.Feedback
-import com.ivantrykosh.app.zeitzuheiraten.domain.model.Rating
 import com.ivantrykosh.app.zeitzuheiraten.domain.repository.FeedbackRepository
 import javax.inject.Inject
 
@@ -11,10 +10,6 @@ class FeedbackRepositoryImpl @Inject constructor(
 ) : FeedbackRepository {
     override suspend fun createFeedback(feedback: Feedback) {
         firestoreFeedbacks.createFeedback(feedback)
-    }
-
-    override suspend fun getRatingForPost(postId: String): Rating {
-        return firestoreFeedbacks.getRatingForPost(postId)
     }
 
     override suspend fun getFeedbacksForPost(postId: String, startAfterLast: Boolean, pageSize: Int): List<Feedback> {

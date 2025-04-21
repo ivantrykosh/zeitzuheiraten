@@ -75,7 +75,6 @@ fun ChatScreen(
     LaunchedEffect(0) {
         if (chatId != null) {
             messagesViewModel.setChatId(chatId)
-            // todo maybe observe state for getCurrentUserId and after got it call getMessages
             messagesViewModel.getMessages()
         } else {
             messagesViewModel.getChatIdByUsers(withUserId)

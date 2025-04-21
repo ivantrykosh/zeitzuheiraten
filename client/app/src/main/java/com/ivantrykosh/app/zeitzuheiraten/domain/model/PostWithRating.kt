@@ -13,6 +13,7 @@ data class PostWithRating(
     val minPrice: Int = 0,
     val photosUrl: List<String> = emptyList(),
     val notAvailableDates: List<DatePair> = emptyList(),
+    val enabled: Boolean = true,
     val rating: Rating = Rating(0.0, 0)
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
@@ -25,6 +26,7 @@ data class PostWithRating(
         parcel.readInt(),
         parcel.createStringArrayList()!!,
         parcel.createTypedArrayList<DatePair>(DatePair.CREATOR)!!,
+        parcel.readByte() != 0.toByte(),
         parcel.readTypedObject(Rating.CREATOR)!!,
     ) {
     }
@@ -39,6 +41,7 @@ data class PostWithRating(
         parcel.writeInt(minPrice)
         parcel.writeStringList(photosUrl)
         parcel.writeTypedList<DatePair>(notAvailableDates)
+        parcel.writeByte(if (enabled) 1 else 0)
         parcel.writeTypedObject(rating, 0)
     }
 

@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -35,10 +36,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -52,8 +55,11 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.google.firebase.FirebaseNetworkException
 import com.ivantrykosh.app.zeitzuheiraten.R
+import com.ivantrykosh.app.zeitzuheiraten.presenter.main.customer.FilterItemDropdown
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.customer.budget_picker.BudgetPickerViewModel
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.provider.home_screen.PostItem
+import com.ivantrykosh.app.zeitzuheiraten.utils.OrderType
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -70,11 +76,16 @@ fun PostsWithBudgetScreen(
 
     val categories = budgetPickerViewModel.categories
     var currentCategory by rememberSaveable { mutableStateOf(categories[0]) }
+    var orderType by rememberSaveable { mutableStateOf(OrderType.BY_CATEGORY) }
     var showSortByDialog by rememberSaveable { mutableStateOf(false) }
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = postsState.loading)
 
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+    val lazyListState = rememberLazyListState()
+
     LaunchedEffect(0) {
-        budgetPickerViewModel.updateBudgetAndGetPosts(currentCategory)
+        budgetPickerViewModel.updateBudgetAndGetPosts(currentCategory, orderType)
     }
 
     Scaffold(
@@ -109,7 +120,7 @@ fun PostsWithBudgetScreen(
             state = swipeRefreshState,
             onRefresh = {
                 loaded = false
-                budgetPickerViewModel.getPosts(currentCategory)
+                budgetPickerViewModel.getPosts(currentCategory, orderType)
             },
             indicator = { state, _ ->
                 if (state.isRefreshing) {
@@ -130,7 +141,7 @@ fun PostsWithBudgetScreen(
                         TextButton(
                             onClick = {
                                 currentCategory = category
-                                budgetPickerViewModel.getPosts(currentCategory)
+                                budgetPickerViewModel.getPosts(currentCategory, orderType)
                             },
                             colors = ButtonDefaults.textButtonColors(
                                 containerColor = if (isCurrent) Color.LightGray else Color.White,
@@ -167,7 +178,7 @@ fun PostsWithBudgetScreen(
                                     modifier = Modifier.fillMaxWidth()
                                         .clickable {
                                             loaded = false
-                                            budgetPickerViewModel.getNewPosts(currentCategory)
+                                            budgetPickerViewModel.getNewPosts(currentCategory, orderType)
                                         }
                                         .padding(8.dp)
                                 )
@@ -222,7 +233,7 @@ fun PostsWithBudgetScreen(
     if (showSortByDialog) {
         val onDismiss = {
             showSortByDialog = false
-            // todo clear chosen sort by value
+            orderType = budgetPickerViewModel.lastOrderType
         }
         Dialog(onDismissRequest = onDismiss) {
             Surface(
@@ -243,7 +254,13 @@ fun PostsWithBudgetScreen(
                         style = MaterialTheme.typography.titleLarge
                     )
 
-                    // todo add sort parameters
+                    FilterItemDropdown(
+                        currentValue = orderType.getString(context),
+                        onValueChange = { orderType = OrderType.getObjectByString(context, it)},
+                        label = stringResource(R.string.order),
+                        values = OrderType.toStringList(context),
+                        modifier = Modifier.fillMaxWidth()
+                    )
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -256,7 +273,10 @@ fun PostsWithBudgetScreen(
                             onClick = {
                                 showSortByDialog = false
                                 loaded = false
-                                budgetPickerViewModel.getPosts(currentCategory)
+                                coroutineScope.launch {
+                                    lazyListState.scrollToItem(0)
+                                }
+                                budgetPickerViewModel.getPosts(currentCategory, orderType)
                             }
                         ) {
                             Text(text = stringResource(R.string.ok_title))

@@ -1,14 +1,10 @@
 package com.ivantrykosh.app.zeitzuheiraten.domain.repository
 
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.Feedback
-import com.ivantrykosh.app.zeitzuheiraten.domain.model.Rating
 
 interface FeedbackRepository {
 
     suspend fun createFeedback(feedback: Feedback)
-
-    // todo use this method in all GetPost...UseCases
-    suspend fun getRatingForPost(postId: String): Rating
 
     suspend fun getFeedbacksForPost(postId: String, startAfterLast: Boolean, pageSize: Int): List<Feedback>
 

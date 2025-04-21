@@ -7,6 +7,7 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.Feedback
+import com.ivantrykosh.app.zeitzuheiraten.domain.model.PostWithRating
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.Rating
 import com.ivantrykosh.app.zeitzuheiraten.utils.Collections
 import kotlinx.coroutines.tasks.await
@@ -29,6 +30,12 @@ class FirestoreFeedbacks(private val firestore: FirebaseFirestore = Firebase.fir
         firestore.collection(Collections.FEEDBACKS)
             .document()
             .set(feedbackData)
+            .await()
+        // update average rating for post
+        val rating = getRatingForPost(feedback.postId)
+        firestore.collection(Collections.POSTS)
+            .document(feedback.postId)
+            .update(PostWithRating::rating.name, rating)
             .await()
     }
 

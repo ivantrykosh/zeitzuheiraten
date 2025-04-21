@@ -29,6 +29,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -127,6 +128,7 @@ fun EditPostScreen(
     var showErrorDialog by remember { mutableStateOf(false) }
     var textInErrorDialog by remember { mutableStateOf("") }
     var showDeletePostDialog by remember { mutableStateOf(false) }
+    var hidePost by remember { mutableStateOf(false) }
 
     LaunchedEffect(0) {
         loaded = false
@@ -398,6 +400,21 @@ fun EditPostScreen(
                         }
                     }
                 }
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Checkbox(
+                        checked = hidePost,
+                        onCheckedChange = {
+                            hidePost = it
+                        }
+                    )
+                    Text(
+                        text = stringResource(R.string.hide_post),
+                        fontSize = 16.sp
+                    )
+                }
                 FilledTonalButton(
                     onClick = {
                         if (citiesValue.isEmpty()) {
@@ -422,6 +439,7 @@ fun EditPostScreen(
                                 notAvailableDateRanges,
                                 pickedImages,
                                 uploadNewImages,
+                                !hidePost
                             )
                         }
                     },

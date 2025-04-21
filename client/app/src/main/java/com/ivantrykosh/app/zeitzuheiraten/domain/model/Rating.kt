@@ -4,8 +4,8 @@ import android.os.Parcel
 import android.os.Parcelable
 
 data class Rating(
-    val rating: Double,
-    val numberOfFeedbacks: Long,
+    val rating: Double = 0.0,
+    val numberOfFeedbacks: Long = 0,
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readDouble(),
