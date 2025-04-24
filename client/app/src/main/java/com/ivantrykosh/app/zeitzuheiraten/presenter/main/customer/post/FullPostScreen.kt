@@ -358,7 +358,7 @@ fun FullPostScreen(
                 loaded = false
                 fullPostScreenViewModel.bookService(postId, it)
             },
-            onDismiss = { isDateRangePickerShowed = false },
+            onDismiss = { isDatePickerShowed = false },
             selectableDates = BookingSelectableDates(post!!.notAvailableDates)
         )
     }

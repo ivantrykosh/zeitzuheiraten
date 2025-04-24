@@ -11,12 +11,16 @@ class GetNotAvailableDatesForBookingUseCase @Inject constructor(
     private val postRepository: PostRepository,
     private val bookingRepository: BookingRepository,
 ) {
-    operator fun invoke(postId: String) = flow<Resource<List<DatePair>>> {
+    operator fun invoke(postId: String, includeBookingDates: Boolean = true) = flow<Resource<List<DatePair>>> {
         try {
             emit(Resource.Loading())
             val notAvailableDates = postRepository.getPostById(postId).notAvailableDates
-            val bookedDates = bookingRepository.getBookingDatesForPost(postId)
-            val allNotAvailableDates = bookedDates.plus(notAvailableDates)
+            val allNotAvailableDates = if (includeBookingDates) {
+                val bookedDates = bookingRepository.getBookingDatesForPost(postId)
+                bookedDates.plus(notAvailableDates)
+            } else {
+                notAvailableDates
+            }
             emit(Resource.Success(allNotAvailableDates))
         } catch (e: Exception) {
             emit(Resource.Error(e))

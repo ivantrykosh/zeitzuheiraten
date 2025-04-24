@@ -13,16 +13,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -44,7 +49,9 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.google.firebase.FirebaseNetworkException
 import com.ivantrykosh.app.zeitzuheiraten.R
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.BookingSelectableDates
+import com.ivantrykosh.app.zeitzuheiraten.presenter.main.DatePicker
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.DateRangePicker
+import com.ivantrykosh.app.zeitzuheiraten.utils.BookingsFilterType
 import com.ivantrykosh.app.zeitzuheiraten.utils.Constants.MAX_SYMBOLS_FOR_FEEDBACK_DESCRIPTION
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -66,22 +73,30 @@ fun MyBookingsScreen(
     var textInErrorDialog by remember { mutableStateOf("") }
 
     var isDateRangePickerShowed by rememberSaveable { mutableStateOf(false) }
+    var isDatePickerShowed by rememberSaveable { mutableStateOf(false) }
     var isCancelDialogShowed by rememberSaveable { mutableStateOf(false) }
     var isConfirmProvidingDialogShowed by rememberSaveable { mutableStateOf(false) }
     var isFeedbackShowed by rememberSaveable { mutableStateOf(false) }
 
     var pickedBookingId by rememberSaveable { mutableStateOf<String?>(null) }
     var pickedPostId by rememberSaveable { mutableStateOf<String?>(null) }
+    var pickedBookingFilterType by rememberSaveable { mutableStateOf(BookingsFilterType.NOT_CONFIRMED) }
     var category by rememberSaveable { mutableStateOf("") }
     var provider by rememberSaveable { mutableStateOf("") }
 
+    val categoriesWithStandardBooking = stringArrayResource(R.array.categories_with_standard_booking)
+    val context = LocalContext.current
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = bookingsState.loading || getNotAvailableDatesState.loading || changeDateState.loading || cancelBookingState.loading || confirmProvidingState.loading || createFeedbackState.loading)
+
+    LaunchedEffect(0) {
+        myBookingsViewModel.getBookings(pickedBookingFilterType)
+    }
 
     SwipeRefresh(
         state = swipeRefreshState,
         onRefresh = {
             loaded = false
-            myBookingsViewModel.getBookings()
+            myBookingsViewModel.getBookings(pickedBookingFilterType)
         },
         indicator = { state, _ ->
             if (state.isRefreshing) {
@@ -98,6 +113,31 @@ fun MyBookingsScreen(
                 title = { Text(text = stringResource(R.string.my_bookings)) },
                 windowInsets = WindowInsets(top = 0.dp),
             )
+            LazyRow(
+                contentPadding = PaddingValues(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                items(BookingsFilterType.entries) { filter ->
+                    val isCurrent = pickedBookingFilterType == filter
+                    TextButton(
+                        onClick = {
+                            pickedBookingFilterType = filter
+                            loaded = false
+                            myBookingsViewModel.clearLastBookings()
+                            myBookingsViewModel.getBookings(pickedBookingFilterType)
+                        },
+                        colors = ButtonDefaults.textButtonColors(
+                            containerColor = if (isCurrent) Color.LightGray else Color.White,
+                            contentColor = if (isCurrent) Color.Black else Color.DarkGray
+                        )
+                    ) {
+                        Text(
+                            text = filter.getString(context),
+                            fontSize = 16.sp
+                        )
+                    }
+                }
+            }
             LazyColumn(
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -111,7 +151,8 @@ fun MyBookingsScreen(
                                 loaded = false
                                 dateLoaded = false
                                 pickedBookingId = it.id
-                                myBookingsViewModel.getNotAvailableDates(it.postId, it.dateRange)
+                                category = it.category
+                                myBookingsViewModel.getNotAvailableDates(it.postId, it.dateRange, categoriesWithStandardBooking.contains(category))
                             },
                             onCancelBooking = {
                                 loaded = false
@@ -142,13 +183,13 @@ fun MyBookingsScreen(
                                     .fillMaxWidth()
                                     .clickable {
                                         loaded = false
-                                        myBookingsViewModel.getNewBookings()
+                                        myBookingsViewModel.getNewBookings(pickedBookingFilterType)
                                     }
                                     .padding(8.dp)
                             )
                         }
                     }
-                } else {
+                } else if (!bookingsState.loading) {
                     item {
                         Text(
                             text = stringResource(R.string.no_bookings_found),
@@ -253,22 +294,22 @@ fun MyBookingsScreen(
                 if (changeDateState.data != null) {
                     Toast.makeText(LocalContext.current, R.string.the_date_was_changed, Toast.LENGTH_LONG).show()
                     myBookingsViewModel.clearChangeDateState()
-                    myBookingsViewModel.getBookings()
+                    myBookingsViewModel.getBookings(pickedBookingFilterType)
                 }
                 if (cancelBookingState.data != null) {
                     Toast.makeText(LocalContext.current, R.string.the_booking_was_canceled, Toast.LENGTH_LONG).show()
                     myBookingsViewModel.clearCancelBookingState()
-                    myBookingsViewModel.getBookings()
+                    myBookingsViewModel.getBookings(pickedBookingFilterType)
                 }
                 if (confirmProvidingState.data != null) {
                     Toast.makeText(LocalContext.current, R.string.the_service_was_provided, Toast.LENGTH_LONG).show()
                     myBookingsViewModel.clearConfirmProvidingState()
-                    myBookingsViewModel.getBookings()
+                    myBookingsViewModel.getBookings(pickedBookingFilterType)
                 }
                 if (createFeedbackState.data != null) {
                     Toast.makeText(LocalContext.current, R.string.the_feedback_was_leaved, Toast.LENGTH_LONG).show()
                     myBookingsViewModel.clearCreateFeedbackState()
-                    myBookingsViewModel.getBookings()
+                    myBookingsViewModel.getBookings(pickedBookingFilterType) // todo maybe delete this
                 }
                 if (bookingsState.data != null) {
                     loaded = true
@@ -276,7 +317,11 @@ fun MyBookingsScreen(
                 if (getNotAvailableDatesState.data != null && !dateLoaded) {
                     loaded = true
                     dateLoaded = true
-                    isDateRangePickerShowed = true
+                    if (categoriesWithStandardBooking.contains(category)) {
+                        isDateRangePickerShowed = true
+                    } else {
+                        isDatePickerShowed = true
+                    }
                 }
             }
         }
@@ -297,6 +342,16 @@ fun MyBookingsScreen(
                 myBookingsViewModel.changeDate(pickedBookingId!!, it)
             },
             onDismiss = { isDateRangePickerShowed = false },
+            selectableDates = BookingSelectableDates(getNotAvailableDatesState.data!!)
+        )
+    }
+    if (isDatePickerShowed) {
+        DatePicker(
+            onDateSelected = {
+                loaded = false
+                myBookingsViewModel.changeDate(pickedBookingId!!, it)
+            },
+            onDismiss = { isDatePickerShowed = false },
             selectableDates = BookingSelectableDates(getNotAvailableDatesState.data!!)
         )
     }

@@ -161,7 +161,7 @@ fun BookingView(
                     isContextMenuVisible = false
                 }
             )
-            if (!booking.canceled && !booking.serviceProvided) {
+            if (!booking.canceled && !booking.serviceProvided && booking.confirmed) {
                 DropdownMenuItem(
                     text = {
                         Text(stringResource(R.string.customer_menu_confirm_service_providing))

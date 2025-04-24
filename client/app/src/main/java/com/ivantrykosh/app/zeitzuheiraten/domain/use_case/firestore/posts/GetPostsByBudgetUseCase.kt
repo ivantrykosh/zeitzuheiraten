@@ -4,7 +4,7 @@ import android.content.Context
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.PostWithRating
 import com.ivantrykosh.app.zeitzuheiraten.domain.repository.PostRepository
 import com.ivantrykosh.app.zeitzuheiraten.utils.CategoryAndWeight
-import com.ivantrykosh.app.zeitzuheiraten.utils.OrderType
+import com.ivantrykosh.app.zeitzuheiraten.utils.PostsOrderType
 import com.ivantrykosh.app.zeitzuheiraten.utils.PricesBasedOnBudget
 import com.ivantrykosh.app.zeitzuheiraten.utils.Resource
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -21,12 +21,12 @@ class GetPostsByBudgetUseCase @Inject constructor(
         pricesBasedOnBudget = PricesBasedOnBudget(context, budget, categoriesAndWeights)
     }
 
-    operator fun invoke(category: String, city: String, startAfterLast: Boolean, pageSize: Int, orderType: OrderType) = flow<Resource<List<PostWithRating>>> {
+    operator fun invoke(category: String, city: String, startAfterLast: Boolean, pageSize: Int, postsOrderType: PostsOrderType) = flow<Resource<List<PostWithRating>>> {
         try {
             emit(Resource.Loading())
             val deviation = 0.1f
             val price = pricesBasedOnBudget.optimalPrices[category]!!
-            val posts = postRepository.getPostByFilters(category, city, (price - price * deviation).toInt(), (price + price * deviation).toInt(), startAfterLast, pageSize, orderType)
+            val posts = postRepository.getPostByFilters(category, city, (price - price * deviation).toInt(), (price + price * deviation).toInt(), startAfterLast, pageSize, postsOrderType)
             emit(Resource.Success(posts))
         } catch (e: Exception) {
             emit(Resource.Error(e))

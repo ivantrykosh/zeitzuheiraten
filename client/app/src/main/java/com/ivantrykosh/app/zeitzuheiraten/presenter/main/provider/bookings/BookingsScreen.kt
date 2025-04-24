@@ -41,6 +41,7 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.google.firebase.FirebaseNetworkException
 import com.ivantrykosh.app.zeitzuheiraten.R
+import com.ivantrykosh.app.zeitzuheiraten.utils.BookingsFilterType
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -61,9 +62,11 @@ fun BookingsScreen(
     var isCancelDialogShowed by rememberSaveable { mutableStateOf(false) }
     var isConfirmBookingDialogShowed by rememberSaveable { mutableStateOf(false) }
 
+    var pickedBookingFilterType by rememberSaveable { mutableStateOf(BookingsFilterType.NOT_CONFIRMED) }
     var pickedBookingId by rememberSaveable { mutableStateOf<String?>(null) }
     var pickedPostId by rememberSaveable { mutableStateOf<String?>(null) }
 
+    val context = LocalContext.current
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = postsState.loading || bookingsState.loading || cancelBookingState.loading || confirmBookingState.loading)
 
     SwipeRefresh(
@@ -98,7 +101,8 @@ fun BookingsScreen(
                             onClick = {
                                 pickedPostId = post.id
                                 loaded = false
-                                bookingsViewModel.getBookingsForPost(pickedPostId!!)
+                                bookingsViewModel.clearLastBookings()
+                                bookingsViewModel.getBookingsForPost(pickedPostId!!, pickedBookingFilterType)
                             },
                             colors = ButtonDefaults.textButtonColors(
                                 containerColor = if (isCurrent) Color.LightGray else Color.White,
@@ -110,6 +114,31 @@ fun BookingsScreen(
                                 fontSize = 16.sp
                             )
                         }
+                    }
+                }
+            }
+            LazyRow(
+                contentPadding = PaddingValues(top = 0.dp, bottom = 16.dp, start = 16.dp, end = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                items(BookingsFilterType.entries) { filter ->
+                    val isCurrent = pickedBookingFilterType == filter
+                    TextButton(
+                        onClick = {
+                            pickedBookingFilterType = filter
+                            loaded = false
+                            bookingsViewModel.clearLastBookings()
+                            bookingsViewModel.getBookingsForPost(pickedPostId!!, pickedBookingFilterType)
+                        },
+                        colors = ButtonDefaults.textButtonColors(
+                            containerColor = if (isCurrent) Color.LightGray else Color.White,
+                            contentColor = if (isCurrent) Color.Black else Color.DarkGray
+                        )
+                    ) {
+                        Text(
+                            text = filter.getString(context),
+                            fontSize = 16.sp
+                        )
                     }
                 }
             }
@@ -145,13 +174,13 @@ fun BookingsScreen(
                                     .fillMaxWidth()
                                     .clickable {
                                         loaded = false
-                                        bookingsViewModel.getNewBookingsForPost(pickedPostId!!)
+                                        bookingsViewModel.getNewBookingsForPost(pickedPostId!!, pickedBookingFilterType)
                                     }
                                     .padding(8.dp)
                             )
                         }
                     }
-                } else {
+                } else if (!bookingsState.loading && postsLoaded) {
                     item {
                         Text(
                             text = stringResource(R.string.no_bookings_found),
@@ -228,12 +257,12 @@ fun BookingsScreen(
                 if (cancelBookingState.data != null) {
                     Toast.makeText(LocalContext.current, R.string.the_booking_was_canceled, Toast.LENGTH_LONG).show()
                     bookingsViewModel.clearCancelBookingState()
-                    bookingsViewModel.getBookingsForPost(pickedPostId!!)
+                    bookingsViewModel.getBookingsForPost(pickedPostId!!, pickedBookingFilterType)
                 }
                 if (confirmBookingState.data != null) {
                     Toast.makeText(LocalContext.current, R.string.the_booking_was_confirmed, Toast.LENGTH_LONG).show()
                     bookingsViewModel.clearConfirmBookingState()
-                    bookingsViewModel.getBookingsForPost(pickedPostId!!)
+                    bookingsViewModel.getBookingsForPost(pickedPostId!!, pickedBookingFilterType)
                 }
                 if (bookingsState.data != null) {
                     loaded = true
@@ -242,7 +271,7 @@ fun BookingsScreen(
                     loaded = true
                     pickedPostId = postsState.data!!.getOrNull(0)?.id
                     if (pickedPostId != null) {
-                        bookingsViewModel.getBookingsForPost(pickedPostId!!)
+                        bookingsViewModel.getBookingsForPost(pickedPostId!!, pickedBookingFilterType)
                     }
                     postsLoaded = true
                 }

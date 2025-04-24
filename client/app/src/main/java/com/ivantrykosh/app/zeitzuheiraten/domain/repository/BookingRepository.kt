@@ -2,6 +2,7 @@ package com.ivantrykosh.app.zeitzuheiraten.domain.repository
 
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.Booking
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.DatePair
+import com.ivantrykosh.app.zeitzuheiraten.utils.BookingsFilterType
 
 interface BookingRepository {
 
@@ -9,9 +10,9 @@ interface BookingRepository {
 
     suspend fun updateBooking(bookingId: String, dateRange: DatePair?, confirmed: Boolean?, canceled: Boolean?, serviceProvided: Boolean?)
 
-    suspend fun getBookingsForUser(userId: String, startAfterLast: Boolean, pageSize: Int): List<Booking>
+    suspend fun getBookingsForUser(userId: String, startAfterLast: Boolean, pageSize: Int, bookingsFilterType: BookingsFilterType): List<Booking>
 
-    suspend fun getBookingsForPost(postId: String, startAfterLast: Boolean, pageSize: Int): List<Booking>
+    suspend fun getBookingsForPost(postId: String, startAfterLast: Boolean, pageSize: Int, bookingsFilterType: BookingsFilterType): List<Booking>
 
     suspend fun getBookingDatesForPost(postId: String): List<DatePair>
 }

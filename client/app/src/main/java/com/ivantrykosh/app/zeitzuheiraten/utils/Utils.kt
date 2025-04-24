@@ -21,7 +21,7 @@ fun Long.toStringDateTime(): String {
     return date.format(formatter)
 }
 
-enum class OrderType(
+enum class PostsOrderType(
     @StringRes private val stringRes: Int
 ) {
     BY_CATEGORY(R.string.by_category),
@@ -34,14 +34,41 @@ enum class OrderType(
     }
 
     companion object {
-        fun getObjectByString(context: Context, string: String): OrderType {
-            return OrderType.entries.first {
+        fun getObjectByString(context: Context, string: String): PostsOrderType {
+            return PostsOrderType.entries.first {
                 it.getString(context) == string
             }
         }
 
         fun toStringList(context: Context): List<String> {
-            return OrderType.entries.map {
+            return PostsOrderType.entries.map {
+                it.getString(context)
+            }
+        }
+    }
+}
+
+enum class BookingsFilterType(
+    @StringRes private val stringRes: Int
+) {
+    NOT_CONFIRMED(R.string.not_confirmed),
+    CONFIRMED(R.string.confirmed),
+    CANCELED(R.string.canceled),
+    SERVICE_PROVIDED(R.string.service_provided);
+
+    fun getString(context: Context): String {
+        return context.getString(stringRes)
+    }
+
+    companion object {
+        fun getObjectByString(context: Context, string: String): BookingsFilterType {
+            return BookingsFilterType.entries.first {
+                it.getString(context) == string
+            }
+        }
+
+        fun toStringList(context: Context): List<String> {
+            return BookingsFilterType.entries.map {
                 it.getString(context)
             }
         }

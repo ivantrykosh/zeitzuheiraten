@@ -7,6 +7,7 @@ import com.ivantrykosh.app.zeitzuheiraten.domain.model.PostWithRating
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.bookings.GetBookingsForPostUseCase
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.bookings.UpdateBookingUseCase
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.posts.GetPostsForCurrentUserUseCase
+import com.ivantrykosh.app.zeitzuheiraten.utils.BookingsFilterType
 import com.ivantrykosh.app.zeitzuheiraten.utils.Resource
 import com.ivantrykosh.app.zeitzuheiraten.utils.State
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -56,6 +57,9 @@ class BookingsViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
+    fun clearLastBookings() {
+        lastBookings.value = emptyList()
+    }
 
     fun clearCancelBookingState() {
         cancelBookingState.value = State()
@@ -65,9 +69,9 @@ class BookingsViewModel @Inject constructor(
         confirmBookingState.value = State()
     }
 
-    fun getBookingsForPost(postId: String) {
+    fun getBookingsForPost(postId: String, bookingsFilterType: BookingsFilterType) {
         anyNewBookings = true
-        getBookingsForPostUseCase(postId, false, pageSize).onEach { result ->
+        getBookingsForPostUseCase(postId, false, pageSize, bookingsFilterType).onEach { result ->
             getBookings.value = when (result) {
                 is Resource.Error -> State(error = result.error)
                 is Resource.Loading -> State(loading = true)
@@ -82,8 +86,8 @@ class BookingsViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    fun getNewBookingsForPost(postId: String) {
-        getBookingsForPostUseCase(postId, true, pageSize).onEach { result ->
+    fun getNewBookingsForPost(postId: String, bookingsFilterType: BookingsFilterType) {
+        getBookingsForPostUseCase(postId, true, pageSize, bookingsFilterType).onEach { result ->
             getBookings.value = when (result) {
                 is Resource.Error -> State(error = result.error)
                 is Resource.Loading -> State(loading = true)

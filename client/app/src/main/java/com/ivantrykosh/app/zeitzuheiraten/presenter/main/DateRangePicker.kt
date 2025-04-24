@@ -46,6 +46,7 @@ fun DateRangePicker(
         onDismissRequest = onDismiss,
         confirmButton = {
             TextButton(
+                enabled = dateRangePickerState.selectedStartDateMillis != null && dateRangePickerState.selectedEndDateMillis != null,
                 onClick = {
                     onDateRangeSelected(
                         DatePair(

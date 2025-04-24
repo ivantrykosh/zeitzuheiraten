@@ -31,6 +31,7 @@ fun DatePicker(
         onDismissRequest = onDismiss,
         confirmButton = {
             TextButton(
+                enabled = datePickerState.selectedDateMillis != null,
                 onClick = {
                     onDateSelected(
                         DatePair(

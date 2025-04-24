@@ -8,7 +8,7 @@ import com.google.firebase.firestore.firestore
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.PostWithRating
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.Rating
 import com.ivantrykosh.app.zeitzuheiraten.utils.Collections
-import com.ivantrykosh.app.zeitzuheiraten.utils.OrderType
+import com.ivantrykosh.app.zeitzuheiraten.utils.PostsOrderType
 import kotlinx.coroutines.tasks.await
 
 class FirestorePosts(private val firestore: FirebaseFirestore = Firebase.firestore) {
@@ -53,7 +53,7 @@ class FirestorePosts(private val firestore: FirebaseFirestore = Firebase.firesto
             .copy(id = id)
     }
 
-    suspend fun getPostsByFilters(category: String, city: String, minPrice: Int?, maxPrice: Int?, startAfterLast: Boolean, pageSize: Int, orderType: OrderType): List<PostWithRating> {
+    suspend fun getPostsByFilters(category: String, city: String, minPrice: Int?, maxPrice: Int?, startAfterLast: Boolean, pageSize: Int, postsOrderType: PostsOrderType): List<PostWithRating> {
         return firestore.collection(Collections.POSTS)
             .let {
                 var query: Query = it.whereEqualTo(PostWithRating::enabled.name, true)
@@ -72,11 +72,11 @@ class FirestorePosts(private val firestore: FirebaseFirestore = Firebase.firesto
                 query
             }
             .let {
-                when (orderType) {
-                    OrderType.BY_CATEGORY -> it.orderBy(PostWithRating::category.name)
-                    OrderType.BY_RATING_DESC -> it.orderBy("${PostWithRating::rating.name}.${Rating::rating.name}", Query.Direction.DESCENDING)
-                    OrderType.BY_PRICE_ASC -> it.orderBy(PostWithRating::minPrice.name, Query.Direction.ASCENDING)
-                    OrderType.BY_PRICE_DESC -> it.orderBy(PostWithRating::minPrice.name, Query.Direction.DESCENDING)
+                when (postsOrderType) {
+                    PostsOrderType.BY_CATEGORY -> it.orderBy(PostWithRating::category.name)
+                    PostsOrderType.BY_RATING_DESC -> it.orderBy("${PostWithRating::rating.name}.${Rating::rating.name}", Query.Direction.DESCENDING)
+                    PostsOrderType.BY_PRICE_ASC -> it.orderBy(PostWithRating::minPrice.name, Query.Direction.ASCENDING)
+                    PostsOrderType.BY_PRICE_DESC -> it.orderBy(PostWithRating::minPrice.name, Query.Direction.DESCENDING)
                 }
             }
             .let {

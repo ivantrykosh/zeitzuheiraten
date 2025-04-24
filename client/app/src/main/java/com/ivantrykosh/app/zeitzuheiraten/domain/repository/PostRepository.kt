@@ -1,7 +1,7 @@
 package com.ivantrykosh.app.zeitzuheiraten.domain.repository
 
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.PostWithRating
-import com.ivantrykosh.app.zeitzuheiraten.utils.OrderType
+import com.ivantrykosh.app.zeitzuheiraten.utils.PostsOrderType
 
 interface PostRepository {
 
@@ -11,7 +11,7 @@ interface PostRepository {
 
     suspend fun getPostById(id: String): PostWithRating
 
-    suspend fun getPostByFilters(category: String, city: String, minPrice: Int?, maxPrice: Int?, startAfterLast: Boolean, pageSize: Int, orderType: OrderType): List<PostWithRating>
+    suspend fun getPostByFilters(category: String, city: String, minPrice: Int?, maxPrice: Int?, startAfterLast: Boolean, pageSize: Int, postsOrderType: PostsOrderType): List<PostWithRating>
 
     suspend fun updatePost(post: PostWithRating)
 

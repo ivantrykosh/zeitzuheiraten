@@ -189,4 +189,7 @@
     <string name="by_price_asc">By price ascending</string>
     <string name="by_price_desc">By price descending</string>
     <string name="order">Order</string>
+    <string name="canceled">Canceled</string>
+    <string name="not_confirmed">Not confirmed</string>
+    <string name="confirmed">Confirmed</string>
 </resources>

@@ -53,7 +53,7 @@ import com.ivantrykosh.app.zeitzuheiraten.R
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.customer.FilterItemDropdown
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.customer.FilterItemInputNumber
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.provider.home_screen.PostItem
-import com.ivantrykosh.app.zeitzuheiraten.utils.OrderType
+import com.ivantrykosh.app.zeitzuheiraten.utils.PostsOrderType
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -73,7 +73,7 @@ fun HomeScreen(
     var cityValue by rememberSaveable { mutableStateOf("") }
     val cities = stringArrayResource(R.array.cities)
     var maxPriceValue by rememberSaveable { mutableStateOf("") }
-    var orderType by rememberSaveable { mutableStateOf(OrderType.BY_CATEGORY) }
+    var postsOrderType by rememberSaveable { mutableStateOf(PostsOrderType.BY_CATEGORY) }
 
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
@@ -86,7 +86,7 @@ fun HomeScreen(
         state = swipeRefreshState,
         onRefresh = {
             loaded = false
-            homeScreenViewModel.getPostsByFilters(categoryValue, cityValue, maxPriceValue.toIntOrNull(), orderType)
+            homeScreenViewModel.getPostsByFilters(categoryValue, cityValue, maxPriceValue.toIntOrNull(), postsOrderType)
         },
         indicator = { state, _ ->
             if (state.isRefreshing) {
@@ -135,7 +135,7 @@ fun HomeScreen(
                                 modifier = Modifier.fillMaxWidth()
                                     .clickable {
                                         loaded = false
-                                        homeScreenViewModel.getNewPostsByFilters(categoryValue, cityValue, maxPriceValue.toIntOrNull(), orderType)
+                                        homeScreenViewModel.getNewPostsByFilters(categoryValue, cityValue, maxPriceValue.toIntOrNull(), postsOrderType)
                                     }
                                     .padding(8.dp)
                             )
@@ -192,7 +192,7 @@ fun HomeScreen(
             categoryValue = homeScreenViewModel.lastCategory
             cityValue = homeScreenViewModel.lastCity
             maxPriceValue = homeScreenViewModel.lastMaxPrice?.toString() ?: ""
-            orderType = homeScreenViewModel.lastOrderType
+            postsOrderType = homeScreenViewModel.lastPostsOrderType
         }
         Dialog(onDismissRequest = onDismiss) {
             Surface(
@@ -238,10 +238,10 @@ fun HomeScreen(
                     )
 
                     FilterItemDropdown(
-                        currentValue = orderType.getString(context),
-                        onValueChange = { orderType = OrderType.getObjectByString(context, it)},
+                        currentValue = postsOrderType.getString(context),
+                        onValueChange = { postsOrderType = PostsOrderType.getObjectByString(context, it)},
                         label = stringResource(R.string.order),
-                        values = OrderType.toStringList(context),
+                        values = PostsOrderType.toStringList(context),
                         modifier = Modifier.fillMaxWidth()
                     )
 
@@ -270,7 +270,7 @@ fun HomeScreen(
                                 coroutineScope.launch {
                                     lazyListState.scrollToItem(0)
                                 }
-                                homeScreenViewModel.getPostsByFilters(categoryValue, cityValue, maxPriceValue.toIntOrNull(), orderType)
+                                homeScreenViewModel.getPostsByFilters(categoryValue, cityValue, maxPriceValue.toIntOrNull(), postsOrderType)
                             }
                         ) {
                             Text(text = stringResource(R.string.ok_title))

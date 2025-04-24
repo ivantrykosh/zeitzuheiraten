@@ -6,6 +6,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.Booking
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.DatePair
+import com.ivantrykosh.app.zeitzuheiraten.utils.BookingsFilterType
 import com.ivantrykosh.app.zeitzuheiraten.utils.Collections
 import kotlinx.coroutines.tasks.await
 
@@ -51,10 +52,18 @@ class FirestoreBookings(private val firestore: FirebaseFirestore = Firebase.fire
             .await()
     }
 
-    suspend fun getBookingsForUser(userId: String, startAfterLast: Boolean, pageSize: Int): List<Booking> {
+    suspend fun getBookingsForUser(userId: String, startAfterLast: Boolean, pageSize: Int, bookingsFilterType: BookingsFilterType): List<Booking> {
         return firestore.collection(Collections.BOOKINGS)
             .whereEqualTo(Booking::userId.name, userId)
-            .orderBy(Booking::category.name)
+            .let {
+                when (bookingsFilterType) {
+                    BookingsFilterType.CANCELED -> it.whereEqualTo(Booking::canceled.name, true)
+                    BookingsFilterType.SERVICE_PROVIDED -> it.whereEqualTo(Booking::serviceProvided.name, true)
+                    BookingsFilterType.NOT_CONFIRMED -> it.whereEqualTo(Booking::canceled.name, false).whereEqualTo(Booking::confirmed.name, false)
+                    BookingsFilterType.CONFIRMED -> it.whereEqualTo(Booking::canceled.name, false).whereEqualTo(Booking::serviceProvided.name, false).whereEqualTo(Booking::confirmed.name, true)
+                }
+            }
+            .orderBy("${Booking::dateRange.name}.${DatePair::startDate.name}")
             .let {
                 if (startAfterLast) {
                     it.startAfter(lastVisibleBooking)
@@ -75,10 +84,18 @@ class FirestoreBookings(private val firestore: FirebaseFirestore = Firebase.fire
             }
     }
 
-    suspend fun getBookingsForPost(postId: String, startAfterLast: Boolean, pageSize: Int): List<Booking> {
+    suspend fun getBookingsForPost(postId: String, startAfterLast: Boolean, pageSize: Int, bookingsFilterType: BookingsFilterType): List<Booking> {
         return firestore.collection(Collections.BOOKINGS)
-            .whereEqualTo(Booking::postId.name, postId) // todo maybe use where in and pass list of postIds that provider has
-            .orderBy(Booking::category.name) // todo sort by another field
+            .whereEqualTo(Booking::postId.name, postId)
+            .let {
+                when (bookingsFilterType) {
+                    BookingsFilterType.CANCELED -> it.whereEqualTo(Booking::canceled.name, true)
+                    BookingsFilterType.SERVICE_PROVIDED -> it.whereEqualTo(Booking::serviceProvided.name, true)
+                    BookingsFilterType.NOT_CONFIRMED -> it.whereEqualTo(Booking::canceled.name, false).whereEqualTo(Booking::confirmed.name, false)
+                    BookingsFilterType.CONFIRMED -> it.whereEqualTo(Booking::canceled.name, false).whereEqualTo(Booking::serviceProvided.name, false).whereEqualTo(Booking::confirmed.name, true)
+                }
+            }
+            .orderBy("${Booking::dateRange.name}.${DatePair::startDate.name}")
             .let {
                 if (startAfterLast) {
                     it.startAfter(lastVisibleBooking)

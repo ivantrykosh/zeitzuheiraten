@@ -8,6 +8,7 @@ import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.bookings.Get
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.bookings.GetNotAvailableDatesForBookingUseCase
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.bookings.UpdateBookingUseCase
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.feedbacks.CreateFeedbackUseCase
+import com.ivantrykosh.app.zeitzuheiraten.utils.BookingsFilterType
 import com.ivantrykosh.app.zeitzuheiraten.utils.Resource
 import com.ivantrykosh.app.zeitzuheiraten.utils.State
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -50,8 +51,8 @@ class MyBookingsViewModel @Inject constructor(
 
     private var pageSize = 10
 
-    init {
-        getBookings()
+    fun clearLastBookings() {
+        lastBookings.value = emptyList()
     }
 
     fun clearChangeDateState() {
@@ -70,9 +71,9 @@ class MyBookingsViewModel @Inject constructor(
         createFeedbackState.value = State()
     }
 
-    fun getBookings() {
+    fun getBookings(bookingsFilterType: BookingsFilterType) {
         anyNewBookings = true
-        getBookingsForCurrentUserUseCase(false, pageSize).onEach { result ->
+        getBookingsForCurrentUserUseCase(false, pageSize, bookingsFilterType).onEach { result ->
             getBookings.value = when (result) {
                 is Resource.Error -> State(error = result.error)
                 is Resource.Loading -> State(loading = true)
@@ -87,8 +88,8 @@ class MyBookingsViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    fun getNewBookings() {
-        getBookingsForCurrentUserUseCase(true, pageSize).onEach { result ->
+    fun getNewBookings(bookingsFilterType: BookingsFilterType) {
+        getBookingsForCurrentUserUseCase(true, pageSize, bookingsFilterType).onEach { result ->
             getBookings.value = when (result) {
                 is Resource.Error -> State(error = result.error)
                 is Resource.Loading -> State(loading = true)
@@ -103,8 +104,8 @@ class MyBookingsViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    fun getNotAvailableDates(id: String, availableDates: DatePair) {
-        getNotAvailableDatesForBookingUseCase(id).onEach { result ->
+    fun getNotAvailableDates(id: String, availableDates: DatePair, includeBookingDates: Boolean) {
+        getNotAvailableDatesForBookingUseCase(id, includeBookingDates).onEach { result ->
             getNotAvailableDatesState.value = when (result) {
                 is Resource.Error -> State(error = result.error)
                 is Resource.Loading -> State(loading = true)

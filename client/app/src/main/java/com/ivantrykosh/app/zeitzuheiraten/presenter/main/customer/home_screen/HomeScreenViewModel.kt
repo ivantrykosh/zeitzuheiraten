@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.PostWithRating
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.posts.GetPostsByFiltersUseCase
-import com.ivantrykosh.app.zeitzuheiraten.utils.OrderType
+import com.ivantrykosh.app.zeitzuheiraten.utils.PostsOrderType
 import com.ivantrykosh.app.zeitzuheiraten.utils.Resource
 import com.ivantrykosh.app.zeitzuheiraten.utils.State
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,22 +33,22 @@ class HomeScreenViewModel @Inject constructor(
         private set
     var lastMaxPrice: Int? = null
         private set
-    var lastOrderType: OrderType = OrderType.BY_CATEGORY
+    var lastPostsOrderType: PostsOrderType = PostsOrderType.BY_CATEGORY
         private set
 
     private var pageSize = 10
 
     init {
-        getPostsByFilters(lastCategory, lastCity, lastMaxPrice, lastOrderType)
+        getPostsByFilters(lastCategory, lastCity, lastMaxPrice, lastPostsOrderType)
     }
 
-    fun getPostsByFilters(category: String, city: String, maxPrice: Int?, orderType: OrderType) {
+    fun getPostsByFilters(category: String, city: String, maxPrice: Int?, postsOrderType: PostsOrderType) {
         lastCategory = category
         lastCity = city
         lastMaxPrice = maxPrice
-        lastOrderType = orderType
+        lastPostsOrderType = postsOrderType
         anyNewPosts = true
-        getPostsByFiltersUseCase(category, city, maxPrice, false, pageSize, orderType).onEach { result ->
+        getPostsByFiltersUseCase(category, city, maxPrice, false, pageSize, postsOrderType).onEach { result ->
             getPosts.value = when (result) {
                 is Resource.Error -> State(error = result.error)
                 is Resource.Loading -> State(loading = true)
@@ -63,8 +63,8 @@ class HomeScreenViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    fun getNewPostsByFilters(category: String, city: String, maxPrice: Int?, orderType: OrderType) {
-        getPostsByFiltersUseCase(category, city, maxPrice, true, pageSize, orderType).onEach { result ->
+    fun getNewPostsByFilters(category: String, city: String, maxPrice: Int?, postsOrderType: PostsOrderType) {
+        getPostsByFiltersUseCase(category, city, maxPrice, true, pageSize, postsOrderType).onEach { result ->
             getPosts.value = when (result) {
                 is Resource.Error -> State(error = result.error)
                 is Resource.Loading -> State(loading = true)
