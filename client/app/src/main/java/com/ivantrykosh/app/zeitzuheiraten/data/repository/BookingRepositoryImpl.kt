@@ -10,8 +10,8 @@ import javax.inject.Inject
 class BookingRepositoryImpl @Inject constructor(
     private val firebaseBooking: FirestoreBookings,
 ) : BookingRepository {
-    override suspend fun createBooking(userId: String, username: String, postId: String, category: String, provider: String, dateRange: DatePair) {
-        firebaseBooking.createBooking(userId, username, postId, category, provider, dateRange)
+    override suspend fun createBooking(userId: String, username: String, postId: String, category: String, providerId: String, provider: String, dateRange: DatePair) {
+        firebaseBooking.createBooking(userId, username, postId, category, providerId, provider, dateRange)
     }
 
     override suspend fun updateBooking(bookingId: String, dateRange: DatePair?, confirmed: Boolean?, canceled: Boolean?, serviceProvided: Boolean?) {

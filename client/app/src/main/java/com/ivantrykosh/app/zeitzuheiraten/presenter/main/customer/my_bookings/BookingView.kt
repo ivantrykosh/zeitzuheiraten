@@ -45,6 +45,7 @@ import com.ivantrykosh.app.zeitzuheiraten.utils.toStringDate
 fun BookingView(
     booking: Booking,
     onCategoryClicked: (String) -> Unit,
+    onProviderClicked: (String) -> Unit,
     onChangeDate: (Booking) -> Unit,
     onCancelBooking: (String) -> Unit,
     onLeaveFeedback: (String) -> Unit,
@@ -99,6 +100,9 @@ fun BookingView(
                 text = booking.provider,
                 fontStyle = FontStyle.Italic,
                 fontSize = 18.sp,
+                modifier = Modifier.clickable {
+                    onProviderClicked(booking.providerId)
+                }
             )
             val dateText = if (categoriesWithStandardBooking.contains(booking.category)) {
                 "${booking.dateRange.startDate.toStringDate()}-${booking.dateRange.endDate.toStringDate()}"
@@ -198,6 +202,7 @@ fun BookingViewPreview() {
             onCancelBooking = {},
             onLeaveFeedback = {},
             onConfirmServiceProviding = {},
+            onProviderClicked = {}
         )
     }
 }

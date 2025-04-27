@@ -7,4 +7,5 @@ object Collections {
     const val BOOKINGS = "bookings"
     const val CHATS = "chats"
     const val MESSAGES = "messages"
+    const val REPORTS = "reports"
 }

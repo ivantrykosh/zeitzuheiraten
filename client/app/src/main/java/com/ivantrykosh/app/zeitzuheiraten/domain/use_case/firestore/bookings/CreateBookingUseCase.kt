@@ -13,12 +13,12 @@ class CreateBookingUseCase @Inject constructor(
     private val userRepository: UserRepository,
     private val bookingRepository: BookingRepository,
 ) {
-    operator fun invoke(postId: String, category: String, provider: String, dateRange: DatePair) = flow<Resource<Unit>> {
+    operator fun invoke(postId: String, category: String, providerId: String, provider: String, dateRange: DatePair) = flow<Resource<Unit>> {
         try {
             emit(Resource.Loading())
             val userId = userAuthRepository.getCurrentUserId()
             val user = userRepository.getUserById(userId)
-            bookingRepository.createBooking(userId, user.name, postId, category, provider, dateRange)
+            bookingRepository.createBooking(userId, user.name, postId, category, providerId, provider, dateRange)
             emit(Resource.Success())
         } catch (e: Exception) {
             emit(Resource.Error(e))

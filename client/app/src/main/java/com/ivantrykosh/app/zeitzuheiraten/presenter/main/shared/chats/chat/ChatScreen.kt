@@ -57,6 +57,7 @@ fun ChatScreen(
     chatId: String?,
     withUserId: String,
     withUserName: String,
+    navigateToUser: (String) -> Unit,
     navigateBack: () -> Unit,
 ) {
     var messageValue by rememberSaveable { mutableStateOf("") }
@@ -87,7 +88,7 @@ fun ChatScreen(
                 title = {
                     Text(
                         text = withUserName,
-                        modifier = Modifier.clickable { /* todo navigate user page by userId */ }
+                        modifier = Modifier.clickable { navigateToUser(withUserId) }
                     )
                 },
                 windowInsets = WindowInsets(top = 0.dp),
@@ -268,6 +269,7 @@ fun ChatScreenPreview() {
         withUserId = "some id",
         withUserName = "Provider Company",
         navigateBack = {},
+        navigateToUser = {},
         chatId = "chatId",
     )
 }

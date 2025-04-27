@@ -20,7 +20,8 @@ import com.ivantrykosh.app.zeitzuheiraten.utils.toStringDate
 
 @Composable
 fun FeedbackView(
-    feedback: Feedback
+    feedback: Feedback,
+    navigateToUser: (String) -> Unit,
 ) {
     Card(
         modifier = Modifier
@@ -41,7 +42,7 @@ fun FeedbackView(
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp,
                 modifier = Modifier.clickable {
-                    // todo maybe add navigation to user page
+                    navigateToUser(feedback.userId)
                 }
             )
             Text(

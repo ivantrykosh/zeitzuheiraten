@@ -192,4 +192,10 @@
     <string name="canceled">Canceled</string>
     <string name="not_confirmed">Not confirmed</string>
     <string name="confirmed">Confirmed</string>
+    <string name="user">User</string>
+    <string name="provider">Provider</string>
+    <string name="report_user">Report user</string>
+    <string name="you_need_to_add_details">You need to add details</string>
+    <string name="report_about_user_was_sent">Report about user was sent</string>
+    <string name="user_doesnt_exist">User does not exist</string>
 </resources>

@@ -59,6 +59,7 @@ import com.ivantrykosh.app.zeitzuheiraten.utils.Constants.MAX_SYMBOLS_FOR_FEEDBA
 fun MyBookingsScreen(
     myBookingsViewModel: MyBookingsViewModel = hiltViewModel(),
     navigateToPost: (String) -> Unit,
+    navigateToUser: (String) -> Unit,
 ) {
     val bookingsState by myBookingsViewModel.getBookings.collectAsStateWithLifecycle()
     val getNotAvailableDatesState by myBookingsViewModel.getNotAvailableDatesState.collectAsStateWithLifecycle()
@@ -147,6 +148,7 @@ fun MyBookingsScreen(
                         BookingView(
                             booking = booking,
                             onCategoryClicked = { navigateToPost(it) },
+                            onProviderClicked = { navigateToUser(it) },
                             onChangeDate = {
                                 loaded = false
                                 dateLoaded = false
@@ -471,6 +473,7 @@ fun FeedbackDialog(
 @Preview(showBackground = true)
 fun MyBookingsScreenPreview() {
     MyBookingsScreen(
-        navigateToPost = {}
+        navigateToPost = {},
+        navigateToUser = {}
     )
 }

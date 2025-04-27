@@ -15,6 +15,7 @@ import com.ivantrykosh.app.zeitzuheiraten.presenter.main.provider.my_profile_scr
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.shared.chats.ChatsScreen
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.shared.chats.chat.ChatScreen
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.shared.feedbacks.FeedbackScreen
+import com.ivantrykosh.app.zeitzuheiraten.presenter.main.shared.profile.ProfileScreen
 
 @Composable
 fun MainProviderNavGraph(navController: NavHostController, navigateToAuth: () -> Unit) {
@@ -61,7 +62,10 @@ fun MainProviderNavGraph(navController: NavHostController, navigateToAuth: () ->
             BookingsScreen(
                 navigateToEditPost = { postId ->
                     navController.navigate(Screen.MainProviderScreen.EditPostScreen.route + "?postId=$postId")
-                }
+                },
+                navigateToUser = { userId ->
+                    navController.navigate(Screen.MainProviderScreen.ProfileScreen.route + "?userId=$userId")
+                },
             )
         }
         composable(
@@ -77,7 +81,10 @@ fun MainProviderNavGraph(navController: NavHostController, navigateToAuth: () ->
                 postId = it.arguments!!.getString("postId")!!,
                 navigateBack = {
                     navController.popBackStack()
-                }
+                },
+                navigateToUser = { userId ->
+                    navController.navigate(Screen.MainProviderScreen.ProfileScreen.route + "?userId=$userId")
+                },
             )
         }
         composable(route = Screen.MainProviderScreen.ChatsScreen.route) {
@@ -108,9 +115,30 @@ fun MainProviderNavGraph(navController: NavHostController, navigateToAuth: () ->
                 chatId = it.arguments!!.getString("chatId"),
                 withUserId = it.arguments!!.getString("userId")!!,
                 withUserName = it.arguments!!.getString("username")!!,
+                navigateToUser = { userId ->
+                    navController.navigate(Screen.MainProviderScreen.ProfileScreen.route + "?userId=$userId")
+                },
                 navigateBack = {
                     navController.popBackStack()
                 }
+            )
+        }
+        composable(
+            route = Screen.MainProviderScreen.ProfileScreen.route + "?userId={userId}",
+            arguments = listOf(
+                navArgument("userId") {
+                    type = NavType.StringType
+                    nullable = false
+                }
+            )
+        ) {
+            val userId = it.arguments!!.getString("userId")!!
+            ProfileScreen(
+                userId = userId,
+                navigateBack = { navController.popBackStack() },
+                onOpenChatClicked = { userId, username ->
+                    navController.navigate(Screen.MainProviderScreen.ChatScreen.route + "?chatId=${null}&userId=$userId&username=$username")
+                },
             )
         }
     }

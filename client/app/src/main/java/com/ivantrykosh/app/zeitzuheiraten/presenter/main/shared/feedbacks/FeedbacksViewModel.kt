@@ -3,6 +3,7 @@ package com.ivantrykosh.app.zeitzuheiraten.presenter.main.shared.feedbacks
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.Feedback
+import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.auth.GetCurrentUserIdUseCase
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.feedbacks.GetFeedbacksForPostUseCase
 import com.ivantrykosh.app.zeitzuheiraten.utils.Resource
 import com.ivantrykosh.app.zeitzuheiraten.utils.State
@@ -14,8 +15,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FeedbacksViewModel @Inject constructor(
+    private val getCurrentUserIdUseCase: GetCurrentUserIdUseCase,
     private val getFeedbacksForPostUseCase: GetFeedbacksForPostUseCase,
 ) : ViewModel() {
+
+    var currentUserIdState = MutableStateFlow(State<String>())
+        private set
 
     var getFeedbacksState = MutableStateFlow(State<Unit>())
         private set
@@ -27,6 +32,20 @@ class FeedbacksViewModel @Inject constructor(
         private set
 
     private var pageSize = 10
+
+    init {
+        getCurrentUserId()
+    }
+
+    private fun getCurrentUserId() {
+        getCurrentUserIdUseCase().onEach { result ->
+            currentUserIdState.value = when (result) {
+                is Resource.Error -> State(error = result.error)
+                is Resource.Loading -> State(loading = true)
+                is Resource.Success -> State(data = result.data!!)
+            }
+        }.launchIn(viewModelScope)
+    }
 
     fun getFeedbacks(postId: String) {
         anyNewFeedbacks = true

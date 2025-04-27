@@ -48,6 +48,7 @@ import com.ivantrykosh.app.zeitzuheiraten.utils.BookingsFilterType
 fun BookingsScreen(
     bookingsViewModel: BookingsViewModel = hiltViewModel(),
     navigateToEditPost: (String) -> Unit,
+    navigateToUser: (String) -> Unit,
 ) {
     val postsState by bookingsViewModel.getPostsState.collectAsStateWithLifecycle()
     val bookingsState by bookingsViewModel.getBookings.collectAsStateWithLifecycle()
@@ -151,6 +152,7 @@ fun BookingsScreen(
                         BookingView(
                             booking = booking,
                             onCategoryClicked = { navigateToEditPost(it) },
+                            onUserClicked = { navigateToUser(it) },
                             onCancelBooking = {
                                 loaded = false
                                 isCancelDialogShowed = true
@@ -323,6 +325,7 @@ fun BookingsScreen(
 @Preview(showBackground = true)
 fun BookingsScreenPreview() {
     BookingsScreen(
-        navigateToEditPost = {}
+        navigateToEditPost = {},
+        navigateToUser = {},
     )
 }

@@ -19,6 +19,7 @@ sealed class Screen(val route: String) {
         data object MyFeedbacksScreen: Screen.MainCustomerScreen("my_feedbacks_customer_screen")
         data object ChatsScreen: Screen.MainCustomerScreen("chats_customer_screen")
         data object ChatScreen: Screen.MainCustomerScreen("chat_customer_screen")
+        data object ProfileScreen: Screen.MainCustomerScreen("profile_customer_screen")
     }
     sealed class MainProviderScreen(route: String): Screen(route) {
         data object MainProviderScreen: Screen.MainProviderScreen("main_provider_screen")
@@ -30,5 +31,6 @@ sealed class Screen(val route: String) {
         data object PostFeedbacksScreen: Screen.MainProviderScreen("post_feedbacks_provider_screen")
         data object ChatsScreen: Screen.MainProviderScreen("chats_provider_screen")
         data object ChatScreen: Screen.MainProviderScreen("chat_provider_screen")
+        data object ProfileScreen: Screen.MainProviderScreen("profile_provider_screen")
     }
 }

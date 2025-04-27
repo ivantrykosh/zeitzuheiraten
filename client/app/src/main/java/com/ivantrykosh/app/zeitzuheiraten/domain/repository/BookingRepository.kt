@@ -6,7 +6,7 @@ import com.ivantrykosh.app.zeitzuheiraten.utils.BookingsFilterType
 
 interface BookingRepository {
 
-    suspend fun createBooking(userId: String, username: String, postId: String, category: String, provider: String, dateRange: DatePair)
+    suspend fun createBooking(userId: String, username: String, postId: String, category: String, providerId: String, provider: String, dateRange: DatePair)
 
     suspend fun updateBooking(bookingId: String, dateRange: DatePair?, confirmed: Boolean?, canceled: Boolean?, serviceProvided: Boolean?)
 

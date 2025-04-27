@@ -53,7 +53,7 @@ class FullPostScreenModel @Inject constructor(
 
     fun bookService(id: String, dateRange: DatePair) {
         val post = getPostByIdState.value.data!!
-        createBookingUseCase(id, post.category, post.providerName, dateRange).onEach { result ->
+        createBookingUseCase(id, post.category, post.providerId, post.providerName, dateRange).onEach { result ->
             createBookingState.value = when (result) {
                 is Resource.Error -> State(error = result.error)
                 is Resource.Loading -> State(loading = true)

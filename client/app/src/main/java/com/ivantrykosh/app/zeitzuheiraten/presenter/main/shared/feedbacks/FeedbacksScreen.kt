@@ -48,7 +48,9 @@ fun FeedbackScreen(
     feedbacksViewModel: FeedbacksViewModel = hiltViewModel(),
     postId: String,
     navigateBack: () -> Unit,
+    navigateToUser: (String) -> Unit,
 ) {
+    val userIdState by feedbacksViewModel.currentUserIdState.collectAsStateWithLifecycle()
     val feedbacksState by feedbacksViewModel.getFeedbacksState.collectAsStateWithLifecycle()
     val feedbacks by feedbacksViewModel.lastFeedbacks.collectAsStateWithLifecycle()
     var loaded by rememberSaveable { mutableStateOf(false) }
@@ -102,7 +104,12 @@ fun FeedbackScreen(
                     if (feedbacks.isNotEmpty()) {
                         items(feedbacks) { feedback ->
                             FeedbackView(
-                                feedback = feedback
+                                feedback = feedback,
+                                navigateToUser = {
+                                    if (feedback.userId != userIdState.data!!) {
+                                        navigateToUser(it)
+                                    }
+                                }
                             )
                         }
                         if (feedbacksViewModel.anyNewFeedbacks) {
@@ -174,6 +181,7 @@ fun FeedbackScreen(
 fun FeedbackScreenPreview() {
     FeedbackScreen(
         postId = "",
-        navigateBack = {}
+        navigateBack = {},
+        navigateToUser = {}
     )
 }

@@ -12,4 +12,5 @@ object Constants {
     const val MAX_IMAGES_PER_POST = 10
     const val MAX_SYMBOLS_FOR_FEEDBACK_DESCRIPTION = 200
     const val MAX_SYMBOLS_FOR_MESSAGE = 1000
+    const val MAX_SYMBOLS_FOR_REPORT_DESCRIPTION = 1000
 }

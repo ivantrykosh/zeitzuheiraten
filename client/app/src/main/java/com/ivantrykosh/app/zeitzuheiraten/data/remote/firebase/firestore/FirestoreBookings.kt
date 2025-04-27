@@ -14,12 +14,13 @@ class FirestoreBookings(private val firestore: FirebaseFirestore = Firebase.fire
 
     private lateinit var lastVisibleBooking: DocumentSnapshot
 
-    suspend fun createBooking(userId: String, username: String, postId: String, category: String, provider: String, dateRange: DatePair) {
+    suspend fun createBooking(userId: String, username: String, postId: String, category: String, providerId: String, provider: String, dateRange: DatePair) {
         val bookingData = mapOf(
             Booking::userId.name to userId,
             Booking::username.name to username,
             Booking::postId.name to postId,
             Booking::category.name to category,
+            Booking::providerId.name to providerId,
             Booking::provider.name to provider,
             Booking::dateRange.name to dateRange,
             Booking::confirmed.name to false,

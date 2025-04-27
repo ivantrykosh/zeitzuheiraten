@@ -9,6 +9,7 @@ data class Booking(
     val username: String = "",
     val postId: String = "",
     val category: String = "",
+    val providerId: String = "",
     val provider: String = "",
     val dateRange: DatePair = DatePair(),
     val confirmed: Boolean = false,
@@ -16,6 +17,7 @@ data class Booking(
     val serviceProvided: Boolean = false,
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
+        parcel.readString()!!,
         parcel.readString()!!,
         parcel.readString()!!,
         parcel.readString()!!,
@@ -35,6 +37,7 @@ data class Booking(
         parcel.writeString(username)
         parcel.writeString(postId)
         parcel.writeString(category)
+        parcel.writeString(providerId)
         parcel.writeString(provider)
         parcel.writeTypedObject(dateRange, 0)
         parcel.writeByte(if (confirmed) 1 else 0)

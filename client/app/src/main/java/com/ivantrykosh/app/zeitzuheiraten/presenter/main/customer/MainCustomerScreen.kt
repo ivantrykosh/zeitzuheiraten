@@ -53,7 +53,7 @@ fun MainCustomerScreen(
                         onClick = {
                             selectedNavBarItemIndex = index
                             navController.navigate(navBarItem.navRoute) {
-                                popUpTo(navController.currentDestination!!.route!!) {
+                                popUpTo(navController.currentDestination!!.route!!) { // todo change to launchSingleTop = true
                                     inclusive = true
                                 }
                             }
