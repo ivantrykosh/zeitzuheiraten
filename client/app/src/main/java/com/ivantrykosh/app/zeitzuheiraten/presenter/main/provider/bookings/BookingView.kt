@@ -103,7 +103,11 @@ fun BookingView(
                 }
             )
             val dateText = if (categoriesWithStandardBooking.contains(booking.category)) {
-                "${booking.dateRange.startDate.toStringDate()}-${booking.dateRange.endDate.toStringDate()}"
+                if (booking.dateRange.startDate == booking.dateRange.endDate) {
+                    booking.dateRange.startDate.toStringDate()
+                } else {
+                    "${booking.dateRange.startDate.toStringDate()}-${booking.dateRange.endDate.toStringDate()}"
+                }
             } else {
                 stringResource(R.string.deadline_to, booking.dateRange.startDate.toStringDate())
             }

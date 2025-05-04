@@ -100,9 +100,17 @@ class FirestoreFeedbacks(private val firestore: FirebaseFirestore = Firebase.fir
     }
 
     suspend fun deleteFeedback(id: String) {
-        firestore.collection(Collections.FEEDBACKS)
+        val document = firestore.collection(Collections.FEEDBACKS)
             .document(id)
+        val feedback = document.get().await().toObject(Feedback::class.java)!!
+        document
             .delete()
+            .await()
+        // update average rating for post
+        val rating = getRatingForPost(feedback.postId)
+        firestore.collection(Collections.POSTS)
+            .document(feedback.postId)
+            .update(PostWithRating::rating.name, rating)
             .await()
     }
 
@@ -115,6 +123,7 @@ class FirestoreFeedbacks(private val firestore: FirebaseFirestore = Firebase.fir
             .forEach {
                 it.reference.delete().await()
             }
+        // todo update average rating for post
     }
 
     suspend fun deleteFeedbacksForUser(userId: String) {
@@ -126,5 +135,6 @@ class FirestoreFeedbacks(private val firestore: FirebaseFirestore = Firebase.fir
             .forEach {
                 it.reference.delete().await()
             }
+        // todo update average rating for post
     }
 }

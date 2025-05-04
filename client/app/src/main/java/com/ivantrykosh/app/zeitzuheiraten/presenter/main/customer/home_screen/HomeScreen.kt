@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -18,7 +17,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -50,6 +48,7 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.google.firebase.FirebaseNetworkException
 import com.ivantrykosh.app.zeitzuheiraten.R
+import com.ivantrykosh.app.zeitzuheiraten.presenter.main.CustomCircularProgressIndicator
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.customer.FilterItemDropdown
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.customer.FilterItemInputNumber
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.provider.home_screen.PostItem
@@ -90,7 +89,7 @@ fun HomeScreen(
         },
         indicator = { state, _ ->
             if (state.isRefreshing) {
-                CircularProgressIndicator(modifier = Modifier.fillMaxSize().wrapContentSize())
+                CustomCircularProgressIndicator()
             }
         }
     ) {
@@ -141,7 +140,7 @@ fun HomeScreen(
                             )
                         }
                     }
-                } else {
+                } else if (loaded) {
                     item {
                         Text(
                             text = stringResource(R.string.no_posts_found),
@@ -231,7 +230,7 @@ fun HomeScreen(
 
                     FilterItemInputNumber(
                         currentValue = maxPriceValue,
-                        onValueChange = { maxPriceValue = it.filter { it.isDigit() } },
+                        onValueChange = { maxPriceValue = it.filter { it.isDigit() }.take(8) },
                         label = stringResource(R.string.max_price),
                         modifier = Modifier.fillMaxWidth(),
                         suffix = "₴"

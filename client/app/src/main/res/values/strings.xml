@@ -198,4 +198,6 @@
     <string name="you_need_to_add_details">You need to add details</string>
     <string name="report_about_user_was_sent">Report about user was sent</string>
     <string name="user_doesnt_exist">User does not exist</string>
+    <string name="previous_month">Previous month</string>
+    <string name="next_month">Next month</string>
 </resources>

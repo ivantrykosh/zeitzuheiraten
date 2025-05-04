@@ -74,3 +74,7 @@ enum class BookingsFilterType(
         }
     }
 }
+
+fun Context.getAppLocale(): Locale {
+    return this.resources.configuration.locales[0]
+}

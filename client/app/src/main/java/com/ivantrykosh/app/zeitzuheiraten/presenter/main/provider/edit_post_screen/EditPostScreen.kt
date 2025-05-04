@@ -16,10 +16,10 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -30,7 +30,6 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -69,6 +68,8 @@ import com.google.firebase.FirebaseNetworkException
 import com.ivantrykosh.app.zeitzuheiraten.R
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.DatePair
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.PostWithRating
+import com.ivantrykosh.app.zeitzuheiraten.presenter.main.BookingSelectableDates
+import com.ivantrykosh.app.zeitzuheiraten.presenter.main.CustomCircularProgressIndicator
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.DateRangePicker
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.ItemWithDropdownMenu
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.RatingView
@@ -234,6 +235,7 @@ fun EditPostScreen(
                             DropdownMenu(
                                 expanded = isCitiesExpanded,
                                 onDismissRequest = { isCitiesExpanded = false },
+                                modifier = Modifier.heightIn(max = 300.dp)
                             ) {
                                 for (city in cities.filter { !citiesValue.contains(it) }) {
                                     DropdownMenuItem(
@@ -265,7 +267,7 @@ fun EditPostScreen(
                     TextField(
                         value = minPrice,
                         onValueChange = {
-                            minPrice = it.filter { it.isDigit() }
+                            minPrice = it.filter { it.isDigit() }.take(8)
                         },
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Number,
@@ -403,12 +405,13 @@ fun EditPostScreen(
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.clickable {
+                        hidePost = !hidePost
+                    }
                 ) {
                     Checkbox(
                         checked = hidePost,
-                        onCheckedChange = {
-                            hidePost = it
-                        }
+                        onCheckedChange = null
                     )
                     Text(
                         text = stringResource(R.string.hide_post),
@@ -417,6 +420,7 @@ fun EditPostScreen(
                 }
                 FilledTonalButton(
                     onClick = {
+                        description = description.trim()
                         if (citiesValue.isEmpty()) {
                             showErrorDialog = true
                             textInErrorDialog = citiesValueError
@@ -457,7 +461,8 @@ fun EditPostScreen(
                 onDateRangeSelected = {
                     notAvailableDateRanges.add(it)
                 },
-                onDismiss = { isDateRangePickerShowed = false }
+                onDismiss = { isDateRangePickerShowed = false },
+                selectableDates = BookingSelectableDates(notAvailableDateRanges),
             )
         }
     }
@@ -465,7 +470,7 @@ fun EditPostScreen(
     if (!loaded) {
         when {
             getPostState.loading || updatePostState.loading || deletePostState.loading -> {
-                CircularProgressIndicator(modifier = Modifier.fillMaxSize().wrapContentSize())
+                CustomCircularProgressIndicator()
             }
 
             deletePostState.error != null -> {
@@ -529,6 +534,7 @@ fun EditPostScreen(
                 description = getPostState.data!!.description
                 notAvailableDateRanges.addAll(getPostState.data!!.notAvailableDates)
                 pickedImages.addAll(getPostState.data!!.photosUrl.map { it.toUri() })
+                hidePost = !getPostState.data!!.enabled
             }
         }
     }

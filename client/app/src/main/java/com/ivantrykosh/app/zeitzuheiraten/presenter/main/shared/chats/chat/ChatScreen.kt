@@ -12,14 +12,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -48,6 +46,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.firebase.FirebaseNetworkException
 import com.ivantrykosh.app.zeitzuheiraten.R
+import com.ivantrykosh.app.zeitzuheiraten.presenter.main.CustomCircularProgressIndicator
 import com.ivantrykosh.app.zeitzuheiraten.utils.Constants.MAX_SYMBOLS_FOR_MESSAGE
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -135,7 +134,7 @@ fun ChatScreen(
                             )
                         }
                     }
-                } else {
+                } else if (loaded) {
                     item {
                         Text(
                             text = stringResource(R.string.no_messages_found),
@@ -191,7 +190,7 @@ fun ChatScreen(
     if (!loaded) {
         when {
             messagesState.loading || getChatIdState.loading -> {
-                CircularProgressIndicator(modifier = Modifier.fillMaxSize().wrapContentSize())
+                CustomCircularProgressIndicator()
             }
             createMessageState.error != null -> {
                 loaded = true

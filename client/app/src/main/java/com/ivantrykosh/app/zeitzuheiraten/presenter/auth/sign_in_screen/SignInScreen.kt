@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
@@ -36,6 +35,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.ivantrykosh.app.zeitzuheiraten.R
 import com.ivantrykosh.app.zeitzuheiraten.presenter.InputField
 import com.ivantrykosh.app.zeitzuheiraten.presenter.auth.PasswordInputField
+import com.ivantrykosh.app.zeitzuheiraten.presenter.main.CustomCircularProgressIndicator
 import com.ivantrykosh.app.zeitzuheiraten.presenter.ui.theme.PurpleGrey80
 import com.ivantrykosh.app.zeitzuheiraten.utils.isEmailValid
 import com.ivantrykosh.app.zeitzuheiraten.utils.isPasswordValid
@@ -96,12 +96,13 @@ fun SignInScreen(
                 ) {
                     InputField(
                         value = email,
-                        onValueChange = { email = it },
+                        onValueChange = { email = it.take(320) },
                         label = R.string.email,
                         icon = R.drawable.baseline_email_24,
                         iconDescription = R.string.email_icon,
                         onFocusChange = {
                             if (!it.hasFocus && email.isNotEmpty()) {
+                                email = email.trim()
                                 if (!isEmailValid(email)) {
                                     emailError = true
                                     emailErrorMessage = standardEmailErrorMessage
@@ -117,9 +118,10 @@ fun SignInScreen(
 
                     PasswordInputField(
                         value = password,
-                        onValueChange = { password = it },
+                        onValueChange = { password = it.take(64) },
                         onFocusChange = {
                             if (!it.hasFocus) {
+                                password = password.trim()
                                 if (!isPasswordValid(password) && password.isNotEmpty()) {
                                     passwordError = true
                                     passwordErrorMessage = standardPasswordErrorMessage
@@ -135,6 +137,8 @@ fun SignInScreen(
 
                     FilledTonalButton(
                         onClick = {
+                            email = email.trim()
+                            password = password.trim()
                             if (!isEmailValid(email)) {
                                 emailError = true
                                 emailErrorMessage = standardEmailErrorMessage
@@ -163,7 +167,7 @@ fun SignInScreen(
             if (!loaded) {
                 when {
                     signInState.loading -> {
-                        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                        CustomCircularProgressIndicator()
                     }
                     signInState.error != null -> {
                         loaded = true

@@ -122,7 +122,7 @@ class FirestoreBookings(private val firestore: FirebaseFirestore = Firebase.fire
             .whereEqualTo(Booking::postId.name, postId)
             .get()
             .await()
-            .filter {
+            .filter { // todo make this filtering via query whereEqualTo, so it filters on server
                 !it.get(Booking::canceled.name, Boolean::class.java)!! &&
                 !it.get(Booking::serviceProvided.name, Boolean::class.java)!! &&
                 it.get(Booking::dateRange.name, DatePair::class.java)!!.endDate > System.currentTimeMillis() - 84_000_000

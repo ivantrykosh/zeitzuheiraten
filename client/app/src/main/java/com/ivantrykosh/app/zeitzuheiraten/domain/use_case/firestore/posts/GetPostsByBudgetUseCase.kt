@@ -26,7 +26,8 @@ class GetPostsByBudgetUseCase @Inject constructor(
             emit(Resource.Loading())
             val deviation = 0.1f
             val price = pricesBasedOnBudget.optimalPrices[category]!!
-            val posts = postRepository.getPostByFilters(category, city, (price - price * deviation).toInt(), (price + price * deviation).toInt(), startAfterLast, pageSize, postsOrderType)
+            val deviationForPrice = (price * deviation).coerceAtLeast(1f).toInt()
+            val posts = postRepository.getPostByFilters(category, city, price - deviationForPrice, price + deviationForPrice, startAfterLast, pageSize, postsOrderType)
             emit(Resource.Success(posts))
         } catch (e: Exception) {
             emit(Resource.Error(e))

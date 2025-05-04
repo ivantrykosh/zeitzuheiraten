@@ -100,6 +100,7 @@ fun BudgetPickerScreen(
                     onValueChange = { budgetPickerViewModel.updateCity(it) },
                     label = R.string.city,
                     values = cities.toList(),
+                    maxDropdownMenuHeight = 300.dp,
                 )
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -113,7 +114,7 @@ fun BudgetPickerScreen(
                     TextField(
                         value = budgetValue,
                         onValueChange = {
-                            val digitsOnly = it.filter { it.isDigit() }
+                            val digitsOnly = it.filter { it.isDigit() }.take(8)
                             budgetPickerViewModel.updateBudget(digitsOnly)
                         },
                         keyboardOptions = KeyboardOptions(

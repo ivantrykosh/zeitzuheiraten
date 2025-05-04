@@ -16,10 +16,10 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -28,7 +28,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -64,6 +63,8 @@ import coil3.compose.AsyncImage
 import com.google.firebase.FirebaseNetworkException
 import com.ivantrykosh.app.zeitzuheiraten.R
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.DatePair
+import com.ivantrykosh.app.zeitzuheiraten.presenter.main.BookingSelectableDates
+import com.ivantrykosh.app.zeitzuheiraten.presenter.main.CustomCircularProgressIndicator
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.DateRangePicker
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.ItemWithDropdownMenu
 import com.ivantrykosh.app.zeitzuheiraten.utils.Constants.MAX_CITIES_PER_POST
@@ -151,6 +152,7 @@ fun AddPostScreen(
                 onValueChange = { categoryValue = it },
                 label = R.string.category,
                 values = categories.toList(),
+                maxDropdownMenuHeight = 300.dp,
             )
             FlowRow(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -206,6 +208,7 @@ fun AddPostScreen(
                         DropdownMenu(
                             expanded = isCitiesExpanded,
                             onDismissRequest = { isCitiesExpanded = false},
+                            modifier = Modifier.heightIn(max = 300.dp),
                         ) {
                             for (city in cities.filter { !citiesValue.contains(it) }) {
                                 DropdownMenuItem(
@@ -237,7 +240,7 @@ fun AddPostScreen(
                 TextField(
                     value = minPrice,
                     onValueChange = {
-                        minPrice = it.filter { it.isDigit() }
+                        minPrice = it.filter { it.isDigit() }.take(8)
                     },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number,
@@ -371,6 +374,7 @@ fun AddPostScreen(
             }
             FilledTonalButton(
                 onClick = {
+                    description.trim()
                     if (categoryValue.isEmpty()) {
                         showAlertDialog = true
                         textInAlertDialog = categoryValueError
@@ -380,7 +384,7 @@ fun AddPostScreen(
                     } else if (minPrice.isEmpty()) {
                         showAlertDialog = true
                         textInAlertDialog = minPriceError
-                    } else if (description.isEmpty()) { // todo trim description
+                    } else if (description.isEmpty()) {
                         showAlertDialog = true
                         textInAlertDialog = descriptionError
                     } else if (pickedImages.isEmpty()) {
@@ -403,7 +407,8 @@ fun AddPostScreen(
                 onDateRangeSelected = {
                     notAvailableDateRanges.add(it)
                 },
-                onDismiss = { isDateRangePickerShowed = false }
+                onDismiss = { isDateRangePickerShowed = false },
+                selectableDates = BookingSelectableDates(notAvailableDateRanges)
             )
         }
     }
@@ -411,7 +416,7 @@ fun AddPostScreen(
     if (!loaded) {
         when {
             createPostState.loading -> {
-                CircularProgressIndicator(modifier = Modifier.fillMaxSize().wrapContentSize())
+                CustomCircularProgressIndicator()
             }
 
             createPostState.error != null -> {

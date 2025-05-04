@@ -1,6 +1,5 @@
 package com.ivantrykosh.app.zeitzuheiraten.presenter.main
 
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DatePickerDialog
@@ -13,9 +12,12 @@ import androidx.compose.material3.rememberDateRangePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.ivantrykosh.app.zeitzuheiraten.R
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.DatePair
+import com.ivantrykosh.app.zeitzuheiraten.utils.toStringDate
 import java.time.LocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -36,7 +38,7 @@ class BookingSelectableDates(private val unavailableDates: List<DatePair>): Sele
 fun DateRangePicker(
     onDateRangeSelected: (DatePair) -> Unit,
     onDismiss: () -> Unit,
-    selectableDates: BookingSelectableDates = BookingSelectableDates(emptyList())
+    selectableDates: BookingSelectableDates
 ) {
     val dateRangePickerState = rememberDateRangePickerState(
         selectableDates = selectableDates
@@ -70,14 +72,39 @@ fun DateRangePicker(
             state = dateRangePickerState,
             title = {
                 Text(
-                    text = stringResource(R.string.select_date_range)
+                    text = stringResource(R.string.select_date_range),
+                    fontSize = 18.sp,
+                    modifier = Modifier.padding(start = 24.dp, end = 12.dp, top = 16.dp)
+                )
+            },
+            headline = {
+                val startDate = dateRangePickerState.selectedStartDateMillis?.toStringDate() ?: ""
+                val endDate = dateRangePickerState.selectedEndDateMillis?.toStringDate() ?: ""
+                val dates = if (startDate.isEmpty()) {
+                    ""
+                } else if (endDate.isEmpty()) {
+                    startDate
+                } else {
+                    "$startDate - $endDate"
+                }
+                Text(
+                    text = dates,
+                    fontSize = 22.sp,
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp)
                 )
             },
             showModeToggle = false,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(500.dp)
-                .padding(16.dp)
+            modifier = Modifier.height(500.dp)
         )
     }
+}
+
+@Composable
+@Preview(showBackground = true)
+fun DateRangePickerPreview() {
+    DateRangePicker(
+        onDateRangeSelected = { },
+        onDismiss = { },
+        selectableDates = BookingSelectableDates(listOf(DatePair(1746392400000, 1746392400000)))
+    )
 }

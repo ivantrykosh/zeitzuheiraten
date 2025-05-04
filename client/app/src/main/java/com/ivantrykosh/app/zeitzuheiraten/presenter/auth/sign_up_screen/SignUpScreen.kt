@@ -18,7 +18,6 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
@@ -51,7 +50,9 @@ import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.ivantrykosh.app.zeitzuheiraten.R
 import com.ivantrykosh.app.zeitzuheiraten.presenter.InputField
 import com.ivantrykosh.app.zeitzuheiraten.presenter.auth.PasswordInputField
+import com.ivantrykosh.app.zeitzuheiraten.presenter.main.CustomCircularProgressIndicator
 import com.ivantrykosh.app.zeitzuheiraten.presenter.ui.theme.PurpleGrey80
+import com.ivantrykosh.app.zeitzuheiraten.utils.Constants.MAX_SYMBOLS_FOR_USERNAME
 import com.ivantrykosh.app.zeitzuheiraten.utils.isEmailValid
 import com.ivantrykosh.app.zeitzuheiraten.utils.isFileSizeAppropriate
 import com.ivantrykosh.app.zeitzuheiraten.utils.isNameValid
@@ -155,12 +156,13 @@ fun SignUpScreen(
 
                     InputField(
                         value = email,
-                        onValueChange = { email = it },
+                        onValueChange = { email = it.take(320) },
                         label = R.string.email,
                         icon = R.drawable.baseline_email_24,
                         iconDescription = R.string.email_icon,
                         onFocusChange = {
                             if (!it.hasFocus && email.isNotEmpty()) {
+                                email = email.trim()
                                 if (!isEmailValid(email)) {
                                     emailError = true
                                     emailErrorMessage = standardEmailErrorMessage
@@ -176,9 +178,10 @@ fun SignUpScreen(
 
                     PasswordInputField(
                         value = password,
-                        onValueChange = { password = it },
+                        onValueChange = { password = it.take(64) },
                         onFocusChange = {
                             if (!it.hasFocus) {
+                                password = password.trim()
                                 if (!isPasswordValid(password) && password.isNotEmpty()) {
                                     passwordError = true
                                     passwordErrorMessage = standardPasswordErrorMessage
@@ -194,12 +197,13 @@ fun SignUpScreen(
 
                     InputField(
                         value = name,
-                        onValueChange = { name = it },
+                        onValueChange = { name = it.take(MAX_SYMBOLS_FOR_USERNAME) },
                         label = R.string.name,
                         icon = R.drawable.baseline_account_circle_24,
                         iconDescription = R.string.name_icon,
                         onFocusChange = {
                             if (!it.hasFocus && name.isNotEmpty()) {
+                                name = name.trim()
                                 if (!isNameValid(name)) {
                                     nameError = true
                                     nameErrorMessage = standardNameErrorMessage
@@ -224,6 +228,9 @@ fun SignUpScreen(
 
                     FilledTonalButton(
                         onClick = {
+                            email = email.trim()
+                            password = password.trim()
+                            name = name.trim()
                             if (!isEmailValid(email)) {
                                 emailError = true
                                 emailErrorMessage = standardEmailErrorMessage
@@ -262,7 +269,7 @@ fun SignUpScreen(
             if (!loaded) {
                 when {
                     createUserState.loading -> {
-                        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                        CustomCircularProgressIndicator()
                     }
 
                     createUserState.error != null -> {

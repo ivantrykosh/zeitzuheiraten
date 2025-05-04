@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -46,6 +45,8 @@ import com.ivantrykosh.app.zeitzuheiraten.domain.model.User
 import com.ivantrykosh.app.zeitzuheiraten.presenter.InputField
 import com.ivantrykosh.app.zeitzuheiraten.presenter.auth.PasswordInputField
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.ButtonView
+import com.ivantrykosh.app.zeitzuheiraten.presenter.main.CustomCircularProgressIndicator
+import com.ivantrykosh.app.zeitzuheiraten.utils.Constants.MAX_SYMBOLS_FOR_USERNAME
 import com.ivantrykosh.app.zeitzuheiraten.utils.isFileSizeAppropriate
 import com.ivantrykosh.app.zeitzuheiraten.utils.isNameValid
 import com.ivantrykosh.app.zeitzuheiraten.utils.isPasswordValid
@@ -201,7 +202,7 @@ fun MyProfileScreen(
 
         when {
             getCurrentUserState.loading -> {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                CustomCircularProgressIndicator()
             }
             getCurrentUserState.error != null -> {
                 when (getCurrentUserState.error) {
@@ -221,7 +222,7 @@ fun MyProfileScreen(
         if (!signOutDone) {
             when {
                 signOutState.loading -> {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                    CustomCircularProgressIndicator()
                 }
                 signOutState.error != null -> {
                     signOutDone = true
@@ -244,7 +245,7 @@ fun MyProfileScreen(
         if (!updateProfileImageDone) {
             when {
                 updateProfileImageState.loading -> {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                    CustomCircularProgressIndicator()
                 }
                 updateProfileImageState.error != null -> {
                     updateProfileImageDone = true
@@ -267,7 +268,7 @@ fun MyProfileScreen(
         if (!updateUserDone) {
             when {
                 updateUserState.loading -> {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                    CustomCircularProgressIndicator()
                 }
                 updateUserState.error != null -> {
                     updateUserDone = true
@@ -290,7 +291,7 @@ fun MyProfileScreen(
         if (!deleteUserDone) {
             when {
                 deleteUserState.loading -> {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                    CustomCircularProgressIndicator()
                 }
                 deleteUserState.error != null -> {
                     deleteUserDone = true
@@ -313,7 +314,7 @@ fun MyProfileScreen(
         if (!reAuthenticateDone) {
             when {
                 reAuthenticateState.loading -> {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                    CustomCircularProgressIndicator()
                 }
                 reAuthenticateState.error != null -> {
                     reAuthenticateDone = true
@@ -364,6 +365,7 @@ fun MyProfileScreen(
                 Text(
                     text = stringResource(id = R.string.ok_title),
                     modifier = Modifier.clickable {
+                        name = name.trim()
                         if (!isNameValid(name)) {
                             nameError = true
                             nameErrorMessage = standardNameErrorMessage
@@ -382,12 +384,13 @@ fun MyProfileScreen(
             text = {
                 InputField(
                     value = name,
-                    onValueChange = { name = it },
+                    onValueChange = { name = it.take(MAX_SYMBOLS_FOR_USERNAME) },
                     label = R.string.new_name,
                     icon = R.drawable.baseline_account_circle_24,
                     iconDescription = R.string.name_icon,
                     onFocusChange = {
                         if (!it.hasFocus && name.isNotEmpty()) {
+                            name = name.trim()
                             if (!isNameValid(name)) {
                                 nameError = true
                                 nameErrorMessage = standardNameErrorMessage
@@ -411,8 +414,16 @@ fun MyProfileScreen(
                 Text(
                     text = stringResource(id = R.string.ok_title),
                     modifier = Modifier.clickable {
-                        reAuthenticateDone = false
-                        myProfileViewModel.reAuthenticate(password)
+                        password = password.trim()
+                        if (!isPasswordValid(password) && password.isNotEmpty()) {
+                            passwordError = true
+                            passwordErrorMessage = standardPasswordErrorMessage
+                        } else {
+                            passwordError = false
+                            passwordErrorMessage = ""
+                            reAuthenticateDone = false
+                            myProfileViewModel.reAuthenticate(password)
+                        }
                     }
                 )
             },
@@ -426,6 +437,7 @@ fun MyProfileScreen(
                         onValueChange = { password = it },
                         onFocusChange = {
                             if (!it.hasFocus) {
+                                password = password.trim()
                                 if (!isPasswordValid(password) && password.isNotEmpty()) {
                                     passwordError = true
                                     passwordErrorMessage = standardPasswordErrorMessage
