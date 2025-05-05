@@ -46,7 +46,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -92,7 +91,7 @@ fun EditPostScreen(
     val context = LocalContext.current
     val contentResolver = context.contentResolver
 
-    var citiesValue = remember { mutableStateListOf<String>() }
+    var citiesValue = rememberSaveable { mutableStateListOf<String>() }
     val citiesValueError = stringResource(R.string.you_need_to_add_at_least_one_city)
     val cities = stringArrayResource(R.array.cities)
     var isCitiesExpanded by rememberSaveable { mutableStateOf(false) }
@@ -103,10 +102,10 @@ fun EditPostScreen(
     var description by rememberSaveable { mutableStateOf("") }
     val descriptionError = stringResource(R.string.you_need_to_add_description)
 
-    var notAvailableDateRanges = remember { mutableStateListOf<DatePair>() }
+    var notAvailableDateRanges = rememberSaveable { mutableStateListOf<DatePair>() }
     var isDateRangePickerShowed by rememberSaveable { mutableStateOf(false) }
 
-    var pickedImages = remember { mutableStateListOf<Uri>() }
+    var pickedImages = rememberSaveable { mutableStateListOf<Uri>() }
     val pickedImagesError = stringResource(R.string.you_need_to_add_at_least_one_image)
     val pickPostImages = rememberLauncherForActivityResult(contract = ActivityResultContracts.PickMultipleVisualMedia(maxItems = MAX_IMAGES_PER_POST)) { uris ->
         if (uris.isNotEmpty()) {
@@ -121,15 +120,15 @@ fun EditPostScreen(
     }
 
     val getPostState by editPostViewModel.getPostByIdState.collectAsStateWithLifecycle()
-    var post by remember { mutableStateOf<PostWithRating?>(null) }
+    var post by rememberSaveable { mutableStateOf<PostWithRating?>(null) }
     val updatePostState by editPostViewModel.updatePostState.collectAsStateWithLifecycle()
     val deletePostState by editPostViewModel.deletePostState.collectAsStateWithLifecycle()
-    var loaded by remember { mutableStateOf(false) }
-    var uploadNewImages by remember { mutableStateOf(false) }
-    var showErrorDialog by remember { mutableStateOf(false) }
-    var textInErrorDialog by remember { mutableStateOf("") }
-    var showDeletePostDialog by remember { mutableStateOf(false) }
-    var hidePost by remember { mutableStateOf(false) }
+    var loaded by rememberSaveable { mutableStateOf(false) }
+    var uploadNewImages by rememberSaveable { mutableStateOf(false) }
+    var showErrorDialog by rememberSaveable { mutableStateOf(false) }
+    var textInErrorDialog by rememberSaveable { mutableStateOf("") }
+    var showDeletePostDialog by rememberSaveable { mutableStateOf(false) }
+    var hidePost by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(0) {
         loaded = false

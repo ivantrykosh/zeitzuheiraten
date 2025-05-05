@@ -1,6 +1,7 @@
 package com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.posts
 
 import android.content.Context
+import android.util.Log
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.PostWithRating
 import com.ivantrykosh.app.zeitzuheiraten.domain.repository.PostRepository
 import com.ivantrykosh.app.zeitzuheiraten.utils.CategoryAndWeight
@@ -10,6 +11,8 @@ import com.ivantrykosh.app.zeitzuheiraten.utils.Resource
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
+
+private const val LOG_TAG = "GetPostsByBudgetUseCase"
 
 class GetPostsByBudgetUseCase @Inject constructor(
     private val postRepository: PostRepository,
@@ -30,6 +33,7 @@ class GetPostsByBudgetUseCase @Inject constructor(
             val posts = postRepository.getPostByFilters(category, city, price - deviationForPrice, price + deviationForPrice, startAfterLast, pageSize, postsOrderType)
             emit(Resource.Success(posts))
         } catch (e: Exception) {
+            Log.e(LOG_TAG, e.message ?: "An error occurred")
             emit(Resource.Error(e))
         }
     }

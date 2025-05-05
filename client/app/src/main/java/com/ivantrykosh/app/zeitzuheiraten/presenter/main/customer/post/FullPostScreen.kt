@@ -35,7 +35,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -79,13 +78,13 @@ fun FullPostScreen(
     navigateToPostFeedbacks: (String) -> Unit,
 ) {
     val getPostState by fullPostScreenViewModel.getPostByIdState.collectAsStateWithLifecycle()
-    var post by remember { mutableStateOf<PostWithRating?>(null) }
+    var post by rememberSaveable { mutableStateOf<PostWithRating?>(null) }
     val getNotAvailableDatesState by fullPostScreenViewModel.getNotAvailableDatesState.collectAsStateWithLifecycle()
     val createBookingState by fullPostScreenViewModel.createBookingState.collectAsStateWithLifecycle()
-    var loaded by remember { mutableStateOf(false) }
-    var dateLoaded by remember { mutableStateOf(false) }
-    var showErrorDialog by remember { mutableStateOf(false) }
-    var textInErrorDialog by remember { mutableStateOf("") }
+    var loaded by rememberSaveable { mutableStateOf(false) }
+    var dateLoaded by rememberSaveable { mutableStateOf(false) }
+    var showErrorDialog by rememberSaveable { mutableStateOf(false) }
+    var textInErrorDialog by rememberSaveable { mutableStateOf("") }
 
     val categoriesWithStandardBooking = stringArrayResource(R.array.categories_with_standard_booking)
 

@@ -10,13 +10,15 @@ data class User(
     val imageUrl: String = "",
     @field:JvmField
     var isProvider: Boolean = false,
+    var creationTime: Long = 0,
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString()!!,
         parcel.readString()!!,
         parcel.readString()!!,
         parcel.readString()!!,
-        parcel.readByte() != 0.toByte()
+        parcel.readByte() != 0.toByte(),
+        parcel.readLong(),
     ) {
     }
 
@@ -26,6 +28,7 @@ data class User(
         parcel.writeString(email)
         parcel.writeString(imageUrl)
         parcel.writeByte(if (isProvider) 1 else 0)
+        parcel.writeLong(creationTime)
     }
 
     override fun describeContents(): Int {

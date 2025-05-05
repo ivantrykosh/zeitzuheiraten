@@ -12,7 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,7 +35,7 @@ fun SplashScreen(
     navigateToMainPage: (Boolean) -> Unit = { }
 ) {
     val isUserLoggedIn by splashViewModel.isUserLoggedInState.collectAsStateWithLifecycle()
-    var loaded by remember { mutableStateOf(false) }
+    var loaded by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(key1 = 0) {
         delay(1000)

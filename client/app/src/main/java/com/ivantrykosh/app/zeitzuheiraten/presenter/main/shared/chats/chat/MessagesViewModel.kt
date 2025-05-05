@@ -1,5 +1,6 @@
 package com.ivantrykosh.app.zeitzuheiraten.presenter.main.shared.chats.chat
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.ChatMessage
@@ -12,10 +13,13 @@ import com.ivantrykosh.app.zeitzuheiraten.utils.Resource
 import com.ivantrykosh.app.zeitzuheiraten.utils.State
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import java.time.Instant
 import javax.inject.Inject
+
+private const val LOG_TAG = "MessagesViewModel"
 
 @HiltViewModel
 class MessagesViewModel @Inject constructor(
@@ -146,7 +150,11 @@ class MessagesViewModel @Inject constructor(
                 newMessages = newMessages.plus(lastMessages.value)
                 lastMessages.value = newMessages
             }
-        }.launchIn(viewModelScope)
+        }
+            .catch {
+                Log.e(LOG_TAG, it.message ?: "An error occurred")
+            }
+            .launchIn(viewModelScope)
     }
 
     fun createMessage(message: String, otherUserId: String?) {

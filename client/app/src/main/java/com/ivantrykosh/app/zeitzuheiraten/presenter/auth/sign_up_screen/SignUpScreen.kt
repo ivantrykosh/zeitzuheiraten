@@ -29,7 +29,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -69,11 +69,11 @@ fun SignUpScreen(
     val context = LocalContext.current
     val contentResolver = context.contentResolver
 
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var name by remember { mutableStateOf("") }
-    var isProvider by remember { mutableStateOf(false) }
-    var pickedImage by remember { mutableStateOf(Uri.EMPTY) }
+    var email by rememberSaveable { mutableStateOf("") }
+    var password by rememberSaveable { mutableStateOf("") }
+    var name by rememberSaveable { mutableStateOf("") }
+    var isProvider by rememberSaveable { mutableStateOf(false) }
+    var pickedImage by rememberSaveable { mutableStateOf(Uri.EMPTY) }
     val pickUserProfileImage = rememberLauncherForActivityResult(contract = ActivityResultContracts.PickVisualMedia()) { uri ->
         if (uri != null) {
             if (isFileSizeAppropriate(uri, contentResolver)) {
@@ -84,23 +84,23 @@ fun SignUpScreen(
         }
     }
 
-    var emailError by remember { mutableStateOf(false) }
+    var emailError by rememberSaveable { mutableStateOf(false) }
     val standardEmailErrorMessage = stringResource(id = R.string.email_invalid)
-    var emailErrorMessage by remember { mutableStateOf("") }
+    var emailErrorMessage by rememberSaveable { mutableStateOf("") }
 
-    var passwordError by remember { mutableStateOf(false) }
+    var passwordError by rememberSaveable { mutableStateOf(false) }
     val standardPasswordErrorMessage = stringResource(id = R.string.password_invalid)
-    var passwordErrorMessage by remember { mutableStateOf("") }
+    var passwordErrorMessage by rememberSaveable { mutableStateOf("") }
 
-    var nameError by remember { mutableStateOf(false) }
+    var nameError by rememberSaveable { mutableStateOf(false) }
     val standardNameErrorMessage = stringResource(id = R.string.name_invalid)
-    var nameErrorMessage by remember { mutableStateOf("") }
+    var nameErrorMessage by rememberSaveable { mutableStateOf("") }
 
     val createUserState by signUpViewModel.createUserState.collectAsState()
-    var loaded by remember { mutableStateOf(false) }
+    var loaded by rememberSaveable { mutableStateOf(false) }
 
-    var showAlertDialog by remember { mutableStateOf(false) }
-    var textInAlertDialog by remember { mutableStateOf("") }
+    var showAlertDialog by rememberSaveable { mutableStateOf(false) }
+    var textInAlertDialog by rememberSaveable { mutableStateOf("") }
 
     Scaffold(
         topBar = {

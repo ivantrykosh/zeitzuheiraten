@@ -75,7 +75,10 @@ class MyFeedbacksViewModel @Inject constructor(
             deleteFeedbackState.value = when (result) {
                 is Resource.Error -> State(error = result.error)
                 is Resource.Loading -> State(loading = true)
-                is Resource.Success -> State(data = Unit)
+                is Resource.Success -> {
+                    lastFeedbacks.value = lastFeedbacks.value.filterNot { it.id == id }
+                    State(data = Unit)
+                }
             }
         }.launchIn(viewModelScope)
     }

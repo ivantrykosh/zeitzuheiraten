@@ -113,9 +113,12 @@ fun MainCustomerNavGraph(navController: NavHostController, navigateToAuth: () ->
             )
         }
         composable(route = Screen.MainCustomerScreen.MyFeedbacksScreen.route) {
-            MyFeedbacksScreen {
-                navController.popBackStack()
-            }
+            MyFeedbacksScreen(
+                navigateBack = { navController.popBackStack() },
+                navigateToPost = { postId ->
+                    navController.navigate(Screen.MainCustomerScreen.FullPostScreen.route + "?postId=$postId")
+                },
+            )
         }
         composable(route = Screen.MainCustomerScreen.ChatsScreen.route) {
             ChatsScreen(

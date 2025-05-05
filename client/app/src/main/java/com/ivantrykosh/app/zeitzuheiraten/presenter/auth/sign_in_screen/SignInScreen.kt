@@ -19,7 +19,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,22 +48,22 @@ fun SignInScreen(
     navigateToMainPage: (Boolean) -> Unit = { },
     navigateToMainAuthPage: () -> Unit = { }
 ) {
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    var email by rememberSaveable { mutableStateOf("") }
+    var password by rememberSaveable { mutableStateOf("") }
 
-    var emailError by remember { mutableStateOf(false) }
+    var emailError by rememberSaveable { mutableStateOf(false) }
     val standardEmailErrorMessage = stringResource(id = R.string.email_invalid)
-    var emailErrorMessage by remember { mutableStateOf("") }
+    var emailErrorMessage by rememberSaveable { mutableStateOf("") }
 
-    var passwordError by remember { mutableStateOf(false) }
+    var passwordError by rememberSaveable { mutableStateOf(false) }
     val standardPasswordErrorMessage = stringResource(id = R.string.password_invalid)
-    var passwordErrorMessage by remember { mutableStateOf("") }
+    var passwordErrorMessage by rememberSaveable { mutableStateOf("") }
 
     val signInState by signInViewModel.signInState.collectAsStateWithLifecycle()
-    var loaded by remember { mutableStateOf(false) }
+    var loaded by rememberSaveable { mutableStateOf(false) }
 
-    var showAlertDialog by remember { mutableStateOf(false) }
-    var textInAlertDialog by remember { mutableStateOf("") }
+    var showAlertDialog by rememberSaveable { mutableStateOf(false) }
+    var textInAlertDialog by rememberSaveable { mutableStateOf("") }
 
     Scaffold(
         topBar = {

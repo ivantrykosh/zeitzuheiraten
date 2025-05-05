@@ -18,7 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
@@ -39,8 +38,9 @@ import com.ivantrykosh.app.zeitzuheiraten.utils.toStringDate
 fun MyFeedbackView(
     feedback: Feedback,
     onDeleteClicked: (String) -> Unit,
+    navigateToPost: () -> Unit,
 ) {
-    var isContextMenuVisible by rememberSaveable { mutableStateOf(false) }
+    var isContextMenuVisible by remember { mutableStateOf(false) }
     var pressOffset by remember { mutableStateOf(DpOffset.Zero) }
     var itemHeight by remember { mutableStateOf(0.dp) }
     val density = LocalDensity.current
@@ -81,7 +81,7 @@ fun MyFeedbackView(
             )
             Column(
                 modifier = Modifier.clickable {
-                    // todo maybe add navigation to post page
+                    navigateToPost()
                 }
             ) {
                 Text(
@@ -142,5 +142,6 @@ fun MyFeedbackViewPreview() {
             date = System.currentTimeMillis()
         ),
         onDeleteClicked = {},
+        navigateToPost = {}
     )
 }

@@ -15,6 +15,7 @@ data class Booking(
     val confirmed: Boolean = false,
     val canceled: Boolean = false,
     val serviceProvided: Boolean = false,
+    val creationTime: Long = 0,
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString()!!,
@@ -28,6 +29,7 @@ data class Booking(
         parcel.readByte() != 0.toByte(),
         parcel.readByte() != 0.toByte(),
         parcel.readByte() != 0.toByte(),
+        parcel.readLong(),
     ) {
     }
 
@@ -43,6 +45,7 @@ data class Booking(
         parcel.writeByte(if (confirmed) 1 else 0)
         parcel.writeByte(if (canceled) 1 else 0)
         parcel.writeByte(if (serviceProvided) 1 else 0)
+        parcel.writeLong(creationTime)
     }
 
     override fun describeContents(): Int {

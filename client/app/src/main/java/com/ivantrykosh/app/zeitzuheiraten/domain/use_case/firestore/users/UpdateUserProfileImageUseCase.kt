@@ -1,12 +1,15 @@
 package com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.users
 
 import android.net.Uri
+import android.util.Log
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.User
 import com.ivantrykosh.app.zeitzuheiraten.domain.repository.FirebaseStorageRepository
 import com.ivantrykosh.app.zeitzuheiraten.domain.repository.UserRepository
 import com.ivantrykosh.app.zeitzuheiraten.utils.Resource
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
+
+private const val LOG_TAG = "UpdateUserProfileImageUseCase"
 
 class UpdateUserProfileImageUseCase @Inject constructor(
     private val userRepository: UserRepository,
@@ -28,6 +31,7 @@ class UpdateUserProfileImageUseCase @Inject constructor(
             }
             emit(Resource.Success())
         } catch (e: Exception) {
+            Log.e(LOG_TAG, e.message ?: "An error occurred")
             emit(Resource.Error(e))
         }
     }

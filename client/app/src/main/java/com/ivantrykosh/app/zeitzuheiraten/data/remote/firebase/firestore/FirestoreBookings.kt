@@ -9,6 +9,7 @@ import com.ivantrykosh.app.zeitzuheiraten.domain.model.DatePair
 import com.ivantrykosh.app.zeitzuheiraten.utils.BookingsFilterType
 import com.ivantrykosh.app.zeitzuheiraten.utils.Collections
 import kotlinx.coroutines.tasks.await
+import java.time.Instant
 
 class FirestoreBookings(private val firestore: FirebaseFirestore = Firebase.firestore) {
 
@@ -26,6 +27,7 @@ class FirestoreBookings(private val firestore: FirebaseFirestore = Firebase.fire
             Booking::confirmed.name to false,
             Booking::canceled.name to false,
             Booking::serviceProvided.name to false,
+            Booking::creationTime.name to Instant.now().toEpochMilli()
         )
         firestore.collection(Collections.BOOKINGS)
             .document()
@@ -120,13 +122,11 @@ class FirestoreBookings(private val firestore: FirebaseFirestore = Firebase.fire
     suspend fun getBookingDatesForPost(postId: String): List<DatePair> {
         return firestore.collection(Collections.BOOKINGS)
             .whereEqualTo(Booking::postId.name, postId)
+            .whereEqualTo(Booking::canceled.name, false)
+            .whereEqualTo(Booking::serviceProvided.name, false)
+            .whereGreaterThan("${Booking::dateRange.name}.${DatePair::endDate.name}", Instant.now().toEpochMilli() - 84_000_000)
             .get()
             .await()
-            .filter { // todo make this filtering via query whereEqualTo, so it filters on server
-                !it.get(Booking::canceled.name, Boolean::class.java)!! &&
-                !it.get(Booking::serviceProvided.name, Boolean::class.java)!! &&
-                it.get(Booking::dateRange.name, DatePair::class.java)!!.endDate > System.currentTimeMillis() - 84_000_000
-            }
             .map {
                 it.get(Booking::dateRange.name, DatePair::class.java)!!
             }

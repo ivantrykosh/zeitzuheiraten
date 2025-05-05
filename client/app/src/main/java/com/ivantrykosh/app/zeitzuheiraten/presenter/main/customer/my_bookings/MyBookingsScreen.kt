@@ -27,7 +27,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -68,9 +67,9 @@ fun MyBookingsScreen(
     val createFeedbackState by myBookingsViewModel.createFeedbackState.collectAsStateWithLifecycle()
     val bookings by myBookingsViewModel.lastBookings.collectAsStateWithLifecycle()
     var loaded by rememberSaveable { mutableStateOf(false) }
-    var dateLoaded by remember { mutableStateOf(false) }
-    var showErrorDialog by remember { mutableStateOf(false) }
-    var textInErrorDialog by remember { mutableStateOf("") }
+    var dateLoaded by rememberSaveable { mutableStateOf(false) }
+    var showErrorDialog by rememberSaveable { mutableStateOf(false) }
+    var textInErrorDialog by rememberSaveable { mutableStateOf("") }
 
     var isDateRangePickerShowed by rememberSaveable { mutableStateOf(false) }
     var isDatePickerShowed by rememberSaveable { mutableStateOf(false) }
@@ -293,22 +292,18 @@ fun MyBookingsScreen(
                 if (changeDateState.data != null) {
                     Toast.makeText(LocalContext.current, R.string.the_date_was_changed, Toast.LENGTH_LONG).show()
                     myBookingsViewModel.clearChangeDateState()
-                    myBookingsViewModel.getBookings(pickedBookingFilterType)
                 }
                 if (cancelBookingState.data != null) {
                     Toast.makeText(LocalContext.current, R.string.the_booking_was_canceled, Toast.LENGTH_LONG).show()
                     myBookingsViewModel.clearCancelBookingState()
-                    myBookingsViewModel.getBookings(pickedBookingFilterType)
                 }
                 if (confirmProvidingState.data != null) {
                     Toast.makeText(LocalContext.current, R.string.the_service_was_provided, Toast.LENGTH_LONG).show()
                     myBookingsViewModel.clearConfirmProvidingState()
-                    myBookingsViewModel.getBookings(pickedBookingFilterType)
                 }
                 if (createFeedbackState.data != null) {
                     Toast.makeText(LocalContext.current, R.string.the_feedback_was_leaved, Toast.LENGTH_LONG).show()
                     myBookingsViewModel.clearCreateFeedbackState()
-                    myBookingsViewModel.getBookings(pickedBookingFilterType) // todo maybe delete this
                 }
                 if (bookingsState.data != null) {
                     loaded = true

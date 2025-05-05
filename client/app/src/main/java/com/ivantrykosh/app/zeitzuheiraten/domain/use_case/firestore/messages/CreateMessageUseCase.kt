@@ -1,5 +1,6 @@
 package com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.messages
 
+import android.util.Log
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.Message
 import com.ivantrykosh.app.zeitzuheiraten.domain.repository.ChatRepository
 import com.ivantrykosh.app.zeitzuheiraten.domain.repository.MessageRepository
@@ -8,6 +9,8 @@ import com.ivantrykosh.app.zeitzuheiraten.utils.Resource
 import kotlinx.coroutines.flow.flow
 import java.time.Instant
 import javax.inject.Inject
+
+private const val LOG_TAG = "CreateMessageUseCase"
 
 class CreateMessageUseCase @Inject constructor(
     private val userAuthRepository: UserAuthRepository,
@@ -33,6 +36,7 @@ class CreateMessageUseCase @Inject constructor(
             messageRepository.createMessage(newChatId, message)
             emit(Resource.Success())
         } catch (e: Exception) {
+            Log.e(LOG_TAG, e.message ?: "An error occurred")
             emit(Resource.Error(e))
         }
     }

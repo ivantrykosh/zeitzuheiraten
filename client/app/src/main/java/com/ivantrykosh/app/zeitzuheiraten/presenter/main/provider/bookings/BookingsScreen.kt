@@ -22,7 +22,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -55,9 +54,9 @@ fun BookingsScreen(
     val confirmBookingState by bookingsViewModel.confirmBookingState.collectAsStateWithLifecycle()
     val bookings by bookingsViewModel.lastBookings.collectAsStateWithLifecycle()
     var loaded by rememberSaveable { mutableStateOf(false) }
-    var postsLoaded by remember { mutableStateOf(false) }
-    var showErrorDialog by remember { mutableStateOf(false) }
-    var textInErrorDialog by remember { mutableStateOf("") }
+    var postsLoaded by rememberSaveable { mutableStateOf(false) }
+    var showErrorDialog by rememberSaveable { mutableStateOf(false) }
+    var textInErrorDialog by rememberSaveable { mutableStateOf("") }
 
     var isCancelDialogShowed by rememberSaveable { mutableStateOf(false) }
     var isConfirmBookingDialogShowed by rememberSaveable { mutableStateOf(false) }

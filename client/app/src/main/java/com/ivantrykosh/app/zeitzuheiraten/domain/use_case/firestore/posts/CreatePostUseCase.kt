@@ -1,6 +1,7 @@
 package com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.posts
 
 import android.net.Uri
+import android.util.Log
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.DatePair
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.PostWithRating
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.Rating
@@ -10,8 +11,11 @@ import com.ivantrykosh.app.zeitzuheiraten.domain.repository.UserAuthRepository
 import com.ivantrykosh.app.zeitzuheiraten.domain.repository.UserRepository
 import com.ivantrykosh.app.zeitzuheiraten.utils.Resource
 import kotlinx.coroutines.flow.flow
+import java.time.Instant
 import java.util.UUID
 import javax.inject.Inject
+
+private const val LOG_TAG = "CreatePostUseCase"
 
 class CreatePostUseCase @Inject constructor(
     private val userAuthRepository: UserAuthRepository,
@@ -32,6 +36,7 @@ class CreatePostUseCase @Inject constructor(
                     downloadUrls.add(firebaseStorageRepository.uploadImage(name, image))
                 }
             }
+            val dateTime = Instant.now().toEpochMilli()
             val post = PostWithRating(
                 id = postId,
                 providerId = userId,
@@ -43,18 +48,24 @@ class CreatePostUseCase @Inject constructor(
                 photosUrl = downloadUrls,
                 notAvailableDates = notAvailableDates,
                 enabled = true,
-                rating = Rating(0.0, 0)
+                rating = Rating(0.0, 0),
+                creationTime = dateTime
             )
             postRepository.createPost(post)
             emit(Resource.Success())
         } catch (e: Exception) {
-            val userId = userAuthRepository.getCurrentUserId()
-            if (userId.isNotEmpty()) {
-                if (downloadUrls.isNotEmpty()) {
-                    downloadUrls.forEachIndexed { index, image ->
-                        firebaseStorageRepository.deleteImage("$userId/$postId/$index")
+            Log.e(LOG_TAG, e.message ?: "An error occurred")
+            try {
+                val userId = userAuthRepository.getCurrentUserId()
+                if (userId.isNotEmpty()) {
+                    if (downloadUrls.isNotEmpty()) {
+                        downloadUrls.forEachIndexed { index, image ->
+                            firebaseStorageRepository.deleteImage("$userId/$postId/$index")
+                        }
                     }
                 }
+            } catch (exception: Exception) {
+                Log.e(LOG_TAG, exception.message ?: "An error occurred")
             }
             emit(Resource.Error(e))
         }

@@ -14,7 +14,8 @@ data class PostWithRating(
     val photosUrl: List<String> = emptyList(),
     val notAvailableDates: List<DatePair> = emptyList(),
     val enabled: Boolean = true,
-    val rating: Rating = Rating(0.0, 0)
+    val rating: Rating = Rating(0.0, 0),
+    val creationTime: Long = 0,
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString()!!,
@@ -28,6 +29,7 @@ data class PostWithRating(
         parcel.createTypedArrayList<DatePair>(DatePair.CREATOR)!!,
         parcel.readByte() != 0.toByte(),
         parcel.readTypedObject(Rating.CREATOR)!!,
+        parcel.readLong(),
     ) {
     }
 
@@ -43,6 +45,7 @@ data class PostWithRating(
         parcel.writeTypedList<DatePair>(notAvailableDates)
         parcel.writeByte(if (enabled) 1 else 0)
         parcel.writeTypedObject(rating, 0)
+        parcel.writeLong(creationTime)
     }
 
     override fun describeContents(): Int {

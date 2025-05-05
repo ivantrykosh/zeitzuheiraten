@@ -121,7 +121,12 @@ class MyBookingsViewModel @Inject constructor(
             changeDateState.value = when (result) {
                 is Resource.Error -> State(error = result.error)
                 is Resource.Loading -> State(loading = true)
-                is Resource.Success -> State(data = Unit)
+                is Resource.Success -> {
+                    lastBookings.value = lastBookings.value.map { booking ->
+                        if (booking.id == bookingId) booking.copy(dateRange = newDate) else booking
+                    }
+                    State(data = Unit)
+                }
             }
         }.launchIn(viewModelScope)
     }
@@ -131,7 +136,10 @@ class MyBookingsViewModel @Inject constructor(
             cancelBookingState.value = when (result) {
                 is Resource.Error -> State(error = result.error)
                 is Resource.Loading -> State(loading = true)
-                is Resource.Success -> State(data = Unit)
+                is Resource.Success -> {
+                    lastBookings.value = lastBookings.value.filterNot { it.id == bookingId }
+                    State(data = Unit)
+                }
             }
         }.launchIn(viewModelScope)
     }
@@ -141,7 +149,10 @@ class MyBookingsViewModel @Inject constructor(
             confirmProvidingState.value = when (result) {
                 is Resource.Error -> State(error = result.error)
                 is Resource.Loading -> State(loading = true)
-                is Resource.Success -> State(data = Unit)
+                is Resource.Success -> {
+                    lastBookings.value = lastBookings.value.filterNot { it.id == bookingId }
+                    State(data = Unit)
+                }
             }
         }.launchIn(viewModelScope)
     }

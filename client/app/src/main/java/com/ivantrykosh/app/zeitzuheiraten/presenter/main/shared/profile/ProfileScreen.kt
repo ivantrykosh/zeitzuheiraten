@@ -27,7 +27,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -66,9 +65,9 @@ fun ProfileScreen(
     var user by rememberSaveable { mutableStateOf<User?>(null) }
     val createFeedbackState by profileViewModel.createReportState.collectAsStateWithLifecycle()
     var loaded by rememberSaveable { mutableStateOf(true) }
-    var showErrorDialog by remember { mutableStateOf(false) }
-    var textInErrorDialog by remember { mutableStateOf("") }
-    var navigateBackAfterError by remember { mutableStateOf(false) }
+    var showErrorDialog by rememberSaveable { mutableStateOf(false) }
+    var textInErrorDialog by rememberSaveable { mutableStateOf("") }
+    var navigateBackAfterError by rememberSaveable { mutableStateOf(false) }
     var reportUserDialogOpened by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(0) {

@@ -23,7 +23,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -61,32 +61,32 @@ fun MyProfileScreen(
     val contentResolver = context.contentResolver
 
     val getCurrentUserState by myProfileViewModel.getCurrentUserState.collectAsState()
-    var currentUser by remember { mutableStateOf(User()) }
+    var currentUser by rememberSaveable { mutableStateOf(User()) }
     LaunchedEffect(key1 = 0) {
         myProfileViewModel.getCurrentUser()
     }
 
-    var signOutDone by remember { mutableStateOf(false) }
+    var signOutDone by rememberSaveable { mutableStateOf(false) }
     val signOutState by myProfileViewModel.signOutState.collectAsState()
 
-    var updateUserDone by remember { mutableStateOf(false) }
+    var updateUserDone by rememberSaveable { mutableStateOf(false) }
     val updateUserState by myProfileViewModel.updateUserState.collectAsState()
 
-    var updateProfileImageDone by remember { mutableStateOf(false) }
+    var updateProfileImageDone by rememberSaveable { mutableStateOf(false) }
     val updateProfileImageState by myProfileViewModel.updateUserProfileImageState.collectAsState()
 
-    var deleteUserDone by remember { mutableStateOf(false) }
+    var deleteUserDone by rememberSaveable { mutableStateOf(false) }
     val deleteUserState by myProfileViewModel.deleteUserState.collectAsState()
 
-    var reAuthenticateDone by remember { mutableStateOf(false) }
+    var reAuthenticateDone by rememberSaveable { mutableStateOf(false) }
     val reAuthenticateState by myProfileViewModel.reAuthenticateState.collectAsState()
 
-    var showErrorDialog by remember { mutableStateOf(false) }
-    var textInErrorDialog by remember { mutableStateOf("") }
+    var showErrorDialog by rememberSaveable { mutableStateOf(false) }
+    var textInErrorDialog by rememberSaveable { mutableStateOf("") }
 
-    var showInputDialog by remember { mutableStateOf(false) }
+    var showInputDialog by rememberSaveable { mutableStateOf(false) }
 
-    var showConfirmDeleteDialog by remember { mutableStateOf(false) }
+    var showConfirmDeleteDialog by rememberSaveable { mutableStateOf(false) }
 
     val pickUserProfileImage = rememberLauncherForActivityResult(contract = ActivityResultContracts.PickVisualMedia()) { uri ->
         if (uri != null) {
@@ -99,10 +99,10 @@ fun MyProfileScreen(
         }
     }
 
-    var password by remember { mutableStateOf("") }
-    var passwordError by remember { mutableStateOf(false) }
+    var password by rememberSaveable { mutableStateOf("") }
+    var passwordError by rememberSaveable { mutableStateOf(false) }
     val standardPasswordErrorMessage = stringResource(id = R.string.password_invalid)
-    var passwordErrorMessage by remember { mutableStateOf("") }
+    var passwordErrorMessage by rememberSaveable { mutableStateOf("") }
 
     Box(
         modifier = Modifier
@@ -342,10 +342,10 @@ fun MyProfileScreen(
     }
 
 
-    var name by remember { mutableStateOf("") }
-    var nameError by remember { mutableStateOf(false) }
+    var name by rememberSaveable { mutableStateOf("") }
+    var nameError by rememberSaveable { mutableStateOf(false) }
     val standardNameErrorMessage = stringResource(id = R.string.name_invalid)
-    var nameErrorMessage by remember { mutableStateOf("") }
+    var nameErrorMessage by rememberSaveable { mutableStateOf("") }
 
     if (showInputDialog) {
         AlertDialog(

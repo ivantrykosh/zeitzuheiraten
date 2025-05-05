@@ -1,15 +1,16 @@
 package com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.feedbacks
 
+import android.util.Log
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.Feedback
 import com.ivantrykosh.app.zeitzuheiraten.domain.repository.FeedbackRepository
 import com.ivantrykosh.app.zeitzuheiraten.domain.repository.UserAuthRepository
 import com.ivantrykosh.app.zeitzuheiraten.domain.repository.UserRepository
 import com.ivantrykosh.app.zeitzuheiraten.utils.Resource
 import kotlinx.coroutines.flow.flow
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZoneOffset
+import java.time.Instant
 import javax.inject.Inject
+
+private const val LOG_TAG = "CreateFeedbackUseCase"
 
 class CreateFeedbackUseCase @Inject constructor(
     private val userAuthRepository: UserAuthRepository,
@@ -21,7 +22,7 @@ class CreateFeedbackUseCase @Inject constructor(
             emit(Resource.Loading())
             val userId = userAuthRepository.getCurrentUserId()
             val user = userRepository.getUserById(userId)
-            val date = LocalDateTime.now(ZoneId.of("UTC")).toInstant(ZoneOffset.UTC).toEpochMilli()
+            val date = Instant.now().toEpochMilli()
             val feedback = Feedback(
                 userId = userId,
                 username = user.name,
@@ -35,6 +36,7 @@ class CreateFeedbackUseCase @Inject constructor(
             feedbackRepository.createFeedback(feedback)
             emit(Resource.Success())
         } catch (e: Exception) {
+            Log.e(LOG_TAG, e.message ?: "An error occurred")
             emit(Resource.Error(e))
         }
     }

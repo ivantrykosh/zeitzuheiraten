@@ -47,6 +47,7 @@ import com.ivantrykosh.app.zeitzuheiraten.presenter.main.CustomCircularProgressI
 fun MyFeedbacksScreen(
     myFeedbacksViewModel: MyFeedbacksViewModel = hiltViewModel(),
     navigateBack: () -> Unit,
+    navigateToPost: (String) -> Unit,
 ) {
     val feedbacksState by myFeedbacksViewModel.getFeedbacksState.collectAsStateWithLifecycle()
     val deleteFeedbackState by myFeedbacksViewModel.deleteFeedbackState.collectAsStateWithLifecycle()
@@ -109,6 +110,9 @@ fun MyFeedbacksScreen(
                                     loaded = false
                                     isDeleteFeedbackDialogShowed = true
                                     pickedFeedbackId = it
+                                },
+                                navigateToPost = {
+                                    navigateToPost(feedback.postId)
                                 }
                             )
                         }
@@ -178,7 +182,6 @@ fun MyFeedbacksScreen(
                 if (deleteFeedbackState.data != null) {
                     Toast.makeText(LocalContext.current, R.string.feedback_was_deleted, Toast.LENGTH_LONG).show()
                     myFeedbacksViewModel.clearDeleteFeedbackState()
-                    myFeedbacksViewModel.getFeedbacks()
                 }
                 if (feedbacksState.data != null) {
                     loaded = true
@@ -217,6 +220,7 @@ fun MyFeedbacksScreen(
 @Preview(showBackground = true)
 fun MyFeedbacksScreenPreview() {
     MyFeedbacksScreen(
-        navigateBack = {}
+        navigateBack = {},
+        navigateToPost = {}
     )
 }
