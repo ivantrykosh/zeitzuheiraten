@@ -16,12 +16,10 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -97,7 +95,7 @@ fun PostsWithBudgetScreen(
                         onClick = navigateBack
                     ) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
+                            painter = painterResource(R.drawable.baseline_arrow_back_24),
                             contentDescription = stringResource(R.string.back)
                         )
                     }
@@ -169,7 +167,7 @@ fun PostsWithBudgetScreen(
                         }
                         if (budgetPickerViewModel.anyNewPosts) {
                             item {
-                                Divider(modifier = Modifier.fillMaxWidth())
+                                HorizontalDivider(modifier = Modifier.fillMaxWidth())
                                 Text(
                                     text = stringResource(R.string.load_more),
                                     fontSize = 16.sp,

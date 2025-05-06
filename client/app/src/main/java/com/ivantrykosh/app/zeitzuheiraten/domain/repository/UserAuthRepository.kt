@@ -8,15 +8,9 @@ interface UserAuthRepository {
 
     suspend fun signOut()
 
-    suspend fun resetPassword(email: String)
-
     suspend fun deleteCurrentUser()
 
     suspend fun getCurrentUserId(): String
-
-    suspend fun sendVerificationEmail()
-
-    suspend fun isEmailVerified(): Boolean
 
     suspend fun reAuthenticate(email: String, password: String)
 }

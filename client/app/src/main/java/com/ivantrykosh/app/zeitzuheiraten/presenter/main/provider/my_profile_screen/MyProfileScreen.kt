@@ -16,7 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -141,7 +141,7 @@ fun MyProfileScreen(
                     iconRes = R.drawable.baseline_change_circle_24,
                     title = R.string.change_profile_image
                 )
-                Divider(modifier = Modifier
+                HorizontalDivider(modifier = Modifier
                     .fillMaxWidth()
                     .height(2.dp))
                 ButtonView(
@@ -152,7 +152,7 @@ fun MyProfileScreen(
                     iconRes = R.drawable.baseline_delete_24,
                     title = R.string.delete_profile_image
                 )
-                Divider(modifier = Modifier
+                HorizontalDivider(modifier = Modifier
                     .fillMaxWidth()
                     .height(2.dp))
                 ButtonView(
@@ -162,7 +162,7 @@ fun MyProfileScreen(
                     iconRes = R.drawable.baseline_edit_24,
                     title = R.string.edit_name
                 )
-                Divider(modifier = Modifier
+                HorizontalDivider(modifier = Modifier
                     .fillMaxWidth()
                     .height(2.dp))
                 ButtonView(
@@ -172,7 +172,7 @@ fun MyProfileScreen(
                     iconRes = R.drawable.baseline_delete_forever_24,
                     title = R.string.delete_account
                 )
-                Divider(modifier = Modifier
+                HorizontalDivider(modifier = Modifier
                     .fillMaxWidth()
                     .height(2.dp))
                 ButtonView(
@@ -183,7 +183,7 @@ fun MyProfileScreen(
                     iconRes = R.drawable.baseline_logout_24,
                     title = R.string.sign_out
                 )
-                Divider(modifier = Modifier
+                HorizontalDivider(modifier = Modifier
                     .fillMaxWidth()
                     .height(2.dp))
             }

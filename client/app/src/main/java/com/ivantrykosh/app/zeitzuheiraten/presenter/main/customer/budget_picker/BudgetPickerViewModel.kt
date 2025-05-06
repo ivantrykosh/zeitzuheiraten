@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-// todo split into two different view model for corresponding screens
 @HiltViewModel
 class BudgetPickerViewModel @Inject constructor(
     private val getPostsByBudgetUseCase: GetPostsByBudgetUseCase,

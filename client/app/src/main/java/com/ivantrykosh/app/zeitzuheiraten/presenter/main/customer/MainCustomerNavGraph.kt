@@ -169,8 +169,8 @@ fun MainCustomerNavGraph(navController: NavHostController, navigateToAuth: () ->
             ProfileScreen(
                 userId = userId,
                 navigateBack = { navController.popBackStack() },
-                onOpenChatClicked = { userId, username ->
-                    navController.navigate(Screen.MainCustomerScreen.ChatScreen.route + "?chatId=${null}&userId=$userId&username=$username")
+                onOpenChatClicked = { idOfUser, username ->
+                    navController.navigate(Screen.MainCustomerScreen.ChatScreen.route + "?chatId=${null}&userId=$idOfUser&username=$username")
                 },
             )
         }

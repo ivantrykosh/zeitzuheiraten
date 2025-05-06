@@ -26,14 +26,14 @@ class CreateMessageUseCase @Inject constructor(
             emit(Resource.Loading())
             val currentDateTime = Instant.now().toEpochMilli()
             val sender = userAuthRepository.getCurrentUserId()
-            val message = Message(
+            val messageToSend = Message(
                 message = message,
                 senderId = sender,
                 dateTime = currentDateTime
             )
             val newChatId = chatId ?:
                 chatRepository.createChat(sender, otherUserId!!, dateTime = currentDateTime)
-            messageRepository.createMessage(newChatId, message)
+            messageRepository.createMessage(newChatId, messageToSend)
             emit(Resource.Success())
         } catch (e: Exception) {
             Log.e(LOG_TAG, e.message ?: "An error occurred")

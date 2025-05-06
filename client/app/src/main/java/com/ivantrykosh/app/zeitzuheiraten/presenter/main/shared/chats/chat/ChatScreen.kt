@@ -14,12 +14,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
@@ -37,6 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -96,7 +94,7 @@ fun ChatScreen(
                         onClick = navigateBack
                     ) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
+                            painter = painterResource(R.drawable.baseline_arrow_back_24),
                             contentDescription = stringResource(R.string.back)
                         )
                     }
@@ -120,7 +118,7 @@ fun ChatScreen(
                     }
                     if (messagesViewModel.anyNewMessages) {
                         item {
-                            Divider(modifier = Modifier.fillMaxWidth())
+                            HorizontalDivider(modifier = Modifier.fillMaxWidth())
                             Text(
                                 text = stringResource(R.string.load_more),
                                 fontSize = 16.sp,
@@ -178,7 +176,7 @@ fun ChatScreen(
                     enabled = messageValue.trim().isNotEmpty()
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Send,
+                        painter = painterResource(R.drawable.baseline_send_24),
                         contentDescription = stringResource(R.string.send_message),
                         modifier = Modifier.size(30.dp)
                     )

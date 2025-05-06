@@ -59,7 +59,7 @@ class CreatePostUseCase @Inject constructor(
                 val userId = userAuthRepository.getCurrentUserId()
                 if (userId.isNotEmpty()) {
                     if (downloadUrls.isNotEmpty()) {
-                        downloadUrls.forEachIndexed { index, image ->
+                        downloadUrls.forEachIndexed { index, _ ->
                             firebaseStorageRepository.deleteImage("$userId/$postId/$index")
                         }
                     }

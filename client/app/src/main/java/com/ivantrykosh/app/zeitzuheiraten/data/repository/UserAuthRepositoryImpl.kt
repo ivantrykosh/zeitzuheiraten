@@ -19,24 +19,12 @@ class UserAuthRepositoryImpl @Inject constructor(
         firebaseAuth.signOut()
     }
 
-    override suspend fun resetPassword(email: String) {
-        firebaseAuth.resetPassword(email)
-    }
-
     override suspend fun deleteCurrentUser() {
         firebaseAuth.deleteCurrentUser()
     }
 
     override suspend fun getCurrentUserId(): String {
         return firebaseAuth.getCurrentUserId()
-    }
-
-    override suspend fun sendVerificationEmail() {
-        firebaseAuth.sendVerificationEmail()
-    }
-
-    override suspend fun isEmailVerified(): Boolean {
-        return firebaseAuth.isEmailVerified()
     }
 
     override suspend fun reAuthenticate(email: String, password: String) {

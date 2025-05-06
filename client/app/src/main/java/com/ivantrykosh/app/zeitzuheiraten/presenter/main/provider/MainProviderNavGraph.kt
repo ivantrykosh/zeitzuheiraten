@@ -136,8 +136,8 @@ fun MainProviderNavGraph(navController: NavHostController, navigateToAuth: () ->
             ProfileScreen(
                 userId = userId,
                 navigateBack = { navController.popBackStack() },
-                onOpenChatClicked = { userId, username ->
-                    navController.navigate(Screen.MainProviderScreen.ChatScreen.route + "?chatId=${null}&userId=$userId&username=$username")
+                onOpenChatClicked = { idOfUser, username ->
+                    navController.navigate(Screen.MainProviderScreen.ChatScreen.route + "?chatId=${null}&userId=$idOfUser&username=$username")
                 },
             )
         }
