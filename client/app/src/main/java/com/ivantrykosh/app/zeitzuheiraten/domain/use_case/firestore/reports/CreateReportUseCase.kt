@@ -18,10 +18,10 @@ class CreateReportUseCase @Inject constructor(
     operator fun invoke(reportedUserId: String, description: String) = flow<Resource<Unit>> {
         try {
             emit(Resource.Loading())
-            val userIdWhoReported = userAuthRepository.getCurrentUserId()
+            val userIdWhoReport = userAuthRepository.getCurrentUserId()
             val dateTime = Instant.now().toEpochMilli()
             val report = ReportUser(
-                userIdWhoReport = userIdWhoReported,
+                userIdWhoReport = userIdWhoReport,
                 reportedUserId = reportedUserId,
                 dateTime = dateTime,
                 description = description,

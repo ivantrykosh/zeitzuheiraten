@@ -45,6 +45,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -91,7 +92,7 @@ fun EditPostScreen(
     val context = LocalContext.current
     val contentResolver = context.contentResolver
 
-    var citiesValue = rememberSaveable { mutableStateListOf<String>() }
+    var citiesValue = remember { mutableStateListOf<String>() }
     val citiesValueError = stringResource(R.string.you_need_to_add_at_least_one_city)
     val cities = stringArrayResource(R.array.cities)
     var isCitiesExpanded by rememberSaveable { mutableStateOf(false) }
@@ -102,10 +103,10 @@ fun EditPostScreen(
     var description by rememberSaveable { mutableStateOf("") }
     val descriptionError = stringResource(R.string.you_need_to_add_description)
 
-    var notAvailableDateRanges = rememberSaveable { mutableStateListOf<DatePair>() }
+    var notAvailableDateRanges = remember { mutableStateListOf<DatePair>() }
     var isDateRangePickerShowed by rememberSaveable { mutableStateOf(false) }
 
-    var pickedImages = rememberSaveable { mutableStateListOf<Uri>() }
+    var pickedImages = remember { mutableStateListOf<Uri>() }
     val pickedImagesError = stringResource(R.string.you_need_to_add_at_least_one_image)
     val pickPostImages = rememberLauncherForActivityResult(contract = ActivityResultContracts.PickMultipleVisualMedia(maxItems = MAX_IMAGES_PER_POST)) { uris ->
         if (uris.isNotEmpty()) {

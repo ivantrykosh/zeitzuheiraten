@@ -3,6 +3,7 @@ package com.ivantrykosh.app.zeitzuheiraten.data.remote.firebase.firestore
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.Chat
 import com.ivantrykosh.app.zeitzuheiraten.utils.Collections
@@ -43,7 +44,7 @@ class FirestoreChats(private val firestore: FirebaseFirestore = Firebase.firesto
     suspend fun getChatsForUser(userId: String, startAfterLast: Boolean, pageSize: Int): List<Chat> {
         return firestore.collection(Collections.CHATS)
             .whereArrayContains(Chat::users.name, userId)
-            .orderBy(Chat::creationDateTime.name) // order by time of last message
+            .orderBy(Chat::creationDateTime.name, Query.Direction.DESCENDING)
             .let {
                 if (startAfterLast) {
                     it.startAfter(lastVisibleChat)

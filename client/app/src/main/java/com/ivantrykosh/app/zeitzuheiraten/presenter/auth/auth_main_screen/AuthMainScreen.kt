@@ -1,5 +1,6 @@
 package com.ivantrykosh.app.zeitzuheiraten.presenter.auth.auth_main_screen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -14,6 +15,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
@@ -30,7 +33,7 @@ fun AuthMainScreen(
     navigateToSignUpPage: () -> Unit = { }
 ) {
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize().background(color = Color.White)
     ) {
         Column(
             modifier = Modifier
@@ -38,10 +41,11 @@ fun AuthMainScreen(
                 .align(Alignment.Center)
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.ic_launcher_foreground), // TODO change app icon
+                painter = painterResource(id = R.mipmap.ic_launcher_foreground),
                 contentDescription = stringResource(id = R.string.app_icon),
-                modifier = Modifier.padding(8.dp).align(Alignment.CenterHorizontally),
+                modifier = Modifier.padding(8.dp).align(Alignment.CenterHorizontally).scale(3f),
             )
+            Spacer(modifier = Modifier.height(10.dp))
             Text(
                 text = stringResource(id = R.string.app_name),
                 fontSize = 64.sp,

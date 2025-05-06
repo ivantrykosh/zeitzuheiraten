@@ -1,5 +1,6 @@
 package com.ivantrykosh.app.zeitzuheiraten.presenter.splash_screen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,12 +17,12 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivantrykosh.app.zeitzuheiraten.R
@@ -38,12 +39,12 @@ fun SplashScreen(
     var loaded by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(key1 = 0) {
-        delay(1000)
+        delay(2000)
         splashViewModel.isUserLoggedIn()
     }
 
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize().background(color = Color.White)
     ) {
         Column(
             modifier = Modifier
@@ -51,15 +52,9 @@ fun SplashScreen(
                 .align(Alignment.Center)
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.ic_launcher_foreground), // TODO change app icon
+                painter = painterResource(id = R.mipmap.ic_launcher_foreground),
                 contentDescription = stringResource(id = R.string.app_icon),
-                modifier = Modifier.padding(8.dp)
-            )
-            Text(
-                text = stringResource(id = R.string.app_name),
-                fontSize = 20.sp,
-                modifier = Modifier.padding(8.dp),
-                textAlign = TextAlign.Center
+                modifier = Modifier.padding(8.dp).scale(3f)
             )
         }
     }

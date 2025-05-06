@@ -96,6 +96,8 @@ dependencies {
     testImplementation("org.mockito:mockito-inline:4.5.1")
     testImplementation("org.mockito.kotlin:mockito-kotlin:3.0.0")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0-RC.2")
+
+    implementation("androidx.core:core-splashscreen:1.0.1")
 }
 
 // Allow references to generated code

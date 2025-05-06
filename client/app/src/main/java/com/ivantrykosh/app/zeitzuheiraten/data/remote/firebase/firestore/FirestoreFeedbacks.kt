@@ -1,14 +1,10 @@
 package com.ivantrykosh.app.zeitzuheiraten.data.remote.firebase.firestore
 
 import com.google.firebase.Firebase
-import com.google.firebase.firestore.AggregateField
-import com.google.firebase.firestore.AggregateSource
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.Feedback
-import com.ivantrykosh.app.zeitzuheiraten.domain.model.PostWithRating
-import com.ivantrykosh.app.zeitzuheiraten.domain.model.Rating
 import com.ivantrykosh.app.zeitzuheiraten.utils.Collections
 import kotlinx.coroutines.tasks.await
 
@@ -31,24 +27,6 @@ class FirestoreFeedbacks(private val firestore: FirebaseFirestore = Firebase.fir
             .document()
             .set(feedbackData)
             .await()
-        // update average rating for post
-        val rating = getRatingForPost(feedback.postId)
-        firestore.collection(Collections.POSTS)
-            .document(feedback.postId)
-            .update(PostWithRating::rating.name, rating)
-            .await()
-    }
-
-    suspend fun getRatingForPost(postId: String): Rating {
-        val result = firestore.collection(Collections.FEEDBACKS)
-            .whereEqualTo(Feedback::postId.name, postId)
-            .aggregate(AggregateField.average(Feedback::rating.name), AggregateField.count())
-            .get(AggregateSource.SERVER)
-            .await()
-        return Rating(
-            result.get(AggregateField.average(Feedback::rating.name)) ?: 0.0,
-            result.get(AggregateField.count()),
-        )
     }
 
     suspend fun getFeedbacksForPost(postId: String, startAfterLast: Boolean, pageSize: Int): List<Feedback> {
@@ -100,17 +78,9 @@ class FirestoreFeedbacks(private val firestore: FirebaseFirestore = Firebase.fir
     }
 
     suspend fun deleteFeedback(id: String) {
-        val document = firestore.collection(Collections.FEEDBACKS)
+        firestore.collection(Collections.FEEDBACKS)
             .document(id)
-        val feedback = document.get().await().toObject(Feedback::class.java)!!
-        document
             .delete()
-            .await()
-        // update average rating for post
-        val rating = getRatingForPost(feedback.postId)
-        firestore.collection(Collections.POSTS)
-            .document(feedback.postId)
-            .update(PostWithRating::rating.name, rating)
             .await()
     }
 
@@ -123,7 +93,6 @@ class FirestoreFeedbacks(private val firestore: FirebaseFirestore = Firebase.fir
             .forEach {
                 it.reference.delete().await()
             }
-        // todo update average rating for post
     }
 
     suspend fun deleteFeedbacksForUser(userId: String) {
@@ -135,6 +104,5 @@ class FirestoreFeedbacks(private val firestore: FirebaseFirestore = Firebase.fir
             .forEach {
                 it.reference.delete().await()
             }
-        // todo update average rating for post
     }
 }

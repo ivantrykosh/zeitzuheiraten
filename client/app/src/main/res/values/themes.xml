@@ -2,4 +2,10 @@
 <resources>
 
     <style name="Theme.ZeitZuHeiraten" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="Theme.ZeitZuHeiraten.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/white</item>
+        <item name="windowSplashScreenAnimatedIcon">@color/white</item>
+        <item name="postSplashScreenTheme">@style/Theme.ZeitZuHeiraten</item>
+    </style>
 </resources>

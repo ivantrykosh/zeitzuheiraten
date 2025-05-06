@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ivantrykosh.app.zeitzuheiraten.R
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.Rating
+import com.ivantrykosh.app.zeitzuheiraten.presenter.ui.theme.LightYellow
 
 @Composable
 fun RatingView(
@@ -61,7 +62,7 @@ fun RatingView(
                 if (filled > 0f) {
                     ClipStarOverlay(
                         fraction = filled,
-                        color = Color.Yellow
+                        color = LightYellow
                     )
                 }
             }
