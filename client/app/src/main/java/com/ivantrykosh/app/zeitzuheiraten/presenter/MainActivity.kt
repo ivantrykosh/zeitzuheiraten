@@ -17,7 +17,10 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val navController = rememberNavController()
-            ZeitZuHeiratenTheme(darkTheme = false) {
+            ZeitZuHeiratenTheme(
+                darkTheme = false,
+                dynamicColor = false,
+            ) {
                 NavGraph(navController = navController)
             }
         }

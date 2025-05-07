@@ -1,5 +1,6 @@
 package com.ivantrykosh.app.zeitzuheiraten.presenter.main.provider.home_screen
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,6 +17,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -39,6 +41,7 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.google.firebase.FirebaseNetworkException
 import com.ivantrykosh.app.zeitzuheiraten.R
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.CustomCircularProgressIndicator
+import com.ivantrykosh.app.zeitzuheiraten.presenter.ui.theme.MediumGray
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -105,7 +108,10 @@ fun HomeScreen(
             }
             if (!homeScreenViewModel.isLimitOfPostsReached()) {
                 Box(modifier = Modifier.padding(end = 16.dp, bottom = 16.dp)) {
-                    ExtendedFloatingActionButton(onClick = navigateToAddPostScreen) {
+                    ExtendedFloatingActionButton(
+                        onClick = navigateToAddPostScreen,
+                        modifier = Modifier.border(2.dp, MediumGray, FloatingActionButtonDefaults.extendedFabShape)
+                    ) {
                         Icon(
                             imageVector = Icons.Default.Add,
                             contentDescription = stringResource(R.string.add_post)

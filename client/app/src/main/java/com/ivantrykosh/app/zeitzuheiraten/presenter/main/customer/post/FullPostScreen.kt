@@ -124,6 +124,7 @@ fun FullPostScreen(
                     .padding(horizontal = 16.dp)
                     .verticalScroll(rememberScrollState()),
             ) {
+                Spacer(modifier = Modifier.height(16.dp))
                 if (!post!!.enabled) {
                     Text(
                         text = stringResource(R.string.post_is_not_enabled),
@@ -131,8 +132,8 @@ fun FullPostScreen(
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth()
                     )
+                    Spacer(modifier = Modifier.height(8.dp))
                 }
-                Spacer(modifier = Modifier.height(8.dp))
 
                 if (post!!.photosUrl.isNotEmpty()) {
                     LazyRow(

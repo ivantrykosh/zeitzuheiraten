@@ -45,6 +45,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.firebase.FirebaseNetworkException
 import com.ivantrykosh.app.zeitzuheiraten.R
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.CustomCircularProgressIndicator
+import com.ivantrykosh.app.zeitzuheiraten.presenter.ui.theme.DarkGray
+import com.ivantrykosh.app.zeitzuheiraten.presenter.ui.theme.MediumGray
 import com.ivantrykosh.app.zeitzuheiraten.utils.Constants.MAX_SYMBOLS_FOR_MESSAGE
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -165,6 +167,7 @@ fun ChatScreen(
                     )
                 )
                 Spacer(modifier = Modifier.width(8.dp))
+                val sendEnabled = messageValue.trim().isNotEmpty()
                 IconButton(
                     onClick = {
                         val message = messageValue.trim()
@@ -173,12 +176,13 @@ fun ChatScreen(
                             messageValue = ""
                         }
                     },
-                    enabled = messageValue.trim().isNotEmpty()
+                    enabled = sendEnabled
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.baseline_send_24),
                         contentDescription = stringResource(R.string.send_message),
-                        modifier = Modifier.size(30.dp)
+                        modifier = Modifier.size(30.dp),
+                        tint = if (sendEnabled) DarkGray else MediumGray
                     )
                 }
             }

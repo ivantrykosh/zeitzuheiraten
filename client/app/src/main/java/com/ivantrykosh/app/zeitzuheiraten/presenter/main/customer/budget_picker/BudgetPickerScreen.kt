@@ -1,24 +1,27 @@
 package com.ivantrykosh.app.zeitzuheiraten.presenter.main.customer.budget_picker
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -33,6 +36,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
@@ -91,6 +95,7 @@ fun BudgetPickerScreen(
             modifier = Modifier
                 .padding(it).padding(horizontal = 16.dp)
         ) {
+            Spacer(modifier = Modifier.height(16.dp))
             Column(
                 modifier = Modifier.verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -136,9 +141,17 @@ fun BudgetPickerScreen(
                     }
                 }
                 if (chosenCategories.size < categories.size) {
-                    OutlinedButton(
-                        onClick = { showAddCategoryDialog = true },
-                        modifier = Modifier.fillMaxWidth()
+                    Button(
+                        onClick = {
+                            showAddCategoryDialog = true
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RectangleShape,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.White,
+                            contentColor = Color.Black
+                        ),
+                        border = BorderStroke(2.dp, color = Color.Black)
                     ) {
                         Text(
                             text = stringResource(R.string.add_category).uppercase(),
@@ -151,7 +164,7 @@ fun BudgetPickerScreen(
                 modifier = Modifier.weight(1f).padding(bottom = 8.dp),
                 verticalAlignment = Alignment.Bottom
             ) {
-                FilledTonalButton(
+                Button(
                     onClick = {
                         if (cityValue.isEmpty()) {
                             showAlertDialog = true
@@ -166,7 +179,13 @@ fun BudgetPickerScreen(
                             navigateToPosts()
                         }
                     },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RectangleShape,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Black,
+                        contentColor = Color.White
+                    ),
+                    border = BorderStroke(2.dp, color = Color.Black)
                 ) {
                     Text(
                         text = stringResource(R.string.find_posts).uppercase(),

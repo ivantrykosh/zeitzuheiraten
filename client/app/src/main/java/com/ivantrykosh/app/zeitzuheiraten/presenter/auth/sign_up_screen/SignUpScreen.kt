@@ -14,9 +14,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
@@ -51,7 +51,6 @@ import com.ivantrykosh.app.zeitzuheiraten.R
 import com.ivantrykosh.app.zeitzuheiraten.presenter.InputField
 import com.ivantrykosh.app.zeitzuheiraten.presenter.auth.PasswordInputField
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.CustomCircularProgressIndicator
-import com.ivantrykosh.app.zeitzuheiraten.presenter.ui.theme.PurpleGrey80
 import com.ivantrykosh.app.zeitzuheiraten.utils.Constants.MAX_SYMBOLS_FOR_USERNAME
 import com.ivantrykosh.app.zeitzuheiraten.utils.isEmailValid
 import com.ivantrykosh.app.zeitzuheiraten.utils.isFileSizeAppropriate
@@ -124,9 +123,6 @@ fun SignUpScreen(
         ) {
             Card(
                 modifier = Modifier.align(Alignment.Center),
-                colors = CardDefaults.cardColors(
-                    containerColor = PurpleGrey80
-                )
             ) {
                 Column(
                     modifier = Modifier.padding(8.dp)
@@ -223,7 +219,11 @@ fun SignUpScreen(
                             .fillMaxWidth()
                     ) {
                         Checkbox(checked = isProvider, onCheckedChange = { isProvider = it })
-                        Text(text = stringResource(id = R.string.im_provider), fontSize = 16.sp)
+                        Text(
+                            text = stringResource(id = R.string.im_provider),
+                            fontSize = 16.sp,
+                            modifier = Modifier.clickable { isProvider = !isProvider }
+                        )
                     }
 
                     FilledTonalButton(
@@ -257,6 +257,7 @@ fun SignUpScreen(
                                 )
                             }
                         },
+                        shape = RoundedCornerShape(33f),
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(8.dp)

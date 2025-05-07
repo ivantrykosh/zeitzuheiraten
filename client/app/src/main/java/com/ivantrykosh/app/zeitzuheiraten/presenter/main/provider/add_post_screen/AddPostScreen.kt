@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -27,10 +29,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
@@ -47,6 +50,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -147,6 +152,7 @@ fun AddPostScreen(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            Spacer(modifier = Modifier.height(16.dp))
             ItemWithDropdownMenu(
                 currentValue = categoryValue,
                 onValueChange = { categoryValue = it },
@@ -321,7 +327,7 @@ fun AddPostScreen(
             }
             Column {
                 if (pickedImages.isEmpty()) {
-                    OutlinedButton(
+                    Button(
                         onClick = {
                             pickPostImages.launch(
                                 PickVisualMediaRequest(
@@ -329,7 +335,13 @@ fun AddPostScreen(
                                 )
                             )
                         },
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RectangleShape,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.White,
+                            contentColor = Color.Black
+                        ),
+                        border = BorderStroke(2.dp, color = Color.Black)
                     ) {
                         Text(
                             text = stringResource(R.string.add_images),
@@ -361,9 +373,15 @@ fun AddPostScreen(
                     }
                 }
                 if (pickedImages.isNotEmpty()) {
-                    OutlinedButton(
+                    Button(
                         onClick = { pickedImages.clear() },
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RectangleShape,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.White,
+                            contentColor = Color.Black
+                        ),
+                        border = BorderStroke(2.dp, color = Color.Black)
                     ) {
                         Text(
                             text = stringResource(R.string.remove_images),
@@ -372,7 +390,7 @@ fun AddPostScreen(
                     }
                 }
             }
-            FilledTonalButton(
+            Button(
                 onClick = {
                     description.trim()
                     if (categoryValue.isEmpty()) {
@@ -394,7 +412,13 @@ fun AddPostScreen(
                         addPostViewModel.createPost(categoryValue, citiesValue, minPrice.toInt(), description, notAvailableDateRanges, pickedImages)
                     }
                 },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                shape = RectangleShape,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Black,
+                    contentColor = Color.White
+                ),
+                border = BorderStroke(2.dp, color = Color.Black)
             ) {
                 Text(
                     text = stringResource(R.string.add_post),

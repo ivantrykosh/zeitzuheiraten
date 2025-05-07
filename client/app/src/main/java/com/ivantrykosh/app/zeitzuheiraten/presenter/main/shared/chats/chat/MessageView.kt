@@ -19,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.ChatMessage
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.TextWithLinks
+import com.ivantrykosh.app.zeitzuheiraten.presenter.ui.theme.EmphasizedMessageColor
 import com.ivantrykosh.app.zeitzuheiraten.utils.toStringDateTime
 
 @Composable
@@ -35,7 +36,7 @@ fun MessageView(
         ) {
             Card(
                 colors = CardDefaults.cardColors(
-                    containerColor = if (message.isMyMessage) Color.Green else Color.LightGray,
+                    containerColor = if (message.isMyMessage) EmphasizedMessageColor else Color.LightGray,
                     contentColor = Color.Black,
                 )
             ) {
