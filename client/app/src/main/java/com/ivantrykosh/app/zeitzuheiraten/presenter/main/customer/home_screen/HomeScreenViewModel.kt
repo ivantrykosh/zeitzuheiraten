@@ -1,16 +1,13 @@
 package com.ivantrykosh.app.zeitzuheiraten.presenter.main.customer.home_screen
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.PostWithRating
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.posts.GetPostsByFiltersUseCase
+import com.ivantrykosh.app.zeitzuheiraten.presenter.loadPaginatedData
 import com.ivantrykosh.app.zeitzuheiraten.utils.PostsOrderType
-import com.ivantrykosh.app.zeitzuheiraten.utils.Resource
 import com.ivantrykosh.app.zeitzuheiraten.utils.State
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 @HiltViewModel
@@ -18,7 +15,7 @@ class HomeScreenViewModel @Inject constructor(
     private val getPostsByFiltersUseCase: GetPostsByFiltersUseCase,
 ) : ViewModel() {
 
-    var getPosts = MutableStateFlow(State<List<PostWithRating>>())
+    var getPosts = MutableStateFlow(State<Unit>())
         private set
 
     var lastPosts = MutableStateFlow(emptyList<PostWithRating>())
@@ -39,43 +36,21 @@ class HomeScreenViewModel @Inject constructor(
     private var pageSize = 10
 
     init {
-        getPostsByFilters(lastCategory, lastCity, lastMaxPrice, lastPostsOrderType)
+        getPostsByFilters(lastCategory, lastCity, lastMaxPrice, lastPostsOrderType, reset = true)
     }
 
-    fun getPostsByFilters(category: String, city: String, maxPrice: Int?, postsOrderType: PostsOrderType) {
+    fun getPostsByFilters(category: String, city: String, maxPrice: Int?, postsOrderType: PostsOrderType, reset: Boolean) {
         lastCategory = category
         lastCity = city
         lastMaxPrice = maxPrice
         lastPostsOrderType = postsOrderType
-        anyNewPosts = true
-        getPostsByFiltersUseCase(category, city, maxPrice, false, pageSize, postsOrderType).onEach { result ->
-            getPosts.value = when (result) {
-                is Resource.Error -> State(error = result.error)
-                is Resource.Loading -> State(loading = true)
-                is Resource.Success -> {
-                    if (result.data!!.size < pageSize) {
-                        anyNewPosts = false
-                    }
-                    lastPosts.value = result.data
-                    State(data = lastPosts.value)
-                }
-            }
-        }.launchIn(viewModelScope)
-    }
-
-    fun getNewPostsByFilters(category: String, city: String, maxPrice: Int?, postsOrderType: PostsOrderType) {
-        getPostsByFiltersUseCase(category, city, maxPrice, true, pageSize, postsOrderType).onEach { result ->
-            getPosts.value = when (result) {
-                is Resource.Error -> State(error = result.error)
-                is Resource.Loading -> State(loading = true)
-                is Resource.Success -> {
-                    if (result.data!!.size < pageSize) {
-                        anyNewPosts = false
-                    }
-                    lastPosts.value = lastPosts.value.plus(result.data)
-                    State(data = lastPosts.value)
-                }
-            }
-        }.launchIn(viewModelScope)
+        loadPaginatedData(
+            reset = reset,
+            pageSize = pageSize,
+            anyNewItems = { anyNewPosts = it },
+            stateFlow = getPosts,
+            resultFlow = lastPosts,
+            useCaseCall = { size -> getPostsByFiltersUseCase(category, city, maxPrice, !reset, size, postsOrderType) }
+        )
     }
 }

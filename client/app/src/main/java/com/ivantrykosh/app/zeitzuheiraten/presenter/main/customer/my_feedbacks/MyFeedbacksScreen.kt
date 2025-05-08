@@ -59,7 +59,7 @@ fun MyFeedbacksScreen(
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = feedbacksState.loading || deleteFeedbackState.loading)
 
     LaunchedEffect(0) {
-        myFeedbacksViewModel.getFeedbacks()
+        myFeedbacksViewModel.getFeedbacks(reset = true)
     }
 
     Scaffold(
@@ -84,7 +84,7 @@ fun MyFeedbacksScreen(
             state = swipeRefreshState,
             onRefresh = {
                 loaded = false
-                myFeedbacksViewModel.getFeedbacks()
+                myFeedbacksViewModel.getFeedbacks(reset = true)
             },
             indicator = { state, _ ->
                 if (state.isRefreshing) {
@@ -125,7 +125,7 @@ fun MyFeedbacksScreen(
                                     modifier = Modifier.fillMaxWidth()
                                         .clickable {
                                             loaded = false
-                                            myFeedbacksViewModel.getNewFeedbacks()
+                                            myFeedbacksViewModel.getFeedbacks(reset = false)
                                         }
                                         .padding(8.dp)
                                 )

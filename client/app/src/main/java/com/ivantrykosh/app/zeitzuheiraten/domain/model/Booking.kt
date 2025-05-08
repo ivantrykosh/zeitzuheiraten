@@ -2,6 +2,7 @@ package com.ivantrykosh.app.zeitzuheiraten.domain.model
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.ivantrykosh.app.zeitzuheiraten.utils.BookingStatus
 
 data class Booking(
     val id: String = "",
@@ -12,9 +13,7 @@ data class Booking(
     val providerId: String = "",
     val provider: String = "",
     val dateRange: DatePair = DatePair(),
-    val confirmed: Boolean = false,
-    val canceled: Boolean = false,
-    val serviceProvided: Boolean = false,
+    val status: BookingStatus = BookingStatus.NOT_CONFIRMED,
     val creationTime: Long = 0,
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
@@ -26,9 +25,7 @@ data class Booking(
         parcel.readString()!!,
         parcel.readString()!!,
         parcel.readTypedObject<DatePair>(DatePair.CREATOR)!!,
-        parcel.readByte() != 0.toByte(),
-        parcel.readByte() != 0.toByte(),
-        parcel.readByte() != 0.toByte(),
+        BookingStatus.stringToValue(parcel.readString()!!),
         parcel.readLong(),
     ) {
     }
@@ -42,9 +39,7 @@ data class Booking(
         parcel.writeString(providerId)
         parcel.writeString(provider)
         parcel.writeTypedObject(dateRange, 0)
-        parcel.writeByte(if (confirmed) 1 else 0)
-        parcel.writeByte(if (canceled) 1 else 0)
-        parcel.writeByte(if (serviceProvided) 1 else 0)
+        parcel.writeString(status.name)
         parcel.writeLong(creationTime)
     }
 

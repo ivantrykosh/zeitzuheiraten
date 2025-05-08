@@ -75,6 +75,21 @@ enum class BookingsFilterType(
     }
 }
 
+enum class BookingStatus {
+    NOT_CONFIRMED, CONFIRMED, CANCELED, SERVICE_PROVIDED;
+
+    companion object {
+        fun stringToValue(name: String): BookingStatus {
+            for (entry in entries) {
+                if (entry.name == name) {
+                    return entry
+                }
+            }
+            throw IllegalArgumentException("Booking status with name $name does not exist")
+        }
+    }
+}
+
 fun Context.getAppLocale(): Locale {
     return this.resources.configuration.locales[0]
 }

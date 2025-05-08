@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.Feedback
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.feedbacks.DeleteFeedbackUseCase
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.feedbacks.GetFeedbacksForCurrentUserUseCase
+import com.ivantrykosh.app.zeitzuheiraten.presenter.loadPaginatedData
 import com.ivantrykosh.app.zeitzuheiraten.utils.Resource
 import com.ivantrykosh.app.zeitzuheiraten.utils.State
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -37,37 +38,15 @@ class MyFeedbacksViewModel @Inject constructor(
         deleteFeedbackState.value = State()
     }
 
-    fun getFeedbacks() {
-        anyNewFeedbacks = true
-        getFeedbacksForUserUseCase(false, pageSize).onEach { result ->
-            getFeedbacksState.value = when (result) {
-                is Resource.Error -> State(error = result.error)
-                is Resource.Loading -> State(loading = true)
-                is Resource.Success -> {
-                    if (result.data!!.size < pageSize) {
-                        anyNewFeedbacks = false
-                    }
-                    lastFeedbacks.value = result.data
-                    State(data = Unit)
-                }
-            }
-        }.launchIn(viewModelScope)
-    }
-
-    fun getNewFeedbacks() {
-        getFeedbacksForUserUseCase(true, pageSize).onEach { result ->
-            getFeedbacksState.value = when (result) {
-                is Resource.Error -> State(error = result.error)
-                is Resource.Loading -> State(loading = true)
-                is Resource.Success -> {
-                    if (result.data!!.size < pageSize) {
-                        anyNewFeedbacks = false
-                    }
-                    lastFeedbacks.value = lastFeedbacks.value.plus(result.data)
-                    State(data = Unit)
-                }
-            }
-        }.launchIn(viewModelScope)
+    fun getFeedbacks(reset: Boolean) {
+        loadPaginatedData(
+            reset = reset,
+            pageSize = pageSize,
+            anyNewItems = { anyNewFeedbacks = it },
+            stateFlow = getFeedbacksState,
+            resultFlow = lastFeedbacks,
+            useCaseCall = { size -> getFeedbacksForUserUseCase(!reset, size) }
+        )
     }
 
     fun deleteFeedback(id: String) {

@@ -41,6 +41,7 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.google.firebase.FirebaseNetworkException
 import com.ivantrykosh.app.zeitzuheiraten.R
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.CustomCircularProgressIndicator
+import com.ivantrykosh.app.zeitzuheiraten.presenter.main.shared.PostItem
 import com.ivantrykosh.app.zeitzuheiraten.presenter.ui.theme.MediumGray
 
 @OptIn(ExperimentalMaterial3Api::class)

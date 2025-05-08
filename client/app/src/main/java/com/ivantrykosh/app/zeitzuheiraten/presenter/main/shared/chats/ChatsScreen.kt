@@ -52,7 +52,7 @@ fun ChatsScreen(
         state = swipeRefreshState,
         onRefresh = {
             loaded = false
-            chatsScreenViewModel.getChats()
+            chatsScreenViewModel.getChats(reset = true)
         },
         indicator = { state, _ ->
             if (state.isRefreshing) {
@@ -90,7 +90,7 @@ fun ChatsScreen(
                                 modifier = Modifier.fillMaxWidth()
                                     .clickable {
                                         loaded = false
-                                        chatsScreenViewModel.getNewChats()
+                                        chatsScreenViewModel.getChats(reset = false)
                                     }
                                     .padding(8.dp)
                             )

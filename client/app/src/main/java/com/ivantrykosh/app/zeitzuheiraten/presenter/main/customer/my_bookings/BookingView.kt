@@ -40,6 +40,7 @@ import com.ivantrykosh.app.zeitzuheiraten.presenter.ui.theme.DarkBronze
 import com.ivantrykosh.app.zeitzuheiraten.presenter.ui.theme.Gray
 import com.ivantrykosh.app.zeitzuheiraten.presenter.ui.theme.Green
 import com.ivantrykosh.app.zeitzuheiraten.presenter.ui.theme.Red
+import com.ivantrykosh.app.zeitzuheiraten.utils.BookingStatus
 import com.ivantrykosh.app.zeitzuheiraten.utils.toStringDate
 
 @Composable
@@ -118,17 +119,17 @@ fun BookingView(
                 text = dateText,
                 fontSize = 16.sp
             )
-            val color = when {
-                booking.serviceProvided -> Gray
-                booking.canceled -> Red
-                booking.confirmed -> Green
-                else -> DarkBronze
+            val color = when (booking.status) {
+                BookingStatus.NOT_CONFIRMED -> DarkBronze
+                BookingStatus.CONFIRMED -> Green
+                BookingStatus.CANCELED -> Red
+                BookingStatus.SERVICE_PROVIDED -> Gray
             }
-            val status = when {
-                booking.serviceProvided -> R.string.service_provided
-                booking.canceled -> R.string.booking_canceled
-                booking.confirmed -> R.string.booking_confirmed
-                else -> R.string.booking_not_confirmed
+            val status = when (booking.status) {
+                BookingStatus.NOT_CONFIRMED -> R.string.booking_not_confirmed
+                BookingStatus.CONFIRMED -> R.string.booking_confirmed
+                BookingStatus.CANCELED -> R.string.booking_canceled
+                BookingStatus.SERVICE_PROVIDED -> R.string.service_provided
             }
             Text(text = stringResource(status).uppercase(), color = color)
         }
@@ -139,7 +140,7 @@ fun BookingView(
                 y = pressOffset.y - itemHeight
             )
         ) {
-            if (!booking.canceled && !booking.serviceProvided) {
+            if (booking.status == BookingStatus.NOT_CONFIRMED || booking.status == BookingStatus.CONFIRMED) {
                 DropdownMenuItem(
                     text = {
                         Text(stringResource(R.string.customer_menu_change_date))
@@ -150,7 +151,7 @@ fun BookingView(
                     }
                 )
             }
-            if (!booking.canceled && !booking.serviceProvided) {
+            if (booking.status == BookingStatus.NOT_CONFIRMED || booking.status == BookingStatus.CONFIRMED) {
                 DropdownMenuItem(
                     text = {
                         Text(stringResource(R.string.customer_menu_cancel))
@@ -170,7 +171,7 @@ fun BookingView(
                     isContextMenuVisible = false
                 }
             )
-            if (!booking.canceled && !booking.serviceProvided && booking.confirmed) {
+            if (booking.status == BookingStatus.CONFIRMED) {
                 DropdownMenuItem(
                     text = {
                         Text(stringResource(R.string.customer_menu_confirm_service_providing))
@@ -198,9 +199,7 @@ fun BookingViewPreview() {
                 category = "Photography",
                 provider = "Provider Name",
                 dateRange = DatePair(startDate = 1744761600000, endDate = 1745366400000),
-                confirmed = false,
-                canceled = false,
-                serviceProvided = false,
+                status = BookingStatus.NOT_CONFIRMED,
             ),
             onCategoryClicked = {},
             onChangeDate = {},

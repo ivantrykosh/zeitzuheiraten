@@ -57,7 +57,7 @@ fun FeedbackScreen(
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = feedbacksState.loading)
 
     LaunchedEffect(0) {
-        feedbacksViewModel.getFeedbacks(postId)
+        feedbacksViewModel.getFeedbacks(postId, reset = true)
     }
 
     Scaffold(
@@ -82,7 +82,7 @@ fun FeedbackScreen(
             state = swipeRefreshState,
             onRefresh = {
                 loaded = false
-                feedbacksViewModel.getFeedbacks(postId)
+                feedbacksViewModel.getFeedbacks(postId, reset = true)
             },
             indicator = { state, _ ->
                 if (state.isRefreshing) {
@@ -120,7 +120,7 @@ fun FeedbackScreen(
                                     modifier = Modifier.fillMaxWidth()
                                         .clickable {
                                             loaded = false
-                                            feedbacksViewModel.getNewFeedbacks(postId)
+                                            feedbacksViewModel.getFeedbacks(postId, reset = false)
                                         }
                                         .padding(8.dp)
                                 )

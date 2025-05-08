@@ -1,15 +1,12 @@
 package com.ivantrykosh.app.zeitzuheiraten.presenter.main.shared.chats
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.DisplayedChat
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.chats.GetChatsForCurrentUserUseCase
-import com.ivantrykosh.app.zeitzuheiraten.utils.Resource
+import com.ivantrykosh.app.zeitzuheiraten.presenter.loadPaginatedData
 import com.ivantrykosh.app.zeitzuheiraten.utils.State
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 @HiltViewModel
@@ -17,7 +14,7 @@ class ChatsScreenViewModel @Inject constructor(
     private val getChatsForCurrentUserUseCase: GetChatsForCurrentUserUseCase,
 ) : ViewModel() {
 
-    var getChatsState = MutableStateFlow(State<List<DisplayedChat>>())
+    var getChatsState = MutableStateFlow(State<Unit>())
         private set
 
     var lastChats = MutableStateFlow(emptyList<DisplayedChat>())
@@ -29,39 +26,17 @@ class ChatsScreenViewModel @Inject constructor(
     private var pageSize = 10
 
     init {
-        getChats()
+        getChats(reset = true)
     }
 
-    fun getChats() {
-        anyNewChats = true
-        getChatsForCurrentUserUseCase(false, pageSize).onEach { result ->
-            getChatsState.value = when (result) {
-                is Resource.Error -> State(error = result.error)
-                is Resource.Loading -> State(loading = true)
-                is Resource.Success -> {
-                    if (result.data!!.size < pageSize) {
-                        anyNewChats = false
-                    }
-                    lastChats.value = result.data
-                    State(data = lastChats.value)
-                }
-            }
-        }.launchIn(viewModelScope)
-    }
-
-    fun getNewChats() {
-        getChatsForCurrentUserUseCase(true, pageSize).onEach { result ->
-            getChatsState.value = when (result) {
-                is Resource.Error -> State(error = result.error)
-                is Resource.Loading -> State(loading = true)
-                is Resource.Success -> {
-                    if (result.data!!.size < pageSize) {
-                        anyNewChats = false
-                    }
-                    lastChats.value = lastChats.value.plus(result.data)
-                    State(data = lastChats.value)
-                }
-            }
-        }.launchIn(viewModelScope)
+    fun getChats(reset: Boolean) {
+        loadPaginatedData(
+            reset = reset,
+            pageSize = pageSize,
+            anyNewItems = { anyNewChats = it },
+            stateFlow = getChatsState,
+            resultFlow = lastChats,
+            useCaseCall = { size -> getChatsForCurrentUserUseCase(!reset, size) }
+        )
     }
 }

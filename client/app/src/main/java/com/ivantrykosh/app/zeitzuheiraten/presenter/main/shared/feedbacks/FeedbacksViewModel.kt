@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.Feedback
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.auth.GetCurrentUserIdUseCase
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.feedbacks.GetFeedbacksForPostUseCase
+import com.ivantrykosh.app.zeitzuheiraten.presenter.loadPaginatedData
 import com.ivantrykosh.app.zeitzuheiraten.utils.Resource
 import com.ivantrykosh.app.zeitzuheiraten.utils.State
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -47,36 +48,14 @@ class FeedbacksViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    fun getFeedbacks(postId: String) {
-        anyNewFeedbacks = true
-        getFeedbacksForPostUseCase(postId, false, pageSize).onEach { result ->
-            getFeedbacksState.value = when (result) {
-                is Resource.Error -> State(error = result.error)
-                is Resource.Loading -> State(loading = true)
-                is Resource.Success -> {
-                    if (result.data!!.size < pageSize) {
-                        anyNewFeedbacks = false
-                    }
-                    lastFeedbacks.value = result.data
-                    State(data = Unit)
-                }
-            }
-        }.launchIn(viewModelScope)
-    }
-
-    fun getNewFeedbacks(postId: String) {
-        getFeedbacksForPostUseCase(postId, true, pageSize).onEach { result ->
-            getFeedbacksState.value = when (result) {
-                is Resource.Error -> State(error = result.error)
-                is Resource.Loading -> State(loading = true)
-                is Resource.Success -> {
-                    if (result.data!!.size < pageSize) {
-                        anyNewFeedbacks = false
-                    }
-                    lastFeedbacks.value = lastFeedbacks.value.plus(result.data)
-                    State(data = Unit)
-                }
-            }
-        }.launchIn(viewModelScope)
+    fun getFeedbacks(postId: String, reset: Boolean) {
+        loadPaginatedData(
+            reset = reset,
+            pageSize = pageSize,
+            anyNewItems = { anyNewFeedbacks = it },
+            stateFlow = getFeedbacksState,
+            resultFlow = lastFeedbacks,
+            useCaseCall = { size -> getFeedbacksForPostUseCase(postId, !reset, size) }
+        )
     }
 }

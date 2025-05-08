@@ -88,14 +88,14 @@ fun MyBookingsScreen(
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = bookingsState.loading || getNotAvailableDatesState.loading || changeDateState.loading || cancelBookingState.loading || confirmProvidingState.loading || createFeedbackState.loading)
 
     LaunchedEffect(0) {
-        myBookingsViewModel.getBookings(pickedBookingFilterType)
+        myBookingsViewModel.getBookings(pickedBookingFilterType, reset = true)
     }
 
     SwipeRefresh(
         state = swipeRefreshState,
         onRefresh = {
             loaded = false
-            myBookingsViewModel.getBookings(pickedBookingFilterType)
+            myBookingsViewModel.getBookings(pickedBookingFilterType, reset = true)
         },
         indicator = { state, _ ->
             if (state.isRefreshing) {
@@ -121,7 +121,7 @@ fun MyBookingsScreen(
                             pickedBookingFilterType = filter
                             loaded = false
                             myBookingsViewModel.clearLastBookings()
-                            myBookingsViewModel.getBookings(pickedBookingFilterType)
+                            myBookingsViewModel.getBookings(pickedBookingFilterType, reset = true)
                         },
                         colors = ButtonDefaults.textButtonColors(
                             containerColor = if (isCurrent) Color.LightGray else Color.White,
@@ -181,7 +181,7 @@ fun MyBookingsScreen(
                                     .fillMaxWidth()
                                     .clickable {
                                         loaded = false
-                                        myBookingsViewModel.getNewBookings(pickedBookingFilterType)
+                                        myBookingsViewModel.getBookings(pickedBookingFilterType, reset = false)
                                     }
                                     .padding(8.dp)
                             )
@@ -333,7 +333,7 @@ fun MyBookingsScreen(
         DateRangePicker(
             onDateRangeSelected = {
                 loaded = false
-                myBookingsViewModel.changeDate(pickedBookingId!!, it)
+                myBookingsViewModel.changeDate(pickedBookingId!!, it, withLock = true)
             },
             onDismiss = { isDateRangePickerShowed = false },
             selectableDates = BookingSelectableDates(getNotAvailableDatesState.data!!)
@@ -343,7 +343,7 @@ fun MyBookingsScreen(
         DatePicker(
             onDateSelected = {
                 loaded = false
-                myBookingsViewModel.changeDate(pickedBookingId!!, it)
+                myBookingsViewModel.changeDate(pickedBookingId!!, it, withLock = false)
             },
             onDismiss = { isDatePickerShowed = false },
             selectableDates = BookingSelectableDates(getNotAvailableDatesState.data!!)

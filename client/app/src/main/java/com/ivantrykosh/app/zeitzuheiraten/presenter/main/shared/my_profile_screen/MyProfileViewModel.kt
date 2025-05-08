@@ -1,4 +1,4 @@
-package com.ivantrykosh.app.zeitzuheiraten.presenter.main.provider.my_profile_screen
+package com.ivantrykosh.app.zeitzuheiraten.presenter.main.shared.my_profile_screen
 
 import android.net.Uri
 import androidx.lifecycle.ViewModel
@@ -10,6 +10,7 @@ import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.users.Delete
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.users.GetCurrentUserUseCase
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.users.UpdateUserProfileImageUseCase
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.users.UpdateUserUseCase
+import com.ivantrykosh.app.zeitzuheiraten.presenter.clearState
 import com.ivantrykosh.app.zeitzuheiraten.utils.Constants.USER_PROFILE_PICTURE_NAME
 import com.ivantrykosh.app.zeitzuheiraten.utils.Resource
 import com.ivantrykosh.app.zeitzuheiraten.utils.State
@@ -46,6 +47,13 @@ class MyProfileViewModel @Inject constructor(
 
     var reAuthenticateState = MutableStateFlow(State<Unit>())
         private set
+
+    fun clearGetCurrentUserState() = clearState(getCurrentUserState)
+    fun clearUpdateUserState() = clearState(updateUserState)
+    fun clearUpdateUserProfileImageState() = clearState(updateUserProfileImageState)
+    fun clearDeleteUserState() = clearState(deleteUserState)
+    fun clearSignOutState() = clearState(signOutState)
+    fun clearReAuthenticateState() = clearState(reAuthenticateState)
 
     fun getCurrentUser() {
         getCurrentUserUseCase().onEach { result ->

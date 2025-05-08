@@ -344,7 +344,7 @@ fun FullPostScreen(
         DateRangePicker(
             onDateRangeSelected = {
                 loaded = false
-                fullPostScreenViewModel.bookService(postId, it)
+                fullPostScreenViewModel.bookService(postId, it, withLock = true)
             },
             onDismiss = { isDateRangePickerShowed = false },
             selectableDates = BookingSelectableDates(getNotAvailableDatesState.data!!)
@@ -355,7 +355,7 @@ fun FullPostScreen(
         DatePicker(
             onDateSelected = {
                 loaded = false
-                fullPostScreenViewModel.bookService(postId, it)
+                fullPostScreenViewModel.bookService(postId, it, withLock = false)
             },
             onDismiss = { isDatePickerShowed = false },
             selectableDates = BookingSelectableDates(post!!.notAvailableDates)

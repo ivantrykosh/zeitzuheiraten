@@ -99,7 +99,7 @@ fun BookingsScreen(
                                 pickedPostId = post.id
                                 loaded = false
                                 bookingsViewModel.clearLastBookings()
-                                bookingsViewModel.getBookingsForPost(pickedPostId!!, pickedBookingFilterType)
+                                bookingsViewModel.getBookingsForPost(pickedPostId!!, pickedBookingFilterType, reset = true)
                             },
                             colors = ButtonDefaults.textButtonColors(
                                 containerColor = if (isCurrent) Color.LightGray else Color.White,
@@ -125,7 +125,7 @@ fun BookingsScreen(
                             pickedBookingFilterType = filter
                             loaded = false
                             bookingsViewModel.clearLastBookings()
-                            bookingsViewModel.getBookingsForPost(pickedPostId!!, pickedBookingFilterType)
+                            bookingsViewModel.getBookingsForPost(pickedPostId!!, pickedBookingFilterType, reset = true)
                         },
                         colors = ButtonDefaults.textButtonColors(
                             containerColor = if (isCurrent) Color.LightGray else Color.White,
@@ -172,7 +172,7 @@ fun BookingsScreen(
                                     .fillMaxWidth()
                                     .clickable {
                                         loaded = false
-                                        bookingsViewModel.getNewBookingsForPost(pickedPostId!!, pickedBookingFilterType)
+                                        bookingsViewModel.getBookingsForPost(pickedPostId!!, pickedBookingFilterType, reset = false)
                                     }
                                     .padding(8.dp)
                             )
@@ -255,12 +255,12 @@ fun BookingsScreen(
                 if (cancelBookingState.data != null) {
                     Toast.makeText(LocalContext.current, R.string.the_booking_was_canceled, Toast.LENGTH_LONG).show()
                     bookingsViewModel.clearCancelBookingState()
-                    bookingsViewModel.getBookingsForPost(pickedPostId!!, pickedBookingFilterType)
+                    bookingsViewModel.getBookingsForPost(pickedPostId!!, pickedBookingFilterType, reset = true)
                 }
                 if (confirmBookingState.data != null) {
                     Toast.makeText(LocalContext.current, R.string.the_booking_was_confirmed, Toast.LENGTH_LONG).show()
                     bookingsViewModel.clearConfirmBookingState()
-                    bookingsViewModel.getBookingsForPost(pickedPostId!!, pickedBookingFilterType)
+                    bookingsViewModel.getBookingsForPost(pickedPostId!!, pickedBookingFilterType, reset = true)
                 }
                 if (bookingsState.data != null) {
                     loaded = true
@@ -269,7 +269,7 @@ fun BookingsScreen(
                     loaded = true
                     pickedPostId = postsState.data!!.getOrNull(0)?.id
                     if (pickedPostId != null) {
-                        bookingsViewModel.getBookingsForPost(pickedPostId!!, pickedBookingFilterType)
+                        bookingsViewModel.getBookingsForPost(pickedPostId!!, pickedBookingFilterType, reset = true)
                     }
                     postsLoaded = true
                 }

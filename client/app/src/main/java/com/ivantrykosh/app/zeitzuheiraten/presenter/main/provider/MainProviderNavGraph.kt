@@ -11,7 +11,7 @@ import com.ivantrykosh.app.zeitzuheiraten.presenter.main.provider.add_post_scree
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.provider.bookings.BookingsScreen
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.provider.edit_post_screen.EditPostScreen
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.provider.home_screen.HomeScreen
-import com.ivantrykosh.app.zeitzuheiraten.presenter.main.provider.my_profile_screen.MyProfileScreen
+import com.ivantrykosh.app.zeitzuheiraten.presenter.main.shared.my_profile_screen.MyProfileScreen
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.shared.chats.ChatsScreen
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.shared.chats.chat.ChatScreen
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.shared.feedbacks.FeedbackScreen
@@ -31,9 +31,9 @@ fun MainProviderNavGraph(navController: NavHostController, navigateToAuth: () ->
             )
         }
         composable(route = Screen.MainProviderScreen.MyProfileScreen.route) {
-            MyProfileScreen {
-                navigateToAuth()
-            }
+            MyProfileScreen(
+                onSignOut = { navigateToAuth() }
+            )
         }
         composable(route = Screen.MainProviderScreen.AddPostScreen.route) {
             AddPostScreen {

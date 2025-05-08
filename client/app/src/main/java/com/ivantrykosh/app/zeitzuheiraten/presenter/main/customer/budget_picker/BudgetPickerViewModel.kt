@@ -4,14 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.PostWithRating
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.posts.GetPostsByBudgetUseCase
+import com.ivantrykosh.app.zeitzuheiraten.presenter.loadPaginatedData
 import com.ivantrykosh.app.zeitzuheiraten.utils.CategoryAndWeight
 import com.ivantrykosh.app.zeitzuheiraten.utils.PostsOrderType
 import com.ivantrykosh.app.zeitzuheiraten.utils.Resource
 import com.ivantrykosh.app.zeitzuheiraten.utils.State
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,7 +19,7 @@ class BudgetPickerViewModel @Inject constructor(
     private val getPostsByBudgetUseCase: GetPostsByBudgetUseCase,
 ) : ViewModel() {
 
-    var getPosts = MutableStateFlow(State<List<PostWithRating>>())
+    var getPosts = MutableStateFlow(State<Unit>())
         private set
 
     var lastPosts = MutableStateFlow(emptyList<PostWithRating>())
@@ -73,44 +72,22 @@ class BudgetPickerViewModel @Inject constructor(
                             anyNewPosts = false
                         }
                         lastPosts.value = result.data
-                        State(data = lastPosts.value)
+                        State(data = Unit)
                     }
                 }
             }
         }
     }
 
-    fun getPosts(category: String, postsOrderType: PostsOrderType) {
+    fun getPosts(category: String, postsOrderType: PostsOrderType, reset: Boolean) {
         lastPostsOrderType = postsOrderType
-        anyNewPosts = true
-        getPostsByBudgetUseCase(category, city.value, false, pageSize, postsOrderType).onEach { result ->
-            getPosts.value = when (result) {
-                is Resource.Error -> State(error = result.error)
-                is Resource.Loading -> State(loading = true)
-                is Resource.Success -> {
-                    if (result.data!!.size < pageSize) {
-                        anyNewPosts = false
-                    }
-                    lastPosts.value = result.data
-                    State(data = lastPosts.value)
-                }
-            }
-        }.launchIn(viewModelScope)
-    }
-
-    fun getNewPosts(category: String, postsOrderType: PostsOrderType) {
-        getPostsByBudgetUseCase(category, city.value, true, pageSize, postsOrderType).onEach { result ->
-            getPosts.value = when (result) {
-                is Resource.Error -> State(error = result.error)
-                is Resource.Loading -> State(loading = true)
-                is Resource.Success -> {
-                    if (result.data!!.size < pageSize) {
-                        anyNewPosts = false
-                    }
-                    lastPosts.value = lastPosts.value.plus(result.data)
-                    State(data = lastPosts.value)
-                }
-            }
-        }.launchIn(viewModelScope)
+        loadPaginatedData(
+            reset = reset,
+            pageSize = pageSize,
+            anyNewItems = { anyNewPosts = it },
+            stateFlow = getPosts,
+            resultFlow = lastPosts,
+            useCaseCall = { size -> getPostsByBudgetUseCase(category, city.value, !reset, size, postsOrderType) }
+        )
     }
 }

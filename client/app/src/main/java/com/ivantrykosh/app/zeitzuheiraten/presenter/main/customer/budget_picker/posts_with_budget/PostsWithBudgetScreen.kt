@@ -54,7 +54,7 @@ import com.ivantrykosh.app.zeitzuheiraten.R
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.CustomCircularProgressIndicator
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.customer.FilterItemDropdown
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.customer.budget_picker.BudgetPickerViewModel
-import com.ivantrykosh.app.zeitzuheiraten.presenter.main.provider.home_screen.PostItem
+import com.ivantrykosh.app.zeitzuheiraten.presenter.main.shared.PostItem
 import com.ivantrykosh.app.zeitzuheiraten.utils.PostsOrderType
 import kotlinx.coroutines.launch
 
@@ -117,7 +117,7 @@ fun PostsWithBudgetScreen(
             state = swipeRefreshState,
             onRefresh = {
                 loaded = false
-                budgetPickerViewModel.getPosts(currentCategory, postsOrderType)
+                budgetPickerViewModel.getPosts(currentCategory, postsOrderType, reset = true)
             },
             indicator = { state, _ ->
                 if (state.isRefreshing) {
@@ -127,7 +127,7 @@ fun PostsWithBudgetScreen(
             modifier = Modifier.padding(it).fillMaxSize()
         ) {
             Column(
-                modifier = Modifier.padding(horizontal = 16.dp),
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 LazyRow(
@@ -138,7 +138,7 @@ fun PostsWithBudgetScreen(
                         TextButton(
                             onClick = {
                                 currentCategory = category
-                                budgetPickerViewModel.getPosts(currentCategory, postsOrderType)
+                                budgetPickerViewModel.getPosts(currentCategory, postsOrderType, reset = true)
                             },
                             colors = ButtonDefaults.textButtonColors(
                                 containerColor = if (isCurrent) Color.LightGray else Color.White,
@@ -175,7 +175,7 @@ fun PostsWithBudgetScreen(
                                     modifier = Modifier.fillMaxWidth()
                                         .clickable {
                                             loaded = false
-                                            budgetPickerViewModel.getNewPosts(currentCategory, postsOrderType)
+                                            budgetPickerViewModel.getPosts(currentCategory, postsOrderType, reset = false)
                                         }
                                         .padding(8.dp)
                                 )
@@ -273,7 +273,7 @@ fun PostsWithBudgetScreen(
                                 coroutineScope.launch {
                                     lazyListState.scrollToItem(0)
                                 }
-                                budgetPickerViewModel.getPosts(currentCategory, postsOrderType)
+                                budgetPickerViewModel.getPosts(currentCategory, postsOrderType, reset = true)
                             }
                         ) {
                             Text(text = stringResource(R.string.ok_title))

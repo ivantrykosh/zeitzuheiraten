@@ -74,6 +74,7 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.firebase:firebase-storage")
+    implementation("com.google.firebase:firebase-functions")
 
     val hilt_version = "2.51.1"
     implementation("com.google.dagger:hilt-android:$hilt_version")

@@ -8,6 +8,8 @@ import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.bookings.Get
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.bookings.GetNotAvailableDatesForBookingUseCase
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.bookings.UpdateBookingUseCase
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.feedbacks.CreateFeedbackUseCase
+import com.ivantrykosh.app.zeitzuheiraten.presenter.loadPaginatedData
+import com.ivantrykosh.app.zeitzuheiraten.utils.BookingStatus
 import com.ivantrykosh.app.zeitzuheiraten.utils.BookingsFilterType
 import com.ivantrykosh.app.zeitzuheiraten.utils.Resource
 import com.ivantrykosh.app.zeitzuheiraten.utils.State
@@ -25,7 +27,7 @@ class MyBookingsViewModel @Inject constructor(
     private val createFeedbackUseCase: CreateFeedbackUseCase,
 ) : ViewModel() {
 
-    var getBookings = MutableStateFlow(State<List<Booking>>())
+    var getBookings = MutableStateFlow(State<Unit>())
         private set
 
     var lastBookings = MutableStateFlow(emptyList<Booking>())
@@ -71,37 +73,15 @@ class MyBookingsViewModel @Inject constructor(
         createFeedbackState.value = State()
     }
 
-    fun getBookings(bookingsFilterType: BookingsFilterType) {
-        anyNewBookings = true
-        getBookingsForCurrentUserUseCase(false, pageSize, bookingsFilterType).onEach { result ->
-            getBookings.value = when (result) {
-                is Resource.Error -> State(error = result.error)
-                is Resource.Loading -> State(loading = true)
-                is Resource.Success -> {
-                    if (result.data!!.size < pageSize) {
-                        anyNewBookings = false
-                    }
-                    lastBookings.value = result.data
-                    State(data = lastBookings.value)
-                }
-            }
-        }.launchIn(viewModelScope)
-    }
-
-    fun getNewBookings(bookingsFilterType: BookingsFilterType) {
-        getBookingsForCurrentUserUseCase(true, pageSize, bookingsFilterType).onEach { result ->
-            getBookings.value = when (result) {
-                is Resource.Error -> State(error = result.error)
-                is Resource.Loading -> State(loading = true)
-                is Resource.Success -> {
-                    if (result.data!!.size < pageSize) {
-                        anyNewBookings = false
-                    }
-                    lastBookings.value = lastBookings.value.plus(result.data)
-                    State(data = lastBookings.value)
-                }
-            }
-        }.launchIn(viewModelScope)
+    fun getBookings(bookingsFilterType: BookingsFilterType, reset: Boolean) {
+        loadPaginatedData(
+            reset = reset,
+            pageSize = pageSize,
+            anyNewItems = { anyNewBookings = it },
+            stateFlow = getBookings,
+            resultFlow = lastBookings,
+            useCaseCall = { size -> getBookingsForCurrentUserUseCase(!reset, size, bookingsFilterType) }
+        )
     }
 
     fun getNotAvailableDates(id: String, availableDates: DatePair, includeBookingDates: Boolean) {
@@ -116,8 +96,8 @@ class MyBookingsViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    fun changeDate(bookingId: String, newDate: DatePair) {
-        updateBookingUseCase(bookingId, newDate, false).onEach { result ->
+    fun changeDate(bookingId: String, newDate: DatePair, withLock: Boolean) {
+        updateBookingUseCase(bookingId = bookingId, dateRange = newDate, withLock = withLock).onEach { result ->
             changeDateState.value = when (result) {
                 is Resource.Error -> State(error = result.error)
                 is Resource.Loading -> State(loading = true)
@@ -132,7 +112,7 @@ class MyBookingsViewModel @Inject constructor(
     }
 
     fun cancelBooking(bookingId: String) {
-        updateBookingUseCase(bookingId, canceled = true).onEach { result ->
+        updateBookingUseCase(bookingId = bookingId, bookingStatus = BookingStatus.CANCELED, withLock = true).onEach { result ->
             cancelBookingState.value = when (result) {
                 is Resource.Error -> State(error = result.error)
                 is Resource.Loading -> State(loading = true)
@@ -145,7 +125,7 @@ class MyBookingsViewModel @Inject constructor(
     }
 
     fun confirmServiceProviding(bookingId: String) {
-        updateBookingUseCase(bookingId = bookingId, serviceProvided = true).onEach { result ->
+        updateBookingUseCase(bookingId = bookingId, bookingStatus = BookingStatus.SERVICE_PROVIDED, withLock = true).onEach { result ->
             confirmProvidingState.value = when (result) {
                 is Resource.Error -> State(error = result.error)
                 is Resource.Loading -> State(loading = true)

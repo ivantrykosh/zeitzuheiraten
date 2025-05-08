@@ -1,4 +1,4 @@
-package com.ivantrykosh.app.zeitzuheiraten.presenter.main.customer.my_profile_screen
+package com.ivantrykosh.app.zeitzuheiraten.presenter.main.shared.my_profile_screen
 
 import android.net.Uri
 import android.widget.Toast
@@ -67,19 +67,10 @@ fun MyProfileScreen(
         myProfileViewModel.getCurrentUser()
     }
 
-    var signOutDone by rememberSaveable { mutableStateOf(false) }
     val signOutState by myProfileViewModel.signOutState.collectAsState()
-
-    var updateUserDone by rememberSaveable { mutableStateOf(false) }
     val updateUserState by myProfileViewModel.updateUserState.collectAsState()
-
-    var updateProfileImageDone by rememberSaveable { mutableStateOf(false) }
     val updateProfileImageState by myProfileViewModel.updateUserProfileImageState.collectAsState()
-
-    var deleteUserDone by rememberSaveable { mutableStateOf(false) }
     val deleteUserState by myProfileViewModel.deleteUserState.collectAsState()
-
-    var reAuthenticateDone by rememberSaveable { mutableStateOf(false) }
     val reAuthenticateState by myProfileViewModel.reAuthenticateState.collectAsState()
 
     var showErrorDialog by rememberSaveable { mutableStateOf(false) }
@@ -92,7 +83,6 @@ fun MyProfileScreen(
     val pickUserProfileImage = rememberLauncherForActivityResult(contract = ActivityResultContracts.PickVisualMedia()) { uri ->
         if (uri != null) {
             if (isFileSizeAppropriate(uri, contentResolver)) {
-                updateProfileImageDone = false
                 myProfileViewModel.updateUserProfileImage(uri)
             } else {
                 Toast.makeText(context, R.string.file_is_larger_than_5_mb, Toast.LENGTH_LONG).show()
@@ -135,16 +125,20 @@ fun MyProfileScreen(
                     .fillMaxSize()
                     .padding(vertical = 16.dp, horizontal = 8.dp)
             ) {
-                ButtonView(
-                    onClick = {
-                        navigateToMyFeedbacks()
-                    },
-                    iconRes = R.drawable.baseline_feedback_24,
-                    title = R.string.my_feedbacks
-                )
-                HorizontalDivider(modifier = Modifier
-                    .fillMaxWidth()
-                    .height(2.dp))
+                if (!currentUser.isProvider) {
+                    ButtonView(
+                        onClick = {
+                            navigateToMyFeedbacks()
+                        },
+                        iconRes = R.drawable.baseline_feedback_24,
+                        title = R.string.my_feedbacks
+                    )
+                    HorizontalDivider(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(2.dp)
+                    )
+                }
                 ButtonView(
                     onClick = {
                         pickUserProfileImage.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
@@ -157,7 +151,6 @@ fun MyProfileScreen(
                     .height(2.dp))
                 ButtonView(
                     onClick = {
-                        updateProfileImageDone = false
                         myProfileViewModel.updateUserProfileImage(Uri.EMPTY)
                     },
                     iconRes = R.drawable.baseline_delete_24,
@@ -188,7 +181,6 @@ fun MyProfileScreen(
                     .height(2.dp))
                 ButtonView(
                     onClick = {
-                        signOutDone = false
                         myProfileViewModel.signOut()
                     },
                     iconRes = R.drawable.baseline_logout_24,
@@ -199,147 +191,113 @@ fun MyProfileScreen(
                     .height(2.dp))
             }
         }
+    }
 
-        when {
-            getCurrentUserState.loading -> {
-                CustomCircularProgressIndicator()
-            }
-            getCurrentUserState.error != null -> {
-                when (getCurrentUserState.error) {
-                    is FirebaseNetworkException -> {
-                        textInErrorDialog = stringResource(id = R.string.no_internet_connection)
-                    }
-                    else -> {
-                        textInErrorDialog = stringResource(id = R.string.error_occurred)
-                    }
-                }
-                showErrorDialog = true
-            }
-            getCurrentUserState.data != null -> {
-                currentUser = getCurrentUserState.data!!
-            }
+    when {
+        getCurrentUserState.loading || signOutState.loading || updateUserState.loading || updateProfileImageState.loading || deleteUserState.loading || reAuthenticateState.loading-> {
+            CustomCircularProgressIndicator()
         }
-        if (!signOutDone) {
-            when {
-                signOutState.loading -> {
-                    CustomCircularProgressIndicator()
+        getCurrentUserState.error != null -> {
+            when (getCurrentUserState.error) {
+                is FirebaseNetworkException -> {
+                    textInErrorDialog = stringResource(id = R.string.no_internet_connection)
                 }
-                signOutState.error != null -> {
-                    signOutDone = true
-                    when (signOutState.error) {
-                        is FirebaseNetworkException -> {
-                            textInErrorDialog = stringResource(id = R.string.no_internet_connection)
-                        }
-                        else -> {
-                            textInErrorDialog = stringResource(id = R.string.error_occurred)
-                        }
-                    }
+                else -> {
+                    textInErrorDialog = stringResource(id = R.string.error_occurred)
+                }
+            }
+            showErrorDialog = true
+            myProfileViewModel.clearGetCurrentUserState()
+        }
+        signOutState.error != null -> {
+            when (signOutState.error) {
+                is FirebaseNetworkException -> {
+                    textInErrorDialog = stringResource(id = R.string.no_internet_connection)
+                }
+                else -> {
+                    textInErrorDialog = stringResource(id = R.string.error_occurred)
+                }
+            }
+            showErrorDialog = true
+            myProfileViewModel.clearSignOutState()
+        }
+        updateUserState.error != null -> {
+            when (updateUserState.error) {
+                is FirebaseNetworkException -> {
+                    textInErrorDialog = stringResource(id = R.string.no_internet_connection)
+                }
+                else -> {
+                    textInErrorDialog = stringResource(id = R.string.error_occurred)
+                }
+            }
+            showErrorDialog = true
+            myProfileViewModel.clearUpdateUserState()
+        }
+        updateProfileImageState.error != null -> {
+            when (updateProfileImageState.error) {
+                is FirebaseNetworkException -> {
+                    textInErrorDialog = stringResource(id = R.string.no_internet_connection)
+                }
+                else -> {
+                    textInErrorDialog = stringResource(id = R.string.error_occurred)
+                }
+            }
+            showErrorDialog = true
+            myProfileViewModel.clearUpdateUserProfileImageState()
+        }
+        deleteUserState.error != null -> {
+            when (deleteUserState.error) {
+                is FirebaseNetworkException -> {
+                    textInErrorDialog = stringResource(id = R.string.no_internet_connection)
+                }
+                else -> {
+                    textInErrorDialog = stringResource(id = R.string.error_occurred)
+                }
+            }
+            showErrorDialog = true
+            myProfileViewModel.clearDeleteUserState()
+        }
+        reAuthenticateState.error != null -> {
+            when (reAuthenticateState.error) {
+                is FirebaseAuthInvalidCredentialsException -> {
+                    passwordError = true
+                    passwordErrorMessage = stringResource(id = R.string.password_invalid)
+                }
+                is FirebaseNetworkException -> {
+                    textInErrorDialog = stringResource(id = R.string.no_internet_connection)
                     showErrorDialog = true
                 }
-                signOutState.data != null -> {
-                    signOutDone = true
-                    onSignOut()
-                }
-            }
-        }
-        if (!updateProfileImageDone) {
-            when {
-                updateProfileImageState.loading -> {
-                    CustomCircularProgressIndicator()
-                }
-                updateProfileImageState.error != null -> {
-                    updateProfileImageDone = true
-                    when (updateProfileImageState.error) {
-                        is FirebaseNetworkException -> {
-                            textInErrorDialog = stringResource(id = R.string.no_internet_connection)
-                        }
-                        else -> {
-                            textInErrorDialog = stringResource(id = R.string.error_occurred)
-                        }
-                    }
+                else -> {
+                    textInErrorDialog = stringResource(id = R.string.error_occurred)
                     showErrorDialog = true
                 }
-                updateProfileImageState.data != null -> {
-                    updateProfileImageDone = true
-                    myProfileViewModel.getCurrentUser()
-                }
             }
+            myProfileViewModel.clearReAuthenticateState()
         }
-        if (!updateUserDone) {
-            when {
-                updateUserState.loading -> {
-                    CustomCircularProgressIndicator()
-                }
-                updateUserState.error != null -> {
-                    updateUserDone = true
-                    when (updateUserState.error) {
-                        is FirebaseNetworkException -> {
-                            textInErrorDialog = stringResource(id = R.string.no_internet_connection)
-                        }
-                        else -> {
-                            textInErrorDialog = stringResource(id = R.string.error_occurred)
-                        }
-                    }
-                    showErrorDialog = true
-                }
-                updateUserState.data != null -> {
-                    updateUserDone = true
-                    myProfileViewModel.getCurrentUser()
-                }
-            }
+        signOutState.data != null -> {
+            onSignOut()
+            myProfileViewModel.clearSignOutState()
         }
-        if (!deleteUserDone) {
-            when {
-                deleteUserState.loading -> {
-                    CustomCircularProgressIndicator()
-                }
-                deleteUserState.error != null -> {
-                    deleteUserDone = true
-                    when (deleteUserState.error) {
-                        is FirebaseNetworkException -> {
-                            textInErrorDialog = stringResource(id = R.string.no_internet_connection)
-                        }
-                        else -> {
-                            textInErrorDialog = stringResource(id = R.string.error_occurred)
-                        }
-                    }
-                    showErrorDialog = true
-                }
-                deleteUserState.data != null -> {
-                    deleteUserDone = true
-                    onSignOut()
-                }
-            }
+        updateUserState.data != null -> {
+            myProfileViewModel.getCurrentUser()
+            myProfileViewModel.clearUpdateUserState()
         }
-        if (!reAuthenticateDone) {
-            when {
-                reAuthenticateState.loading -> {
-                    CustomCircularProgressIndicator()
-                }
-                reAuthenticateState.error != null -> {
-                    reAuthenticateDone = true
-                    when (reAuthenticateState.error) {
-                        is FirebaseAuthInvalidCredentialsException -> {
-                            passwordError = true
-                            passwordErrorMessage = stringResource(id = R.string.password_invalid)
-                        }
-                        is FirebaseNetworkException -> {
-                            textInErrorDialog = stringResource(id = R.string.no_internet_connection)
-                            showErrorDialog = true
-                        }
-                        else -> {
-                            textInErrorDialog = stringResource(id = R.string.error_occurred)
-                            showErrorDialog = true
-                        }
-                    }
-                }
-                reAuthenticateState.data != null -> {
-                    reAuthenticateDone = true
-                    deleteUserDone = false
-                    myProfileViewModel.deleteUser()
-                    showConfirmDeleteDialog = false
-                }
-            }
+        updateProfileImageState.data != null -> {
+            myProfileViewModel.getCurrentUser()
+            myProfileViewModel.clearUpdateUserProfileImageState()
+        }
+        deleteUserState.data != null -> {
+            Toast.makeText(LocalContext.current, R.string.user_is_deleted, Toast.LENGTH_LONG).show()
+            onSignOut()
+            myProfileViewModel.clearDeleteUserState()
+        }
+        reAuthenticateState.data != null -> {
+            myProfileViewModel.deleteUser()
+            showConfirmDeleteDialog = false
+            myProfileViewModel.clearReAuthenticateState()
+        }
+        getCurrentUserState.data != null -> {
+            currentUser = getCurrentUserState.data!!
         }
     }
 
@@ -372,7 +330,6 @@ fun MyProfileScreen(
                         } else {
                             nameError = false
                             nameErrorMessage = ""
-                            updateUserDone = false
                             myProfileViewModel.updateUser(currentUser.copy(name = name))
                             showInputDialog = false
                         }
@@ -421,7 +378,7 @@ fun MyProfileScreen(
                         } else {
                             passwordError = false
                             passwordErrorMessage = ""
-                            reAuthenticateDone = false
+                            showConfirmDeleteDialog = false
                             myProfileViewModel.reAuthenticate(password)
                         }
                     }

@@ -51,7 +51,7 @@ import com.ivantrykosh.app.zeitzuheiraten.R
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.CustomCircularProgressIndicator
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.customer.FilterItemDropdown
 import com.ivantrykosh.app.zeitzuheiraten.presenter.main.customer.FilterItemInputNumber
-import com.ivantrykosh.app.zeitzuheiraten.presenter.main.provider.home_screen.PostItem
+import com.ivantrykosh.app.zeitzuheiraten.presenter.main.shared.PostItem
 import com.ivantrykosh.app.zeitzuheiraten.utils.PostsOrderType
 import kotlinx.coroutines.launch
 
@@ -85,7 +85,7 @@ fun HomeScreen(
         state = swipeRefreshState,
         onRefresh = {
             loaded = false
-            homeScreenViewModel.getPostsByFilters(categoryValue, cityValue, maxPriceValue.toIntOrNull(), postsOrderType)
+            homeScreenViewModel.getPostsByFilters(categoryValue, cityValue, maxPriceValue.toIntOrNull(), postsOrderType, reset = true)
         },
         indicator = { state, _ ->
             if (state.isRefreshing) {
@@ -134,7 +134,7 @@ fun HomeScreen(
                                 modifier = Modifier.fillMaxWidth()
                                     .clickable {
                                         loaded = false
-                                        homeScreenViewModel.getNewPostsByFilters(categoryValue, cityValue, maxPriceValue.toIntOrNull(), postsOrderType)
+                                        homeScreenViewModel.getPostsByFilters(categoryValue, cityValue, maxPriceValue.toIntOrNull(), postsOrderType, reset = false)
                                     }
                                     .padding(8.dp)
                             )
@@ -269,7 +269,7 @@ fun HomeScreen(
                                 coroutineScope.launch {
                                     lazyListState.scrollToItem(0)
                                 }
-                                homeScreenViewModel.getPostsByFilters(categoryValue, cityValue, maxPriceValue.toIntOrNull(), postsOrderType)
+                                homeScreenViewModel.getPostsByFilters(categoryValue, cityValue, maxPriceValue.toIntOrNull(), postsOrderType, reset = true)
                             }
                         ) {
                             Text(text = stringResource(R.string.ok_title))
