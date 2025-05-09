@@ -3,6 +3,7 @@ package com.ivantrykosh.app.zeitzuheiraten.presenter.main.shared.chats
 import androidx.lifecycle.ViewModel
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.DisplayedChat
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.chats.GetChatsForCurrentUserUseCase
+import com.ivantrykosh.app.zeitzuheiraten.presenter.clearState
 import com.ivantrykosh.app.zeitzuheiraten.presenter.loadPaginatedData
 import com.ivantrykosh.app.zeitzuheiraten.utils.State
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,6 +29,8 @@ class ChatsScreenViewModel @Inject constructor(
     init {
         getChats(reset = true)
     }
+
+    fun clearGetChatsState() = clearState(getChatsState)
 
     fun getChats(reset: Boolean) {
         loadPaginatedData(

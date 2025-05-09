@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.Feedback
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.feedbacks.DeleteFeedbackUseCase
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.feedbacks.GetFeedbacksForCurrentUserUseCase
+import com.ivantrykosh.app.zeitzuheiraten.presenter.clearState
 import com.ivantrykosh.app.zeitzuheiraten.presenter.loadPaginatedData
 import com.ivantrykosh.app.zeitzuheiraten.utils.Resource
 import com.ivantrykosh.app.zeitzuheiraten.utils.State
@@ -34,9 +35,9 @@ class MyFeedbacksViewModel @Inject constructor(
 
     private var pageSize = 10
 
-    fun clearDeleteFeedbackState() {
-        deleteFeedbackState.value = State()
-    }
+    fun clearDeleteFeedbackState() = clearState(deleteFeedbackState)
+
+    fun clearGetFeedbacksState() = clearState(getFeedbacksState)
 
     fun getFeedbacks(reset: Boolean) {
         loadPaginatedData(

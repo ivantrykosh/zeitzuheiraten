@@ -7,6 +7,7 @@ import com.ivantrykosh.app.zeitzuheiraten.domain.model.PostWithRating
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.bookings.GetBookingsForPostUseCase
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.bookings.UpdateBookingUseCase
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.posts.GetPostsForCurrentUserUseCase
+import com.ivantrykosh.app.zeitzuheiraten.presenter.clearState
 import com.ivantrykosh.app.zeitzuheiraten.presenter.loadPaginatedData
 import com.ivantrykosh.app.zeitzuheiraten.utils.BookingStatus
 import com.ivantrykosh.app.zeitzuheiraten.utils.BookingsFilterType
@@ -49,6 +50,10 @@ class BookingsViewModel @Inject constructor(
         getPosts()
     }
 
+    fun clearGetPostsState() = clearState(getPostsState)
+
+    fun clearGetBookingsState() = clearState(getBookings)
+
     fun getPosts() {
         getPostsForCurrentUserUseCase().onEach { result ->
             getPostsState.value = when (result) {
@@ -63,13 +68,9 @@ class BookingsViewModel @Inject constructor(
         lastBookings.value = emptyList()
     }
 
-    fun clearCancelBookingState() {
-        cancelBookingState.value = State()
-    }
+    fun clearCancelBookingState() = clearState(cancelBookingState)
 
-    fun clearConfirmBookingState() {
-        confirmBookingState.value = State()
-    }
+    fun clearConfirmBookingState() = clearState(confirmBookingState)
 
     fun getBookingsForPost(postId: String, bookingsFilterType: BookingsFilterType, reset: Boolean) {
         loadPaginatedData(

@@ -7,6 +7,7 @@ import com.ivantrykosh.app.zeitzuheiraten.domain.model.PostWithRating
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.bookings.CreateBookingUseCase
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.bookings.GetNotAvailableDatesForBookingUseCase
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.posts.GetPostByIdUseCase
+import com.ivantrykosh.app.zeitzuheiraten.presenter.clearState
 import com.ivantrykosh.app.zeitzuheiraten.utils.Resource
 import com.ivantrykosh.app.zeitzuheiraten.utils.State
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -30,6 +31,12 @@ class FullPostScreenModel @Inject constructor(
 
     var createBookingState = MutableStateFlow(State<Unit>())
         private set
+
+    fun clearGetPostByIdState() = clearState(getPostByIdState)
+
+    fun clearGetNotAvailableDatesState() = clearState(getNotAvailableDatesState)
+
+    fun clearCreateBookingState() = clearState(createBookingState)
 
     fun getPostById(id: String) {
         getPostByIdUseCase(id).onEach { result ->

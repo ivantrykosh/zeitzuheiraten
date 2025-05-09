@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.User
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.users.CreateUserUseCase
+import com.ivantrykosh.app.zeitzuheiraten.presenter.clearState
 import com.ivantrykosh.app.zeitzuheiraten.utils.Constants.USER_PROFILE_PICTURE_NAME
 import com.ivantrykosh.app.zeitzuheiraten.utils.Resource
 import com.ivantrykosh.app.zeitzuheiraten.utils.State
@@ -21,6 +22,8 @@ class SignUpViewModel @Inject constructor(
 
     var createUserState = MutableStateFlow(State<Unit>())
         private set
+
+    fun clearCreateUserState() = clearState(createUserState)
 
     fun createUser(email: String, password: String, name: String, isProvider: Boolean, imageUri: Uri) {
         val user = User(

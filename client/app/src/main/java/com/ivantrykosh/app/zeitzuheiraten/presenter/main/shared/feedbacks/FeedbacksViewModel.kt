@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.Feedback
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.auth.GetCurrentUserIdUseCase
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.feedbacks.GetFeedbacksForPostUseCase
+import com.ivantrykosh.app.zeitzuheiraten.presenter.clearState
 import com.ivantrykosh.app.zeitzuheiraten.presenter.loadPaginatedData
 import com.ivantrykosh.app.zeitzuheiraten.utils.Resource
 import com.ivantrykosh.app.zeitzuheiraten.utils.State
@@ -47,6 +48,8 @@ class FeedbacksViewModel @Inject constructor(
             }
         }.launchIn(viewModelScope)
     }
+
+    fun clearGetFeedbacksState() = clearState(getFeedbacksState)
 
     fun getFeedbacks(postId: String, reset: Boolean) {
         loadPaginatedData(

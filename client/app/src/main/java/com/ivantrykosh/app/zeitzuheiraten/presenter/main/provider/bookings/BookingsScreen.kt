@@ -208,6 +208,7 @@ fun BookingsScreen(
                         showErrorDialog = true
                     }
                 }
+                bookingsViewModel.clearGetPostsState()
             }
             bookingsState.error != null -> {
                 loaded = true
@@ -222,6 +223,7 @@ fun BookingsScreen(
                         showErrorDialog = true
                     }
                 }
+                bookingsViewModel.clearGetBookingsState()
             }
             cancelBookingState.error != null -> {
                 loaded = true
@@ -236,6 +238,7 @@ fun BookingsScreen(
                         showErrorDialog = true
                     }
                 }
+                bookingsViewModel.clearCancelBookingState()
             }
             confirmBookingState.error != null -> {
                 loaded = true
@@ -250,6 +253,7 @@ fun BookingsScreen(
                         showErrorDialog = true
                     }
                 }
+                bookingsViewModel.clearConfirmBookingState()
             }
             else -> {
                 if (cancelBookingState.data != null) {

@@ -211,6 +211,7 @@ fun PostsWithBudgetScreen(
                         showAlertDialog = true
                     }
                 }
+                budgetPickerViewModel.clearGetPostsState()
             }
 
             postsState.data != null -> {

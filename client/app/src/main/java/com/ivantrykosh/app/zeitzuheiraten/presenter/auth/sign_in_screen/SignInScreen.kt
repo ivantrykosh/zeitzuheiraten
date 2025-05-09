@@ -184,6 +184,7 @@ fun SignInScreen(
                                 showAlertDialog = true
                             }
                         }
+                        signInViewModel.clearSignInState()
                     }
                     signInState.data != null -> {
                         loaded = true

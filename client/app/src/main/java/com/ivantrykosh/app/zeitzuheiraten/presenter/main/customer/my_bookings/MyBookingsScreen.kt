@@ -217,6 +217,7 @@ fun MyBookingsScreen(
                         showErrorDialog = true
                     }
                 }
+                myBookingsViewModel.clearGetBookingsState()
             }
             getNotAvailableDatesState.error != null -> {
                 loaded = true
@@ -231,6 +232,7 @@ fun MyBookingsScreen(
                         showErrorDialog = true
                     }
                 }
+                myBookingsViewModel.clearGetNotAvailableDatesState()
             }
             changeDateState.error != null -> {
                 loaded = true
@@ -245,6 +247,7 @@ fun MyBookingsScreen(
                         showErrorDialog = true
                     }
                 }
+                myBookingsViewModel.clearChangeDateState()
             }
             cancelBookingState.error != null -> {
                 loaded = true
@@ -259,6 +262,7 @@ fun MyBookingsScreen(
                         showErrorDialog = true
                     }
                 }
+                myBookingsViewModel.clearCancelBookingState()
             }
             confirmProvidingState.error != null -> {
                 loaded = true
@@ -273,6 +277,7 @@ fun MyBookingsScreen(
                         showErrorDialog = true
                     }
                 }
+                myBookingsViewModel.clearConfirmProvidingState()
             }
             createFeedbackState.error != null -> {
                 loaded = true
@@ -287,6 +292,7 @@ fun MyBookingsScreen(
                         showErrorDialog = true
                     }
                 }
+                myBookingsViewModel.clearCreateFeedbackState()
             }
             else -> {
                 if (changeDateState.data != null) {

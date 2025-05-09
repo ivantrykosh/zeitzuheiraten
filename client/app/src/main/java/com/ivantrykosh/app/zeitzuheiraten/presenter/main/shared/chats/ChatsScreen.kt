@@ -125,6 +125,7 @@ fun ChatsScreen(
                         showAlertDialog = true
                     }
                 }
+                chatsScreenViewModel.clearGetChatsState()
             }
 
             chatsState.data != null -> {

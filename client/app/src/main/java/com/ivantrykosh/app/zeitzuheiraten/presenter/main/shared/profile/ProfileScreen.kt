@@ -168,6 +168,7 @@ fun ProfileScreen(
                         showErrorDialog = true
                     }
                 }
+                profileViewModel.clearGetCurrentUserState()
             }
             getUserState.error != null -> {
                 loaded = true
@@ -188,6 +189,7 @@ fun ProfileScreen(
                         showErrorDialog = true
                     }
                 }
+                profileViewModel.clearGetUserByIdState()
             }
             createReportState.error != null -> {
                 loaded = true
@@ -202,6 +204,7 @@ fun ProfileScreen(
                         showErrorDialog = true
                     }
                 }
+                profileViewModel.clearCreateReportState()
             }
             else -> {
                 if (createReportState.data != null) {

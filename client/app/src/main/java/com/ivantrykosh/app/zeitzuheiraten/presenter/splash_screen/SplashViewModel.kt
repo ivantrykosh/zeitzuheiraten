@@ -3,6 +3,7 @@ package com.ivantrykosh.app.zeitzuheiraten.presenter.splash_screen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.users.GetCurrentUserUseCase
+import com.ivantrykosh.app.zeitzuheiraten.presenter.clearState
 import com.ivantrykosh.app.zeitzuheiraten.utils.Resource
 import com.ivantrykosh.app.zeitzuheiraten.utils.State
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,6 +22,8 @@ class SplashViewModel @Inject constructor(
 
     var isUserProvider: Boolean = false
         private set
+
+    fun clearIsUserLoggedInState() = clearState(isUserLoggedInState)
 
     fun isUserLoggedIn() {
         getCurrentUserUseCase().onEach { result ->

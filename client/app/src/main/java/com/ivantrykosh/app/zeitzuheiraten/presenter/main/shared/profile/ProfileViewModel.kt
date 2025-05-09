@@ -6,6 +6,7 @@ import com.ivantrykosh.app.zeitzuheiraten.domain.model.User
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.reports.CreateReportUseCase
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.users.GetCurrentUserUseCase
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.users.GetUserByIdUseCase
+import com.ivantrykosh.app.zeitzuheiraten.presenter.clearState
 import com.ivantrykosh.app.zeitzuheiraten.utils.Resource
 import com.ivantrykosh.app.zeitzuheiraten.utils.State
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,6 +30,12 @@ class ProfileViewModel @Inject constructor(
 
     var createReportState = MutableStateFlow(State<Unit>())
         private set
+
+    fun clearGetCurrentUserState() = clearState(getCurrentUser)
+
+    fun clearGetUserByIdState() = clearState(getUserByIdState)
+
+    fun clearCreateReportState() = clearState(createReportState)
 
     fun getCurrentUser() {
         getCurrentUserUseCase().onEach { result ->

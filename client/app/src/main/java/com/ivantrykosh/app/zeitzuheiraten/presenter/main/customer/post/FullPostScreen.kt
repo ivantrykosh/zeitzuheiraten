@@ -288,6 +288,7 @@ fun FullPostScreen(
                         showErrorDialog = true
                     }
                 }
+                fullPostScreenViewModel.clearGetPostByIdState()
             }
             getNotAvailableDatesState.error != null -> {
                 loaded = true
@@ -302,6 +303,7 @@ fun FullPostScreen(
                         showErrorDialog = true
                     }
                 }
+                fullPostScreenViewModel.clearGetNotAvailableDatesState()
             }
             createBookingState.error != null -> {
                 loaded = true
@@ -316,6 +318,7 @@ fun FullPostScreen(
                         showErrorDialog = true
                     }
                 }
+                fullPostScreenViewModel.clearCreateBookingState()
             }
             else -> {
                 if (createBookingState.data != null) {

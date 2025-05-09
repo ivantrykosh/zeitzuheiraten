@@ -8,6 +8,7 @@ import com.ivantrykosh.app.zeitzuheiraten.domain.model.PostWithRating
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.posts.DeletePostByIdUseCase
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.posts.GetPostByIdUseCase
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.posts.UpdatePostUseCase
+import com.ivantrykosh.app.zeitzuheiraten.presenter.clearState
 import com.ivantrykosh.app.zeitzuheiraten.utils.Resource
 import com.ivantrykosh.app.zeitzuheiraten.utils.State
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,6 +34,12 @@ class EditPostViewModel @Inject constructor(
         private set
 
     private lateinit var previousImages: List<String>
+
+    fun clearUpdatePostState() = clearState(updatePostState)
+
+    fun clearGetPostByIdState() = clearState(getPostByIdState)
+
+    fun clearDeletePostState() = clearState(deletePostState)
 
     fun updatePost(id: String, cities: List<String>, minPrice: Int, description: String, notAvailableDates: List<DatePair>, images: List<Uri>, uploadNewImages: Boolean, enabled: Boolean) {
         updatePostUseCase(id, cities, minPrice, description, notAvailableDates, images, previousImages, uploadNewImages, enabled).onEach { result ->

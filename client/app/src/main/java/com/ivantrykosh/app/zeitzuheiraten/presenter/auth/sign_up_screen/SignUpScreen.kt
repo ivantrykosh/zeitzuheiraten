@@ -308,6 +308,7 @@ fun SignUpScreen(
                                 showAlertDialog = true
                             }
                         }
+                        signUpViewModel.clearCreateUserState()
                     }
 
                     createUserState.data != null -> {

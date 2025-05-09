@@ -3,6 +3,7 @@ package com.ivantrykosh.app.zeitzuheiraten.presenter.auth.sign_in_screen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.auth.SignInUseCase
+import com.ivantrykosh.app.zeitzuheiraten.presenter.clearState
 import com.ivantrykosh.app.zeitzuheiraten.utils.Resource
 import com.ivantrykosh.app.zeitzuheiraten.utils.State
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,6 +19,8 @@ class SignInViewModel @Inject constructor(
 
     var signInState = MutableStateFlow(State<Boolean>())
         private set
+
+    fun clearSignInState() = clearState(signInState)
 
     fun signIn(email: String, password: String) {
         signInUseCase(email, password).onEach { result ->

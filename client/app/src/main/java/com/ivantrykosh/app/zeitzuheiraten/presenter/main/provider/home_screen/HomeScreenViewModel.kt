@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.PostWithRating
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.posts.GetPostsForCurrentUserUseCase
+import com.ivantrykosh.app.zeitzuheiraten.presenter.clearState
 import com.ivantrykosh.app.zeitzuheiraten.utils.Constants.MAX_POSTS_PER_USER
 import com.ivantrykosh.app.zeitzuheiraten.utils.Resource
 import com.ivantrykosh.app.zeitzuheiraten.utils.State
@@ -20,6 +21,8 @@ class HomeScreenViewModel @Inject constructor(
 
     var getPostsState = MutableStateFlow(State<List<PostWithRating>>())
         private set
+
+    fun clearGetPostsState() = clearState(getPostsState)
 
     fun getPosts() {
         getPostsForCurrentUserUseCase().onEach { result ->

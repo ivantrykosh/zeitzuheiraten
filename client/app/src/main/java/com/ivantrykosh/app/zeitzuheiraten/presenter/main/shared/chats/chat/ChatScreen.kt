@@ -207,6 +207,7 @@ fun ChatScreen(
                         showAlertDialog = true
                     }
                 }
+                messagesViewModel.clearCreateMessageState()
             }
             getChatIdState.error != null -> {
                 loaded = true
@@ -221,6 +222,7 @@ fun ChatScreen(
                         showAlertDialog = true
                     }
                 }
+                messagesViewModel.clearGetChatByUsersState()
             }
             messagesState.error != null -> {
                 loaded = true
@@ -235,6 +237,7 @@ fun ChatScreen(
                         showAlertDialog = true
                     }
                 }
+                messagesViewModel.clearGetMessagesState()
             }
             else -> {
                 if (isNewChat && !isFirstMessageSent && createMessageState.data != null) {

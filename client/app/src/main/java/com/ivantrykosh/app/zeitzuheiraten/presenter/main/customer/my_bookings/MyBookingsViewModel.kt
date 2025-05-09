@@ -8,6 +8,7 @@ import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.bookings.Get
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.bookings.GetNotAvailableDatesForBookingUseCase
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.bookings.UpdateBookingUseCase
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.feedbacks.CreateFeedbackUseCase
+import com.ivantrykosh.app.zeitzuheiraten.presenter.clearState
 import com.ivantrykosh.app.zeitzuheiraten.presenter.loadPaginatedData
 import com.ivantrykosh.app.zeitzuheiraten.utils.BookingStatus
 import com.ivantrykosh.app.zeitzuheiraten.utils.BookingsFilterType
@@ -53,25 +54,21 @@ class MyBookingsViewModel @Inject constructor(
 
     private var pageSize = 10
 
+    fun clearGetBookingsState() = clearState(getBookings)
+
     fun clearLastBookings() {
         lastBookings.value = emptyList()
     }
 
-    fun clearChangeDateState() {
-        changeDateState.value = State()
-    }
+    fun clearGetNotAvailableDatesState() = clearState(getNotAvailableDatesState)
 
-    fun clearCancelBookingState() {
-        cancelBookingState.value = State()
-    }
+    fun clearChangeDateState() = clearState(changeDateState)
 
-    fun clearConfirmProvidingState() {
-        confirmProvidingState.value = State()
-    }
+    fun clearCancelBookingState() = clearState(cancelBookingState)
 
-    fun clearCreateFeedbackState() {
-        createFeedbackState.value = State()
-    }
+    fun clearConfirmProvidingState() = clearState(confirmProvidingState)
+
+    fun clearCreateFeedbackState() = clearState(createFeedbackState)
 
     fun getBookings(bookingsFilterType: BookingsFilterType, reset: Boolean) {
         loadPaginatedData(

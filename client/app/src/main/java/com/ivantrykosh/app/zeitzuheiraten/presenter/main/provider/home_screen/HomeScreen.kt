@@ -142,6 +142,7 @@ fun HomeScreen(
                         showAlertDialog = true
                     }
                 }
+                homeScreenViewModel.clearGetPostsState()
             }
 
             posts.data != null -> {

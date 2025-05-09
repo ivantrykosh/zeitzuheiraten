@@ -156,6 +156,7 @@ fun FeedbackScreen(
                         showAlertDialog = true
                     }
                 }
+                feedbacksViewModel.clearGetFeedbacksState()
             }
 
             feedbacksState.data != null -> {

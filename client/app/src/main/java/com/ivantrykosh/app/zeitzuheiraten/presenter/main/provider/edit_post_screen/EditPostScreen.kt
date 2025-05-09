@@ -510,6 +510,7 @@ fun EditPostScreen(
                         showErrorDialog = true
                     }
                 }
+                editPostViewModel.clearDeletePostState()
             }
             updatePostState.error != null -> {
                 loaded = true
@@ -524,6 +525,7 @@ fun EditPostScreen(
                         showErrorDialog = true
                     }
                 }
+                editPostViewModel.clearUpdatePostState()
             }
             getPostState.error != null -> {
                 loaded = true
@@ -543,6 +545,7 @@ fun EditPostScreen(
                         showErrorDialog = true
                     }
                 }
+                editPostViewModel.clearGetPostByIdState()
             }
 
             deletePostState.data != null -> {

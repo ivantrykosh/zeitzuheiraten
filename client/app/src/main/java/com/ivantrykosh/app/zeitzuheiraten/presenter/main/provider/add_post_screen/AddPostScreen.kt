@@ -456,6 +456,7 @@ fun AddPostScreen(
                         showAlertDialog = true
                     }
                 }
+                addPostViewModel.clearCreatePostState()
             }
 
             createPostState.data != null -> {

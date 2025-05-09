@@ -9,6 +9,7 @@ import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.chats.GetCha
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.messages.CreateMessageUseCase
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.messages.GetMessagesForChatUseCase
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.messages.ObserveMessagesUseCase
+import com.ivantrykosh.app.zeitzuheiraten.presenter.clearState
 import com.ivantrykosh.app.zeitzuheiraten.utils.Resource
 import com.ivantrykosh.app.zeitzuheiraten.utils.State
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -59,6 +60,12 @@ class MessagesViewModel @Inject constructor(
     init {
         getCurrentUserId()
     }
+
+    fun clearCreateMessageState() = clearState(createMessageState)
+
+    fun clearGetChatByUsersState() = clearState(getChatByUsersState)
+
+    fun clearGetMessagesState() = clearState(getMessagesState)
 
     private fun getCurrentUserId() {
         getCurrentUserIdUseCase().onEach { result ->

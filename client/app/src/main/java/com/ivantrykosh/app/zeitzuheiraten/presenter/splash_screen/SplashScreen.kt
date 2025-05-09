@@ -70,6 +70,7 @@ fun SplashScreen(
                     title = { Text(text = stringResource(id = R.string.error)) },
                     text = { Text(text = isUserLoggedIn.error?.message ?: stringResource(id = R.string.error_occurred)) }
                 )
+                splashViewModel.clearIsUserLoggedInState()
             }
 
             isUserLoggedIn.data != null -> {

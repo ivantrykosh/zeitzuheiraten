@@ -162,6 +162,7 @@ fun MyFeedbacksScreen(
                         showAlertDialog = true
                     }
                 }
+                myFeedbacksViewModel.clearDeleteFeedbackState()
             }
             feedbacksState.error != null -> {
                 loaded = true
@@ -176,6 +177,7 @@ fun MyFeedbacksScreen(
                         showAlertDialog = true
                     }
                 }
+                myFeedbacksViewModel.clearGetFeedbacksState()
             }
             else -> {
                 if (deleteFeedbackState.data != null) {

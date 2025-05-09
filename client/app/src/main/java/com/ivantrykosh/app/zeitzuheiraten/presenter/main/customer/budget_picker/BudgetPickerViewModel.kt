@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.PostWithRating
 import com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.posts.GetPostsByBudgetUseCase
+import com.ivantrykosh.app.zeitzuheiraten.presenter.clearState
 import com.ivantrykosh.app.zeitzuheiraten.presenter.loadPaginatedData
 import com.ivantrykosh.app.zeitzuheiraten.utils.CategoryAndWeight
 import com.ivantrykosh.app.zeitzuheiraten.utils.PostsOrderType
@@ -42,6 +43,8 @@ class BudgetPickerViewModel @Inject constructor(
 
     var lastPostsOrderType: PostsOrderType = PostsOrderType.BY_CATEGORY
         private set
+
+    fun clearGetPostsState() = clearState(getPosts)
 
     fun updateCity(city: String) {
         this.city.value = city
