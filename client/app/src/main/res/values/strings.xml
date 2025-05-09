@@ -201,4 +201,7 @@
     <string name="previous_month">Previous month</string>
     <string name="next_month">Next month</string>
     <string name="user_is_deleted">User is deleted</string>
+    <string name="deleted_user">Deleted user</string>
+    <string name="you_cannot_change_username_until">You cannot change username until %s</string>
+    <string name="post_doesnt_exist">Post does not exist</string>
 </resources>

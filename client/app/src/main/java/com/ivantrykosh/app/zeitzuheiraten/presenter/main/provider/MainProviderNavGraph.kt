@@ -107,14 +107,14 @@ fun MainProviderNavGraph(navController: NavHostController, navigateToAuth: () ->
                 },
                 navArgument("username") {
                     type = NavType.StringType
-                    nullable = false
+                    nullable = true
                 }
             )
         ) {
             ChatScreen(
                 chatId = it.arguments!!.getString("chatId"),
                 withUserId = it.arguments!!.getString("userId")!!,
-                withUserName = it.arguments!!.getString("username")!!,
+                withUserName = it.arguments!!.getString("username"),
                 navigateToUser = { userId ->
                     navController.navigate(Screen.MainProviderScreen.ProfileScreen.route + "?userId=$userId")
                 },

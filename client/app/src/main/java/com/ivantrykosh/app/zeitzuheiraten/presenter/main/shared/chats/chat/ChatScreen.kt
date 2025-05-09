@@ -55,7 +55,7 @@ fun ChatScreen(
     messagesViewModel: MessagesViewModel = hiltViewModel(),
     chatId: String?,
     withUserId: String,
-    withUserName: String,
+    withUserName: String?,
     navigateToUser: (String) -> Unit,
     navigateBack: () -> Unit,
 ) {
@@ -86,7 +86,7 @@ fun ChatScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = withUserName,
+                        text = withUserName ?: stringResource(R.string.deleted_user),
                         modifier = Modifier.clickable { navigateToUser(withUserId) }
                     )
                 },

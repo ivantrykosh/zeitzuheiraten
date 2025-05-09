@@ -9,10 +9,12 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.ivantrykosh.app.zeitzuheiraten.R
 import com.ivantrykosh.app.zeitzuheiraten.domain.model.DisplayedChat
 
 @Composable
@@ -34,7 +36,7 @@ fun ChatView(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
-                text = chat.withUsername,
+                text = chat.withUsername ?: stringResource(R.string.deleted_user),
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp
             )

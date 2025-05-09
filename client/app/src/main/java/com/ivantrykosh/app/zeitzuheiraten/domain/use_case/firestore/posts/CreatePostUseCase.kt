@@ -29,7 +29,7 @@ class CreatePostUseCase @Inject constructor(
         try {
             emit(Resource.Loading())
             val userId = userAuthRepository.getCurrentUserId()
-            val user = userRepository.getUserById(userId)
+            val user = userRepository.getUserById(userId)!!
             images.forEachIndexed { index, image ->
                 if (image != Uri.EMPTY) {
                     val name = "$userId/$postId/$index"

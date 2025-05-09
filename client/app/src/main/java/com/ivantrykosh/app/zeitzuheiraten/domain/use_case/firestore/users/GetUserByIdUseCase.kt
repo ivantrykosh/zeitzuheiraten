@@ -15,7 +15,7 @@ class GetUserByIdUseCase @Inject constructor(
     operator fun invoke(userId: String) = flow<Resource<User>> {
         try {
             emit(Resource.Loading())
-            val user = userRepository.getUserById(userId)
+            val user = userRepository.getUserById(userId)!!
             emit(Resource.Success(user))
         } catch (e: Exception) {
             Log.e(LOG_TAG, e.message ?: "An error occurred")

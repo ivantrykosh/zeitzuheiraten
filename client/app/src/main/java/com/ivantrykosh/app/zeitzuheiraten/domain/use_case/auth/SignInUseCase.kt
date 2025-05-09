@@ -18,7 +18,7 @@ class SignInUseCase @Inject constructor(
             emit(Resource.Loading())
             userAuthRepository.signIn(email, password)
             val userId = userAuthRepository.getCurrentUserId()
-            val isProvider = userRepository.getUserById(userId).isProvider
+            val isProvider = userRepository.getUserById(userId)!!.isProvider
             emit(Resource.Success(isProvider))
         } catch (e: Exception) {
             Log.e(LOG_TAG, e.message ?: "An error occurred")

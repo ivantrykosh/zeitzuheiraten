@@ -11,6 +11,7 @@ data class User(
     @field:JvmField
     var isProvider: Boolean = false,
     var creationTime: Long = 0,
+    var lastUsernameChange: Long = 0,
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString()!!,
@@ -18,6 +19,7 @@ data class User(
         parcel.readString()!!,
         parcel.readString()!!,
         parcel.readByte() != 0.toByte(),
+        parcel.readLong(),
         parcel.readLong(),
     ) {
     }
@@ -29,6 +31,7 @@ data class User(
         parcel.writeString(imageUrl)
         parcel.writeByte(if (isProvider) 1 else 0)
         parcel.writeLong(creationTime)
+        parcel.writeLong(lastUsernameChange)
     }
 
     override fun describeContents(): Int {

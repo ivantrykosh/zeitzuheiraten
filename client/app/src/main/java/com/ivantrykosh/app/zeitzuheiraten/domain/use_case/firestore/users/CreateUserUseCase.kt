@@ -34,7 +34,7 @@ class CreateUserUseCase @Inject constructor(
             }
 
             val dateTime = Instant.now().toEpochMilli()
-            userRepository.createUser(user.copy(id = userId, imageUrl = imageDownloadUrl, creationTime = dateTime))
+            userRepository.createUser(user.copy(id = userId, imageUrl = imageDownloadUrl, creationTime = dateTime, lastUsernameChange = dateTime))
             emit(Resource.Success())
         } catch (e: Exception) {
             Log.e(LOG_TAG, e.message ?: "An error occurred")

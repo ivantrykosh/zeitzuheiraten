@@ -12,7 +12,7 @@ class UserRepositoryImpl @Inject constructor(
         firestoreUsers.createUser(user)
     }
 
-    override suspend fun getUserById(userId: String): User {
+    override suspend fun getUserById(userId: String): User? {
         return firestoreUsers.getUserById(userId)
     }
 

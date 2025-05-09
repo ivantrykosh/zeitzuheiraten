@@ -20,7 +20,7 @@ class CreateBookingUseCase @Inject constructor(
         try {
             emit(Resource.Loading())
             val userId = userAuthRepository.getCurrentUserId()
-            val user = userRepository.getUserById(userId)
+            val user = userRepository.getUserById(userId)!!
             if (withLock) {
                 bookingRepository.createBookingWithLock(userId, user.name, postId, category, providerId, provider, dateRange)
             } else {

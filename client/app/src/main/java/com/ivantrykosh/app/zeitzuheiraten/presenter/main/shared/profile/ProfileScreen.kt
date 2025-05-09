@@ -61,7 +61,7 @@ fun ProfileScreen(
     val getCurrentUser by profileViewModel.getCurrentUser.collectAsStateWithLifecycle()
     val getUserState by profileViewModel.getUserByIdState.collectAsStateWithLifecycle()
     var user by rememberSaveable { mutableStateOf<User?>(null) }
-    val createFeedbackState by profileViewModel.createReportState.collectAsStateWithLifecycle()
+    val createReportState by profileViewModel.createReportState.collectAsStateWithLifecycle()
     var loaded by rememberSaveable { mutableStateOf(true) }
     var showErrorDialog by rememberSaveable { mutableStateOf(false) }
     var textInErrorDialog by rememberSaveable { mutableStateOf("") }
@@ -152,7 +152,7 @@ fun ProfileScreen(
 
     if (!loaded) {
         when {
-            getCurrentUser.loading || getUserState.loading || createFeedbackState.loading -> {
+            getCurrentUser.loading || getUserState.loading || createReportState.loading -> {
                 CustomCircularProgressIndicator()
             }
             getCurrentUser.error != null -> {
@@ -189,9 +189,9 @@ fun ProfileScreen(
                     }
                 }
             }
-            createFeedbackState.error != null -> {
+            createReportState.error != null -> {
                 loaded = true
-                when (createFeedbackState.error) {
+                when (createReportState.error) {
                     is FirebaseNetworkException -> {
                         textInErrorDialog = stringResource(id = R.string.no_internet_connection)
                         showErrorDialog = true
@@ -204,7 +204,7 @@ fun ProfileScreen(
                 }
             }
             else -> {
-                if (createFeedbackState.data != null) {
+                if (createReportState.data != null) {
                     loaded = true
                     Toast.makeText(LocalContext.current, R.string.report_about_user_was_sent, Toast.LENGTH_LONG).show()
                 }

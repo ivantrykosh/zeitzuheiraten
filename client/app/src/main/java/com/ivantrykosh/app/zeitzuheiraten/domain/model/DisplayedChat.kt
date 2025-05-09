@@ -6,12 +6,12 @@ import android.os.Parcelable
 data class DisplayedChat(
     val id: String = "",
     val withUserId: String = "",
-    val withUsername: String = "",
+    val withUsername: String? = "",
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString()!!,
         parcel.readString()!!,
-        parcel.readString()!!,
+        parcel.readString(),
     ) {
     }
 

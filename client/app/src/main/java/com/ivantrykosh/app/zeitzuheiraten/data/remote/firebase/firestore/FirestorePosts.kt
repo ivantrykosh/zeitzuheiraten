@@ -27,6 +27,7 @@ class FirestorePosts(private val firestore: FirebaseFirestore = Firebase.firesto
             PostWithRating::notAvailableDates.name to post.notAvailableDates,
             PostWithRating::enabled.name to post.enabled,
             PostWithRating::rating.name to post.rating,
+            PostWithRating::creationTime.name to post.creationTime,
         )
         firestore.collection(Collections.POSTS)
             .document(post.id)

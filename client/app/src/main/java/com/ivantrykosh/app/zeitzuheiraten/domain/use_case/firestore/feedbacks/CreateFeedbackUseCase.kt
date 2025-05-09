@@ -21,7 +21,7 @@ class CreateFeedbackUseCase @Inject constructor(
         try {
             emit(Resource.Loading())
             val userId = userAuthRepository.getCurrentUserId()
-            val user = userRepository.getUserById(userId)
+            val user = userRepository.getUserById(userId)!!
             val date = Instant.now().toEpochMilli()
             val feedback = Feedback(
                 userId = userId,

@@ -23,7 +23,7 @@ class GetChatsForCurrentUserUseCase @Inject constructor(
             val chats = chatRepository.getChatsForUser(userId, startAfterLast, pageSize)
             val displayedChats = chats.map { chat ->
                 val otherUserId = chat.users.first { it != userId }
-                val username = userRepository.getUserById(otherUserId).name
+                val username = userRepository.getUserById(otherUserId)?.name
                 DisplayedChat(
                     id = chat.id,
                     withUserId = otherUserId,

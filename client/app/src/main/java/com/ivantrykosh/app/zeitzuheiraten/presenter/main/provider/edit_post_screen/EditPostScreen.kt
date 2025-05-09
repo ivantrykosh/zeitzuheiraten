@@ -528,6 +528,11 @@ fun EditPostScreen(
             getPostState.error != null -> {
                 loaded = true
                 when (getPostState.error) {
+                    is NullPointerException -> {
+                        textInErrorDialog = stringResource(R.string.post_doesnt_exist)
+                        showErrorDialog = true
+                    }
+
                     is FirebaseNetworkException -> {
                         textInErrorDialog = stringResource(id = R.string.no_internet_connection)
                         showErrorDialog = true

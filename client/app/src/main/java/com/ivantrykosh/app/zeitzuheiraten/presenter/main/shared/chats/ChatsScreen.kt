@@ -38,7 +38,7 @@ import com.ivantrykosh.app.zeitzuheiraten.presenter.main.CustomCircularProgressI
 @Composable
 fun ChatsScreen(
     chatsScreenViewModel: ChatsScreenViewModel = hiltViewModel(),
-    navigateToChat: (String, String, String) -> Unit,
+    navigateToChat: (String, String, String?) -> Unit,
 ) {
     val chatsState by chatsScreenViewModel.getChatsState.collectAsStateWithLifecycle()
     val chats by chatsScreenViewModel.lastChats.collectAsStateWithLifecycle()

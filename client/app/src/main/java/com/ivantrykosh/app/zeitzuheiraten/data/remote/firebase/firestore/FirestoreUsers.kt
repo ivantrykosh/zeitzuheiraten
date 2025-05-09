@@ -15,6 +15,8 @@ class FirestoreUsers(private val firestore: FirebaseFirestore = Firebase.firesto
             User::email.name to user.email,
             User::imageUrl.name to user.imageUrl,
             User::isProvider.name to user.isProvider,
+            User::creationTime.name to user.creationTime,
+            User::lastUsernameChange.name to user.lastUsernameChange,
         )
         firestore.collection(Collections.USERS)
             .document(user.id)
@@ -22,13 +24,13 @@ class FirestoreUsers(private val firestore: FirebaseFirestore = Firebase.firesto
             .await()
     }
 
-    suspend fun getUserById(userId: String): User {
+    suspend fun getUserById(userId: String): User? {
         return firestore.collection(Collections.USERS)
             .document(userId)
             .get()
             .await()
-            .toObject(User::class.java)!!
-            .copy(id = userId)
+            .toObject(User::class.java)
+            ?.copy(id = userId)
     }
 
     /**
@@ -38,6 +40,7 @@ class FirestoreUsers(private val firestore: FirebaseFirestore = Firebase.firesto
         val userData = mapOf(
             User::name.name to user.name,
             User::imageUrl.name to user.imageUrl,
+            User::lastUsernameChange.name to user.lastUsernameChange
         )
         firestore.collection(Collections.USERS)
             .document(user.id)

@@ -50,6 +50,8 @@ import com.ivantrykosh.app.zeitzuheiraten.utils.Constants.MAX_SYMBOLS_FOR_USERNA
 import com.ivantrykosh.app.zeitzuheiraten.utils.isFileSizeAppropriate
 import com.ivantrykosh.app.zeitzuheiraten.utils.isNameValid
 import com.ivantrykosh.app.zeitzuheiraten.utils.isPasswordValid
+import com.ivantrykosh.app.zeitzuheiraten.utils.toStringDateTime
+import java.time.Instant
 
 @Preview(showBackground = true)
 @Composable
@@ -94,6 +96,11 @@ fun MyProfileScreen(
     var passwordError by rememberSaveable { mutableStateOf(false) }
     val standardPasswordErrorMessage = stringResource(id = R.string.password_invalid)
     var passwordErrorMessage by rememberSaveable { mutableStateOf("") }
+
+    val currentTime = Instant.now().toEpochMilli()
+    val nextChangeUsernameDateTime = currentUser.lastUsernameChange + 604800000 // 7 days in millis
+    val dateTimeString = nextChangeUsernameDateTime.toStringDateTime()
+    val youCannotChangeUsernameErrorMessage = stringResource(R.string.you_cannot_change_username_until, dateTimeString)
 
     Box(
         modifier = Modifier
@@ -161,7 +168,12 @@ fun MyProfileScreen(
                     .height(2.dp))
                 ButtonView(
                     onClick = {
-                        showInputDialog = true
+                        if (currentTime > nextChangeUsernameDateTime) {
+                            showInputDialog = true
+                        } else {
+                            showErrorDialog = true
+                            textInErrorDialog = youCannotChangeUsernameErrorMessage
+                        }
                     },
                     iconRes = R.drawable.baseline_edit_24,
                     title = R.string.edit_name
@@ -330,7 +342,8 @@ fun MyProfileScreen(
                         } else {
                             nameError = false
                             nameErrorMessage = ""
-                            myProfileViewModel.updateUser(currentUser.copy(name = name))
+                            val dateTime = Instant.now().toEpochMilli()
+                            myProfileViewModel.updateUser(currentUser.copy(name = name, lastUsernameChange = dateTime))
                             showInputDialog = false
                         }
                     }
