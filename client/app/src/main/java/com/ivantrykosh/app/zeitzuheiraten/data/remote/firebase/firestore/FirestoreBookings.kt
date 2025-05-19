@@ -31,7 +31,7 @@ class FirestoreBookings(
             Booking::provider.name to provider,
             Booking::dateRange.name to dateRange,
             Booking::status.name to BookingStatus.NOT_CONFIRMED.name,
-            Booking::creationTime.name to Instant.now().toEpochMilli()
+            Booking::creatingDateTime.name to Instant.now().toEpochMilli()
         )
         firestore.collection(Collections.BOOKINGS)
             .document()
@@ -52,7 +52,7 @@ class FirestoreBookings(
                 DatePair::endDate.name to dateRange.endDate,
             ),
             Booking::status.name to BookingStatus.NOT_CONFIRMED.name,
-            Booking::creationTime.name to Instant.now().toEpochMilli()
+            Booking::creatingDateTime.name to Instant.now().toEpochMilli()
         )
         functions
             .getHttpsCallable("createBookingWithLock")

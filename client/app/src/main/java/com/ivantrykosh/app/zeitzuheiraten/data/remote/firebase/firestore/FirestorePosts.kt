@@ -76,6 +76,7 @@ class FirestorePosts(private val firestore: FirebaseFirestore = Firebase.firesto
                 when (postsOrderType) {
                     PostsOrderType.BY_CATEGORY -> it.orderBy(PostWithRating::category.name)
                     PostsOrderType.BY_RATING_DESC -> it.orderBy("${PostWithRating::rating.name}.${Rating::rating.name}", Query.Direction.DESCENDING)
+                    PostsOrderType.BY_NUMBER_OF_FEEDBACKS -> it.orderBy("${PostWithRating::rating.name}.${Rating::numberOfFeedbacks.name}", Query.Direction.DESCENDING)
                     PostsOrderType.BY_PRICE_ASC -> it.orderBy(PostWithRating::minPrice.name, Query.Direction.ASCENDING)
                     PostsOrderType.BY_PRICE_DESC -> it.orderBy(PostWithRating::minPrice.name, Query.Direction.DESCENDING)
                 }

@@ -14,7 +14,7 @@ data class Booking(
     val provider: String = "",
     val dateRange: DatePair = DatePair(),
     val status: BookingStatus = BookingStatus.NOT_CONFIRMED,
-    val creationTime: Long = 0,
+    val creatingDateTime: Long = 0,
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString()!!,
@@ -40,7 +40,7 @@ data class Booking(
         parcel.writeString(provider)
         parcel.writeTypedObject(dateRange, 0)
         parcel.writeString(status.name)
-        parcel.writeLong(creationTime)
+        parcel.writeLong(creatingDateTime)
     }
 
     override fun describeContents(): Int {

@@ -186,6 +186,7 @@
 
     <string name="by_category">By category</string>
     <string name="by_rating">By rating</string>
+    <string name="by_number_of_feedbacks">By number of feedbacks</string>
     <string name="by_price_asc">By price ascending</string>
     <string name="by_price_desc">By price descending</string>
     <string name="order">Order</string>

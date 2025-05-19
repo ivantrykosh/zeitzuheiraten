@@ -26,6 +26,7 @@ enum class PostsOrderType(
 ) {
     BY_CATEGORY(R.string.by_category),
     BY_RATING_DESC(R.string.by_rating),
+    BY_NUMBER_OF_FEEDBACKS(R.string.by_number_of_feedbacks),
     BY_PRICE_ASC(R.string.by_price_asc),
     BY_PRICE_DESC(R.string.by_price_desc);
 
