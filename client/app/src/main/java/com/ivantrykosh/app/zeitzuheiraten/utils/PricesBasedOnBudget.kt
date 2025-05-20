@@ -22,7 +22,7 @@ class PricesBasedOnBudget(
             context.getString(R.string.venue_category) to 20,
             context.getString(R.string.catering_category) to 20,
             context.getString(R.string.transportation_category) to 2,
-            context.getString(R.string.hair_and_makeup_category) to 3,
+            context.getString(R.string.beauty_category) to 3,
             context.getString(R.string.event_rentals_category) to 3,
             context.getString(R.string.entertainment_category) to 2,
             context.getString(R.string.wedding_planner_category) to 6,
