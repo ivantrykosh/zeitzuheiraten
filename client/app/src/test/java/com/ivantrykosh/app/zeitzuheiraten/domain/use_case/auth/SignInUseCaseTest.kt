@@ -1,7 +1,8 @@
 package com.ivantrykosh.app.zeitzuheiraten.domain.use_case.auth
 
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
-import com.ivantrykosh.app.zeitzuheiraten.data.repository.UserAuthRepositoryImpl
+import com.ivantrykosh.app.zeitzuheiraten.domain.model.User
+import com.ivantrykosh.app.zeitzuheiraten.domain.repository.UserAuthRepository
+import com.ivantrykosh.app.zeitzuheiraten.domain.repository.UserRepository
 import com.ivantrykosh.app.zeitzuheiraten.utils.Resource
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.cancel
@@ -20,13 +21,15 @@ import org.mockito.kotlin.whenever
 @RunWith(MockitoJUnitRunner::class)
 class SignInUseCaseTest {
 
-    private lateinit var userAuthRepositoryImpl: UserAuthRepositoryImpl
+    private lateinit var userAuthRepository: UserAuthRepository
+    private lateinit var userRepository: UserRepository
     private lateinit var signInUseCase: SignInUseCase
 
     @Before
     fun setup() {
-        userAuthRepositoryImpl = mock()
-        signInUseCase = SignInUseCase(userAuthRepositoryImpl)
+        userAuthRepository = mock()
+        userRepository = mock()
+        signInUseCase = SignInUseCase(userAuthRepository, userRepository)
     }
 
     @Test
@@ -34,21 +37,28 @@ class SignInUseCaseTest {
         val email = "test@email.com"
         val password = "Password123"
         val userId = "t1e2s3t4"
-        var id = ""
-        whenever(userAuthRepositoryImpl.signIn(email, password)).doReturn(Unit)
-        whenever(userAuthRepositoryImpl.getCurrentUserId()).doReturn(userId)
+        val provider = true
+        val user = User(
+            id = userId,
+            isProvider = provider,
+        )
+        var isProvider = false
+        whenever(userAuthRepository.signIn(email, password)).doReturn(Unit)
+        whenever(userAuthRepository.getCurrentUserId()).doReturn(userId)
+        whenever(userRepository.getUserById(userId)).doReturn(user)
 
         signInUseCase(email, password).collect { result ->
             when (result) {
                 is Resource.Loading -> { }
                 is Resource.Error -> { Assert.fail(result.error.message) }
-                is Resource.Success -> { id = result.data!! }
+                is Resource.Success -> { isProvider = result.data!! }
             }
         }
 
-        verify(userAuthRepositoryImpl).signIn(email, password)
-        verify(userAuthRepositoryImpl).getCurrentUserId()
-        Assert.assertEquals(userId, id)
+        verify(userAuthRepository).signIn(email, password)
+        verify(userAuthRepository).getCurrentUserId()
+        verify(userRepository).getUserById(userId)
+        Assert.assertEquals(provider, isProvider)
     }
 
     @Test
@@ -56,8 +66,8 @@ class SignInUseCaseTest {
         val email = "wrong@email"
         val password = "Password123"
         var exception: Exception? = null
-        val mockException = mock<FirebaseAuthInvalidCredentialsException>()
-        whenever(userAuthRepositoryImpl.signIn(email, password)).doAnswer { throw mockException }
+        val mockException = RuntimeException("error")
+        whenever(userAuthRepository.signIn(email, password)).doAnswer { throw mockException }
 
         signInUseCase(email, password).collect { result ->
             when (result) {
@@ -67,9 +77,9 @@ class SignInUseCaseTest {
             }
         }
 
-        verify(userAuthRepositoryImpl).signIn(email, password)
+        verify(userAuthRepository).signIn(email, password)
         Assert.assertNotNull(exception)
-        Assert.assertTrue(exception is FirebaseAuthInvalidCredentialsException)
+        Assert.assertTrue(exception is RuntimeException)
     }
 
     @Test
@@ -77,8 +87,8 @@ class SignInUseCaseTest {
         val email = "test@email.com"
         val password = "123"
         var exception: Exception? = null
-        val mockException = mock<FirebaseAuthInvalidCredentialsException>()
-        whenever(userAuthRepositoryImpl.signIn(email, password)).doAnswer { throw mockException }
+        val mockException = RuntimeException("error")
+        whenever(userAuthRepository.signIn(email, password)).doAnswer { throw mockException }
 
         signInUseCase(email, password).collect { result ->
             when (result) {
@@ -88,9 +98,9 @@ class SignInUseCaseTest {
             }
         }
 
-        verify(userAuthRepositoryImpl).signIn(email, password)
+        verify(userAuthRepository).signIn(email, password)
         Assert.assertNotNull(exception)
-        Assert.assertTrue(exception is FirebaseAuthInvalidCredentialsException)
+        Assert.assertTrue(exception is RuntimeException)
     }
 
     @Test(expected = CancellationException::class)

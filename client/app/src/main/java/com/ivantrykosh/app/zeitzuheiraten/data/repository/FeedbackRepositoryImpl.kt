@@ -23,12 +23,4 @@ class FeedbackRepositoryImpl @Inject constructor(
     override suspend fun deleteFeedback(id: String) {
         firestoreFeedbacks.deleteFeedback(id)
     }
-
-    override suspend fun deleteFeedbacksForPost(postId: String) {
-        firestoreFeedbacks.deleteFeedbacksForPost(postId)
-    }
-
-    override suspend fun deleteFeedbacksForUser(userId: String) {
-        firestoreFeedbacks.deleteFeedbacksForUser(userId)
-    }
 }

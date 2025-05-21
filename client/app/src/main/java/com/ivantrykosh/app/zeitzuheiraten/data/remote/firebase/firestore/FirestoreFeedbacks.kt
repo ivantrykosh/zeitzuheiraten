@@ -83,26 +83,4 @@ class FirestoreFeedbacks(private val firestore: FirebaseFirestore = Firebase.fir
             .delete()
             .await()
     }
-
-    suspend fun deleteFeedbacksForPost(postId: String) {
-        firestore.collection(Collections.FEEDBACKS)
-            .whereEqualTo(Feedback::postId.name, postId)
-            .get()
-            .await()
-            .documents
-            .forEach {
-                it.reference.delete().await()
-            }
-    }
-
-    suspend fun deleteFeedbacksForUser(userId: String) {
-        firestore.collection(Collections.FEEDBACKS)
-            .whereEqualTo(Feedback::userId.name, userId)
-            .get()
-            .await()
-            .documents
-            .forEach {
-                it.reference.delete().await()
-            }
-    }
 }

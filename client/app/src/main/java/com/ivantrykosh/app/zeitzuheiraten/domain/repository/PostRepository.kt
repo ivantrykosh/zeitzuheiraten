@@ -11,7 +11,7 @@ interface PostRepository {
 
     suspend fun getPostById(id: String): PostWithRating
 
-    suspend fun getPostByFilters(category: String, city: String, minPrice: Int?, maxPrice: Int?, startAfterLast: Boolean, pageSize: Int, postsOrderType: PostsOrderType): List<PostWithRating>
+    suspend fun getPostsByFilters(category: String, city: String, minPrice: Int?, maxPrice: Int?, startAfterLast: Boolean, pageSize: Int, postsOrderType: PostsOrderType): List<PostWithRating>
 
     suspend fun updatePost(post: PostWithRating)
 

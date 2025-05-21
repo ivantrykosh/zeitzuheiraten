@@ -9,6 +9,7 @@ import com.ivantrykosh.app.zeitzuheiraten.domain.model.User
 import com.ivantrykosh.app.zeitzuheiraten.utils.Collections
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -42,6 +43,8 @@ class FirestoreUsersTest {
             User::email.name to user.email,
             User::imageUrl.name to user.imageUrl,
             User::isProvider.name to user.isProvider,
+            User::creationTime.name to user.creationTime,
+            User::lastUsernameChange.name to user.lastUsernameChange,
         )
         val completedTask = Tasks.forResult<Void>(null)
         val documentRef = mock<DocumentReference> {
@@ -74,12 +77,12 @@ class FirestoreUsersTest {
         verify(mockFirestore).collection(Collections.USERS)
         verify(mockCollectionReference).document(userId)
         verify(documentRef).get()
-        assertEquals(userId, user.id)
-        assertEquals(testUser.email, user.email)
-        assertEquals(testUser.name, user.name)
+        assertEquals(userId, user?.id)
+        assertEquals(testUser.email, user?.email)
+        assertEquals(testUser.name, user?.name)
     }
 
-    @Test(expected = NullPointerException::class)
+    @Test
     fun `get user by ID failed because user does not exist`() = runTest {
         val userId = "wrongId"
         val documentSnapshot = mock<DocumentSnapshot> {
@@ -91,7 +94,9 @@ class FirestoreUsersTest {
             on { it.get() } doReturn completedTask
         }
 
-        firestoreUsers.getUserById(userId)
+        val user = firestoreUsers.getUserById(userId)
+
+        assertNull(user)
     }
 
     @Test
@@ -100,6 +105,7 @@ class FirestoreUsersTest {
         val userData = mapOf(
             User::name.name to user.name,
             User::imageUrl.name to user.imageUrl,
+            User::lastUsernameChange.name to user.lastUsernameChange
         )
         val completedTask = Tasks.forResult<Void>(null)
         val documentRef = mock<DocumentReference> {

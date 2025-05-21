@@ -1,6 +1,8 @@
-package com.ivantrykosh.app.zeitzuheiraten.domain.use_case.auth
+package com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.reports
 
+import com.ivantrykosh.app.zeitzuheiraten.data.repository.ReportUserRepositoryImpl
 import com.ivantrykosh.app.zeitzuheiraten.data.repository.UserAuthRepositoryImpl
+import com.ivantrykosh.app.zeitzuheiraten.domain.model.ReportUser
 import com.ivantrykosh.app.zeitzuheiraten.utils.Resource
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.cancel
@@ -10,29 +12,36 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.kotlin.any
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 
 @RunWith(MockitoJUnitRunner::class)
-class SendVerificationEmailUseCaseTest {
+class CreateReportUseCaseTest {
 
     private lateinit var userAuthRepositoryImpl: UserAuthRepositoryImpl
-    private lateinit var sendVerificationEmailUseCase: SendVerificationEmailUseCase
+    private lateinit var reportUserRepositoryImpl: ReportUserRepositoryImpl
+    private lateinit var createReportUseCase: CreateReportUseCase
 
     @Before
     fun setup() {
         userAuthRepositoryImpl = mock()
-        sendVerificationEmailUseCase = SendVerificationEmailUseCase(userAuthRepositoryImpl)
+        reportUserRepositoryImpl = mock()
+        createReportUseCase = CreateReportUseCase(userAuthRepositoryImpl, reportUserRepositoryImpl)
     }
 
     @Test
-    fun `send verification email successfully`() = runBlocking {
+    fun `create report successfully`() = runBlocking {
+        val reportedUserId = "reportedUserId"
+        val description = "Test"
+        val userIdWhoReport = "userIdWhoReport"
         var resourceSuccess = false
-        whenever(userAuthRepositoryImpl.sendVerificationEmail()).doReturn(Unit)
+        whenever(userAuthRepositoryImpl.getCurrentUserId()).doReturn(userIdWhoReport)
+        whenever(reportUserRepositoryImpl.createReport(any<ReportUser>())).doReturn(Unit)
 
-        sendVerificationEmailUseCase().collect { result ->
+        createReportUseCase(reportedUserId, description).collect { result ->
             when (result) {
                 is Resource.Loading -> { }
                 is Resource.Error -> { Assert.fail(result.error.message) }
@@ -40,13 +49,17 @@ class SendVerificationEmailUseCaseTest {
             }
         }
 
-        verify(userAuthRepositoryImpl).sendVerificationEmail()
+        verify(userAuthRepositoryImpl).getCurrentUserId()
+        verify(reportUserRepositoryImpl).createReport(any<ReportUser>())
         Assert.assertTrue(resourceSuccess)
     }
 
     @Test(expected = CancellationException::class)
-    fun `send verification email first emit must be loading`() = runBlocking {
-        sendVerificationEmailUseCase().collect { result ->
+    fun `create report first emit must be loading`() = runBlocking {
+        val reportedUserId = "reportedUserId"
+        val description = "Test"
+
+        createReportUseCase(reportedUserId, description).collect { result ->
             when (result) {
                 is Resource.Loading -> { this.cancel() }
                 is Resource.Error -> { Assert.fail("Loading must be first") }

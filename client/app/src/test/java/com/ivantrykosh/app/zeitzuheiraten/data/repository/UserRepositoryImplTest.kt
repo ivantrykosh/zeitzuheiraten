@@ -44,9 +44,9 @@ class UserRepositoryImplTest {
         val user = userRepositoryImpl.getUserById(userId)
 
         verify(mockFirestoreUsers).getUserById(userId)
-        assertEquals(userId, user.id)
-        assertEquals(testUser.email, user.email)
-        assertEquals(testUser.name, user.name)
+        assertEquals(userId, user?.id)
+        assertEquals(testUser.email, user?.email)
+        assertEquals(testUser.name, user?.name)
     }
 
     @Test

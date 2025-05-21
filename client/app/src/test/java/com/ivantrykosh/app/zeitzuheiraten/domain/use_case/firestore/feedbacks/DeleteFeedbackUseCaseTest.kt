@@ -1,6 +1,6 @@
-package com.ivantrykosh.app.zeitzuheiraten.domain.use_case.auth
+package com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.feedbacks
 
-import com.ivantrykosh.app.zeitzuheiraten.data.repository.UserAuthRepositoryImpl
+import com.ivantrykosh.app.zeitzuheiraten.data.repository.FeedbackRepositoryImpl
 import com.ivantrykosh.app.zeitzuheiraten.utils.Resource
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.cancel
@@ -16,24 +16,24 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 
 @RunWith(MockitoJUnitRunner::class)
-class ResetPasswordUseCaseTest {
+class DeleteFeedbackUseCaseTest {
 
-    private lateinit var userAuthRepositoryImpl: UserAuthRepositoryImpl
-    private lateinit var resetPasswordUseCase: ResetPasswordUseCase
+    private lateinit var feedbackRepositoryImpl: FeedbackRepositoryImpl
+    private lateinit var deleteFeedbackUseCase: DeleteFeedbackUseCase
 
     @Before
     fun setup() {
-        userAuthRepositoryImpl = mock()
-        resetPasswordUseCase = ResetPasswordUseCase(userAuthRepositoryImpl)
+        feedbackRepositoryImpl = mock()
+        deleteFeedbackUseCase = DeleteFeedbackUseCase(feedbackRepositoryImpl)
     }
 
     @Test
-    fun `reset password successfully`() = runBlocking {
-        val email = "test@email.com"
+    fun `delete feedback successfully`() = runBlocking {
+        val feedbackId = "feedbackId"
         var resourceSuccess = false
-        whenever(userAuthRepositoryImpl.resetPassword(email)).doReturn(Unit)
+        whenever(feedbackRepositoryImpl.deleteFeedback(feedbackId)).doReturn(Unit)
 
-        resetPasswordUseCase(email).collect { result ->
+        deleteFeedbackUseCase(feedbackId).collect { result ->
             when (result) {
                 is Resource.Loading -> { }
                 is Resource.Error -> { Assert.fail(result.error.message) }
@@ -41,15 +41,15 @@ class ResetPasswordUseCaseTest {
             }
         }
 
-        verify(userAuthRepositoryImpl).resetPassword(email)
+        verify(feedbackRepositoryImpl).deleteFeedback(feedbackId)
         Assert.assertTrue(resourceSuccess)
     }
 
     @Test(expected = CancellationException::class)
-    fun `reset password first emit must be loading`() = runBlocking {
-        val email = "test@email.com"
+    fun `delete feedback first emit must be loading`() = runBlocking {
+        val feedbackId = "feedbackId"
 
-        resetPasswordUseCase(email).collect { result ->
+        deleteFeedbackUseCase(feedbackId).collect { result ->
             when (result) {
                 is Resource.Loading -> { this.cancel() }
                 is Resource.Error -> { Assert.fail("Loading must be first") }

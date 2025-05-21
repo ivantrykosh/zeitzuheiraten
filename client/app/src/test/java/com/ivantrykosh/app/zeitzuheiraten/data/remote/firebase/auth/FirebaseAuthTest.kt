@@ -9,8 +9,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -69,19 +67,6 @@ class FirebaseAuthTest {
     }
 
     @Test
-    fun `reset password successfully`() = runTest {
-        val email = "test@email.com"
-        val completedTask: Task<Void> = Tasks.forResult(null)
-        mock<Task<Void>> {
-            on { mockFirebaseAuth.sendPasswordResetEmail(email) } doReturn completedTask
-        }
-
-        auth.resetPassword(email)
-
-        verify(mockFirebaseAuth).sendPasswordResetEmail(email)
-    }
-
-    @Test
     fun `delete current user successfully`() = runTest {
         val mockUser: FirebaseUser = mock()
         val completedTask: Task<Void> = Tasks.forResult(null)
@@ -129,46 +114,6 @@ class FirebaseAuthTest {
 
         verify(mockFirebaseAuth).currentUser
         assertEquals(userUid, uid)
-    }
-
-    @Test
-    fun `send verification email successfully`() = runTest {
-        val completedTask = Tasks.forResult<Void>(null)
-        val user = mock<FirebaseUser> {
-            on { mockFirebaseAuth.currentUser } doReturn it
-            on { it.sendEmailVerification() } doReturn completedTask
-        }
-
-        auth.sendVerificationEmail()
-
-        verify(mockFirebaseAuth).currentUser
-        verify(user).sendEmailVerification()
-    }
-
-    @Test
-    fun `is email verified returns true because it is verified`() = runTest {
-        mock<FirebaseUser> {
-            on { mockFirebaseAuth.currentUser } doReturn it
-            on { it.isEmailVerified } doReturn true
-        }
-
-        val isVerified = auth.isEmailVerified()
-
-        verify(mockFirebaseAuth).currentUser
-        assertTrue(isVerified)
-    }
-
-    @Test
-    fun `is email verified returns false because it is not verified`() = runTest {
-        mock<FirebaseUser> {
-            on { mockFirebaseAuth.currentUser } doReturn it
-            on { it.isEmailVerified } doReturn false
-        }
-
-        val isVerified = auth.isEmailVerified()
-
-        verify(mockFirebaseAuth).currentUser
-        assertFalse(isVerified)
     }
 
     @Test

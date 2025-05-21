@@ -58,16 +58,6 @@ class UserAuthRepositoryImplTest {
     }
 
     @Test
-    fun `reset password successfully`() = runTest {
-        val email = "test@email.com"
-        whenever(mockFirebaseAuth.resetPassword(email)).doReturn(Unit)
-
-        userAuthRepositoryImpl.resetPassword(email)
-
-        verify(mockFirebaseAuth).resetPassword(email)
-    }
-
-    @Test
     fun `delete user successfully`() = runTest {
         whenever(mockFirebaseAuth.deleteCurrentUser()).doReturn(Unit)
 
@@ -85,26 +75,6 @@ class UserAuthRepositoryImplTest {
 
         verify(mockFirebaseAuth).getCurrentUserId()
         assertEquals(userId, id)
-    }
-
-    @Test
-    fun `send verification email successfully`() = runTest {
-        whenever(mockFirebaseAuth.sendVerificationEmail()).doAnswer(Answer {  })
-
-        userAuthRepositoryImpl.sendVerificationEmail()
-
-        verify(mockFirebaseAuth).sendVerificationEmail()
-    }
-
-    @Test
-    fun `is email verified executes successfully`() = runTest {
-        val verified = true
-        whenever(mockFirebaseAuth.isEmailVerified()).doReturn(verified)
-
-        val isVerified = userAuthRepositoryImpl.isEmailVerified()
-
-        verify(mockFirebaseAuth).isEmailVerified()
-        assertEquals(verified, isVerified)
     }
 
     @Test

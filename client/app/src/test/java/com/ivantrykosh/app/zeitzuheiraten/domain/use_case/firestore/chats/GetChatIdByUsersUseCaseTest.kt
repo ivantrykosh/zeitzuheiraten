@@ -1,7 +1,7 @@
-package com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.users
+package com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.chats
 
+import com.ivantrykosh.app.zeitzuheiraten.data.repository.ChatRepositoryImpl
 import com.ivantrykosh.app.zeitzuheiraten.data.repository.UserAuthRepositoryImpl
-import com.ivantrykosh.app.zeitzuheiraten.data.repository.UserRepositoryImpl
 import com.ivantrykosh.app.zeitzuheiraten.utils.Resource
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.cancel
@@ -17,42 +17,46 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 
 @RunWith(MockitoJUnitRunner::class)
-class DeleteUserUseCaseTest {
+class GetChatIdByUsersUseCaseTest {
 
     private lateinit var userAuthRepositoryImpl: UserAuthRepositoryImpl
-    private lateinit var userRepositoryImpl: UserRepositoryImpl
-    private lateinit var deleteUserUseCase: DeleteUserUseCase
+    private lateinit var chatRepositoryImpl: ChatRepositoryImpl
+    private lateinit var getChatIdByUsersUseCase: GetChatIdByUsersUseCase
 
     @Before
     fun setup() {
         userAuthRepositoryImpl = mock()
-        userRepositoryImpl = mock()
-        deleteUserUseCase = DeleteUserUseCase(userAuthRepositoryImpl, userRepositoryImpl)
+        chatRepositoryImpl = mock()
+        getChatIdByUsersUseCase = GetChatIdByUsersUseCase(userAuthRepositoryImpl, chatRepositoryImpl)
     }
 
     @Test
-    fun `delete user successfully`() = runBlocking {
-        val userId = "t1e2s3t4"
-        var resourceSuccess = false
-        whenever(userAuthRepositoryImpl.getCurrentUserId()).doReturn(userId)
-        whenever(userRepositoryImpl.deleteUser(userId)).doReturn(Unit)
+    fun `get chat id by users successfully`() = runBlocking {
+        val user1Id = "user1Id"
+        val user2Id = "user2Id"
+        val expectedChatId = "chatId"
+        var actualChatId = ""
+        whenever(userAuthRepositoryImpl.getCurrentUserId()).doReturn(user1Id)
+        whenever(chatRepositoryImpl.getChatByUsers(user1Id, user2Id)).doReturn(expectedChatId)
 
-        deleteUserUseCase().collect { result ->
+        getChatIdByUsersUseCase(user2Id).collect { result ->
             when (result) {
                 is Resource.Loading -> { }
                 is Resource.Error -> { Assert.fail(result.error.message) }
-                is Resource.Success -> { resourceSuccess = true }
+                is Resource.Success -> { actualChatId = result.data!! }
             }
         }
 
         verify(userAuthRepositoryImpl).getCurrentUserId()
-        verify(userRepositoryImpl).deleteUser(userId)
-        Assert.assertTrue(resourceSuccess)
+        verify(chatRepositoryImpl).getChatByUsers(user1Id, user2Id)
+        Assert.assertEquals(expectedChatId, actualChatId)
     }
 
     @Test(expected = CancellationException::class)
-    fun `delete user first emit must be loading`() = runBlocking {
-        deleteUserUseCase().collect { result ->
+    fun `get chat id by users first emit must be loading`() = runBlocking {
+        val user2Id = "user2Id"
+
+        getChatIdByUsersUseCase(user2Id).collect { result ->
             when (result) {
                 is Resource.Loading -> { this.cancel() }
                 is Resource.Error -> { Assert.fail("Loading must be first") }

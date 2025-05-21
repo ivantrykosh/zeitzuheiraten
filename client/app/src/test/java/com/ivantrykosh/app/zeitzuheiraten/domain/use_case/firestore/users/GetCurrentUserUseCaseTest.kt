@@ -2,6 +2,7 @@ package com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.users
 
 import com.ivantrykosh.app.zeitzuheiraten.data.repository.UserAuthRepositoryImpl
 import com.ivantrykosh.app.zeitzuheiraten.data.repository.UserRepositoryImpl
+import com.ivantrykosh.app.zeitzuheiraten.domain.model.User
 import com.ivantrykosh.app.zeitzuheiraten.utils.Resource
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.cancel
@@ -17,42 +18,45 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 
 @RunWith(MockitoJUnitRunner::class)
-class DeleteUserUseCaseTest {
+class GetCurrentUserUseCaseTest {
 
-    private lateinit var userAuthRepositoryImpl: UserAuthRepositoryImpl
     private lateinit var userRepositoryImpl: UserRepositoryImpl
-    private lateinit var deleteUserUseCase: DeleteUserUseCase
+    private lateinit var userAuthRepositoryImpl: UserAuthRepositoryImpl
+    private lateinit var getCurrentUserUseCase: GetCurrentUserUseCase
 
     @Before
     fun setup() {
         userAuthRepositoryImpl = mock()
         userRepositoryImpl = mock()
-        deleteUserUseCase = DeleteUserUseCase(userAuthRepositoryImpl, userRepositoryImpl)
+        getCurrentUserUseCase = GetCurrentUserUseCase(userAuthRepositoryImpl, userRepositoryImpl)
     }
 
     @Test
-    fun `delete user successfully`() = runBlocking {
+    fun `get current user successfully`() = runBlocking {
         val userId = "t1e2s3t4"
-        var resourceSuccess = false
+        var user = User()
+        val testUser = User(id = userId, name = "Test User", email = "test@email.com")
         whenever(userAuthRepositoryImpl.getCurrentUserId()).doReturn(userId)
-        whenever(userRepositoryImpl.deleteUser(userId)).doReturn(Unit)
+        whenever(userRepositoryImpl.getUserById(userId)).doReturn(testUser)
 
-        deleteUserUseCase().collect { result ->
+        getCurrentUserUseCase().collect { result ->
             when (result) {
                 is Resource.Loading -> { }
                 is Resource.Error -> { Assert.fail(result.error.message) }
-                is Resource.Success -> { resourceSuccess = true }
+                is Resource.Success -> { user = result.data!! }
             }
         }
 
         verify(userAuthRepositoryImpl).getCurrentUserId()
-        verify(userRepositoryImpl).deleteUser(userId)
-        Assert.assertTrue(resourceSuccess)
+        verify(userRepositoryImpl).getUserById(userId)
+        Assert.assertEquals(testUser.id, user.id)
+        Assert.assertEquals(testUser.name, user.name)
+        Assert.assertEquals(testUser.email, user.email)
     }
 
     @Test(expected = CancellationException::class)
-    fun `delete user first emit must be loading`() = runBlocking {
-        deleteUserUseCase().collect { result ->
+    fun `get current user first emit must be loading`() = runBlocking {
+        getCurrentUserUseCase().collect { result ->
             when (result) {
                 is Resource.Loading -> { this.cancel() }
                 is Resource.Error -> { Assert.fail("Loading must be first") }

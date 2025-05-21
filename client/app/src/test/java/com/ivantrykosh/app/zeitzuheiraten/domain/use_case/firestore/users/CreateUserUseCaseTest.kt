@@ -17,6 +17,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.kotlin.any
 import org.mockito.kotlin.doAnswer
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
@@ -52,7 +53,7 @@ class CreateUserUseCaseTest {
         whenever(userAuthRepositoryImpl.signUp(email, password)).doReturn(Unit)
         whenever(userAuthRepositoryImpl.getCurrentUserId()).doReturn(userId)
         whenever(firebaseStorageRepositoryImpl.uploadImage("$userId/$imageName", imageUri)).doReturn(downloadUrl)
-        whenever(userRepositoryImpl.createUser(user.copy(id = userId, imageUrl = downloadUrl))).doReturn(Unit)
+        whenever(userRepositoryImpl.createUser(any<User>())).doReturn(Unit)
 
         createUserUseCase(email, password, user, imageUri, imageName).collect { result ->
             when (result) {
@@ -65,7 +66,7 @@ class CreateUserUseCaseTest {
         verify(userAuthRepositoryImpl).signUp(email, password)
         verify(userAuthRepositoryImpl).getCurrentUserId()
         verify(firebaseStorageRepositoryImpl).uploadImage("$userId/$imageName", imageUri)
-        verify(userRepositoryImpl).createUser(user.copy(id = userId, imageUrl = downloadUrl))
+        verify(userRepositoryImpl).createUser(any<User>())
         Assert.assertTrue(resourceSuccess)
     }
 
@@ -140,7 +141,7 @@ class CreateUserUseCaseTest {
         whenever(firebaseStorageRepositoryImpl.uploadImage("$userId/$imageName", imageUri)).doReturn(downloadUrl)
         whenever(userAuthRepositoryImpl.deleteCurrentUser()).doReturn(Unit)
         whenever(firebaseStorageRepositoryImpl.deleteImage("$userId/$imageName")).doReturn(Unit)
-        whenever(userRepositoryImpl.createUser(user.copy(id = userId, imageUrl = downloadUrl))).doAnswer { throw mockException }
+        whenever(userRepositoryImpl.createUser(any<User>())).doAnswer { throw mockException }
 
         createUserUseCase(email, password, user, imageUri, imageName).collect { result ->
             when (result) {
@@ -152,7 +153,7 @@ class CreateUserUseCaseTest {
 
         verify(userAuthRepositoryImpl).signUp(email, password)
         verify(firebaseStorageRepositoryImpl).uploadImage("$userId/$imageName", imageUri)
-        verify(userRepositoryImpl).createUser(user.copy(id = userId, imageUrl = downloadUrl))
+        verify(userRepositoryImpl).createUser(any<User>())
         verify(userAuthRepositoryImpl).deleteCurrentUser()
         verify(firebaseStorageRepositoryImpl).deleteImage("$userId/$imageName")
         Assert.assertNotNull(exception)

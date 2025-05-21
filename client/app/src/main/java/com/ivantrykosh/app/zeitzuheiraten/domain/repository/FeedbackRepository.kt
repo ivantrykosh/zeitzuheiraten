@@ -11,8 +11,4 @@ interface FeedbackRepository {
     suspend fun getFeedbacksForUser(userId: String, startAfterLast: Boolean, pageSize: Int): List<Feedback>
 
     suspend fun deleteFeedback(id: String)
-
-    suspend fun deleteFeedbacksForPost(postId: String)
-
-    suspend fun deleteFeedbacksForUser(userId: String)
 }

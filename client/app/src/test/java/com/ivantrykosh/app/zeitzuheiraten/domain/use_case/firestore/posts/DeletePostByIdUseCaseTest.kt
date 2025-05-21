@@ -1,6 +1,6 @@
-package com.ivantrykosh.app.zeitzuheiraten.domain.use_case.auth
+package com.ivantrykosh.app.zeitzuheiraten.domain.use_case.firestore.posts
 
-import com.ivantrykosh.app.zeitzuheiraten.data.repository.UserAuthRepositoryImpl
+import com.ivantrykosh.app.zeitzuheiraten.data.repository.PostRepositoryImpl
 import com.ivantrykosh.app.zeitzuheiraten.utils.Resource
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.cancel
@@ -16,38 +16,40 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 
 @RunWith(MockitoJUnitRunner::class)
-class IsEmailVerifiedUseCaseTest {
+class DeletePostByIdUseCaseTest {
 
-    private lateinit var userAuthRepositoryImpl: UserAuthRepositoryImpl
-    private lateinit var isEmailVerifiedUseCase: IsEmailVerifiedUseCase
+    private lateinit var postRepositoryImpl: PostRepositoryImpl
+    private lateinit var deletePostByIdUseCase: DeletePostByIdUseCase
 
     @Before
     fun setup() {
-        userAuthRepositoryImpl = mock()
-        isEmailVerifiedUseCase = IsEmailVerifiedUseCase(userAuthRepositoryImpl)
+        postRepositoryImpl = mock()
+        deletePostByIdUseCase = DeletePostByIdUseCase(postRepositoryImpl)
     }
 
     @Test
-    fun `is email verified executes successfully`() = runBlocking {
-        val verified = true
-        var isVerified = false
-        whenever(userAuthRepositoryImpl.isEmailVerified()).doReturn(verified)
+    fun `delete post by id successfully`() = runBlocking {
+        val postId = "postId"
+        var resourceSuccess = false
+        whenever(postRepositoryImpl.deletePost(postId)).doReturn(Unit)
 
-        isEmailVerifiedUseCase().collect { result ->
+        deletePostByIdUseCase(postId).collect { result ->
             when (result) {
                 is Resource.Loading -> { }
                 is Resource.Error -> { Assert.fail(result.error.message) }
-                is Resource.Success -> { isVerified = result.data!! }
+                is Resource.Success -> { resourceSuccess = true }
             }
         }
 
-        verify(userAuthRepositoryImpl).isEmailVerified()
-        Assert.assertEquals(verified, isVerified)
+        verify(postRepositoryImpl).deletePost(postId)
+        Assert.assertTrue(resourceSuccess)
     }
 
     @Test(expected = CancellationException::class)
-    fun `is email verified first emit must be loading`() = runBlocking {
-        isEmailVerifiedUseCase().collect { result ->
+    fun `delete post by id first emit must be loading`() = runBlocking {
+        val postId = "postId"
+
+        deletePostByIdUseCase(postId).collect { result ->
             when (result) {
                 is Resource.Loading -> { this.cancel() }
                 is Resource.Error -> { Assert.fail("Loading must be first") }
