@@ -4,6 +4,9 @@ import android.content.Context
 import androidx.annotation.StringRes
 import com.ivantrykosh.app.zeitzuheiraten.R
 
+/**
+ * Sorting orders and their strings that posts can have
+ */
 enum class PostsOrderType(
     @StringRes private val stringRes: Int
 ) {

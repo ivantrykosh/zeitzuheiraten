@@ -16,6 +16,9 @@ class CreateBookingUseCase @Inject constructor(
     private val userRepository: UserRepository,
     private val bookingRepository: BookingRepository,
 ) {
+    /**
+     * Create booking. For common categories [withLock] must be true and for the other categories it must be false
+     */
     operator fun invoke(postId: String, category: String, providerId: String, provider: String, dateRange: DatePair, withLock: Boolean) = flow<Resource<Unit>> {
         try {
             emit(Resource.Loading())

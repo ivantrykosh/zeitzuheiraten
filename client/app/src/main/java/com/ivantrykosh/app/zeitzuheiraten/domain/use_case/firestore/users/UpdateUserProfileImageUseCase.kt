@@ -16,7 +16,7 @@ class UpdateUserProfileImageUseCase @Inject constructor(
     private val firebaseStorageRepository: FirebaseStorageRepository,
 ) {
     /**
-     * Updates user profile image. If imageUri is Empty deletes image from Storage and updates user, otherwise uploads new image and updates user
+     * Updates user profile image. If imageUri is empty deletes image from Storage and updates user, otherwise uploads new image and updates user
      */
     operator fun invoke(user: User, imageUri: Uri, imageName: String) = flow<Resource<Unit>> {
         try {

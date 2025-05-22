@@ -16,6 +16,9 @@ class GetChatsForCurrentUserUseCase @Inject constructor(
     private val userRepository: UserRepository,
     private val chatRepository: ChatRepository,
 ) {
+    /**
+     * Get chats for current user and map them to [DisplayedChat]
+     */
     operator fun invoke(startAfterLast: Boolean, pageSize: Int) = flow<Resource<List<DisplayedChat>>> {
         try {
             emit(Resource.Loading())

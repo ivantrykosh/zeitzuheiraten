@@ -14,7 +14,7 @@ class DeleteUserUseCase @Inject constructor(
     private val userRepository: UserRepository,
 ) {
     /**
-     * Deletes user from Auth, Storage and Firestore
+     * Deletes user from Firestore (and after trigger automatically delete user data from Storage, Firestore and Authentication)
      */
     operator fun invoke() = flow<Resource<Unit>> {
         try {

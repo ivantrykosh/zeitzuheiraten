@@ -13,6 +13,9 @@ class SignInUseCase @Inject constructor(
     private val userAuthRepository: UserAuthRepository,
     private val userRepository: UserRepository,
 ) {
+    /**
+     * Sign in and return if user is provider or not
+     */
     operator fun invoke(email: String, password: String) = flow<Resource<Boolean>> {
         try {
             emit(Resource.Loading())

@@ -23,6 +23,9 @@ class CreatePostUseCase @Inject constructor(
     private val postRepository: PostRepository,
     private val firebaseStorageRepository: FirebaseStorageRepository,
 ) {
+    /**
+     * Upload images to Storage and create post in Firestore
+     */
     operator fun invoke(category: String, cities: List<String>, minPrice: Int, description: String, notAvailableDates: List<DatePair>, images: List<Uri>) = flow<Resource<Unit>> {
         val downloadUrls = mutableListOf<String>()
         val postId = UUID.randomUUID().toString()

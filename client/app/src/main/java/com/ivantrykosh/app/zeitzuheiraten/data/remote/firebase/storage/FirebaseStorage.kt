@@ -27,6 +27,9 @@ class FirebaseStorage(private val firebaseStorage: FirebaseStorage = Firebase.st
             .await()
     }
 
+    /**
+     * Delete all files and directories in provided folder
+     */
     suspend fun deleteFolder(folderName: String) {
         val folderRef = firebaseStorage.reference.child(folderName)
         val result = folderRef.listAll().await()

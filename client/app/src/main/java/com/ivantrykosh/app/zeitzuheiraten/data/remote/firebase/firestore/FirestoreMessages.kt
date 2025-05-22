@@ -29,6 +29,9 @@ class FirestoreMessages(private val firestore: FirebaseFirestore = Firebase.fire
             .await()
     }
 
+    /**
+     * Get feedbacks by chatId, order by date and paginate
+     */
     suspend fun getMessages(chatId: String, startAfterLast: Boolean, pageSize: Int): List<Message> {
         return firestore
             .collection(Collections.CHATS).document(chatId)
@@ -54,6 +57,9 @@ class FirestoreMessages(private val firestore: FirebaseFirestore = Firebase.fire
             }
     }
 
+    /**
+     * Get realtime updates on messages in the chat
+     */
     fun observeMessages(chatId: String, afterDateTime: Long): Flow<List<Message>> {
         return callbackFlow {
             val listener = firestore

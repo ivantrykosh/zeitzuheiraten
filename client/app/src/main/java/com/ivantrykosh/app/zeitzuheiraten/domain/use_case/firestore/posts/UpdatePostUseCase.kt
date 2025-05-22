@@ -18,6 +18,10 @@ class UpdatePostUseCase @Inject constructor(
     private val postRepository: PostRepository,
     private val firebaseStorageRepository: FirebaseStorageRepository,
 ) {
+    /**
+     * Update post.
+     * If [uploadNewImages] is true delete current images in Storage and upload new ones.
+     */
     operator fun invoke(id: String, cities: List<String>, minPrice: Int, description: String, notAvailableDates: List<DatePair>, images: List<Uri>, previousImages: List<String>, uploadNewImages: Boolean, enabled: Boolean) = flow<Resource<Unit>> {
         val downloadUrls = mutableListOf<String>()
         try {

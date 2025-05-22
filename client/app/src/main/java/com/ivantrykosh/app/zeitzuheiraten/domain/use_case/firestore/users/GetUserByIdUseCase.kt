@@ -12,6 +12,9 @@ private const val LOG_TAG = "GetUserByIdUseCase"
 class GetUserByIdUseCase @Inject constructor(
     private val userRepository: UserRepository
 ) {
+    /**
+     * Return user by id. If user does not exist error will be emitted
+     */
     operator fun invoke(userId: String) = flow<Resource<User>> {
         try {
             emit(Resource.Loading())

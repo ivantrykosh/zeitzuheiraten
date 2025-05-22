@@ -24,6 +24,9 @@ class FirestoreUsers(private val firestore: FirebaseFirestore = Firebase.firesto
             .await()
     }
 
+    /**
+     * Get user by id. If user with provided id does not exist return null
+     */
     suspend fun getUserById(userId: String): User? {
         return firestore.collection(Collections.USERS)
             .document(userId)

@@ -13,6 +13,10 @@ private const val LOG_TAG = "UpdateBookingUseCase"
 class UpdateBookingUseCase @Inject constructor(
     private val bookingRepository: BookingRepository,
 ) {
+    /**
+     * Update dateRange or booking status, based on which parameter is provided.
+     * If category is common [withLock] has to be true
+     */
     operator fun invoke(bookingId: String, dateRange: DatePair? = null, bookingStatus: BookingStatus? = null, withLock: Boolean) = flow<Resource<Unit>> {
         try {
             emit(Resource.Loading())

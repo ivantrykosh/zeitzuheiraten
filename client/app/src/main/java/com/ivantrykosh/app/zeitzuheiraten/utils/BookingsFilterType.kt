@@ -4,6 +4,9 @@ import android.content.Context
 import androidx.annotation.StringRes
 import com.ivantrykosh.app.zeitzuheiraten.R
 
+/**
+ * Booking filters and their corresponding string resources
+ */
 enum class BookingsFilterType(
     @StringRes private val stringRes: Int
 ) {

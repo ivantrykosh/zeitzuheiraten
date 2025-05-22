@@ -8,6 +8,10 @@ data class CategoryAndWeight(
     val weight: Int,
 )
 
+/**
+ * This class calculates optimal prices for provided [categories] based on [budget].
+ * Each price is calculated using default and provided weights of category.
+ */
 class PricesBasedOnBudget(
     context: Context,
     private val budget: Int,

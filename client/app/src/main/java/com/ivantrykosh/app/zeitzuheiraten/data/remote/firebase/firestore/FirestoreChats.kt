@@ -13,6 +13,9 @@ class FirestoreChats(private val firestore: FirebaseFirestore = Firebase.firesto
 
     private lateinit var lastVisibleChat: DocumentSnapshot
 
+    /**
+     * Create chat and return its id
+     */
     suspend fun createChat(user1Id: String, user2Id: String, dateTime: Long): String {
         val chat = mapOf(
             Chat::users.name to listOf(user1Id, user2Id),
@@ -27,6 +30,9 @@ class FirestoreChats(private val firestore: FirebaseFirestore = Firebase.firesto
         return chatId
     }
 
+    /**
+     * Get chat id by its users ids. If chat does not exist return null
+     */
     suspend fun getChatByUsers(user1Id: String, user2Id: String): String? {
         val snapshot = firestore.collection(Collections.CHATS)
             .whereArrayContains(Chat::users.name, user1Id)

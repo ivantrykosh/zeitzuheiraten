@@ -20,10 +20,16 @@ class GetPostsByBudgetUseCase @Inject constructor(
 ) {
     private lateinit var pricesBasedOnBudget: PricesBasedOnBudget
 
+    /**
+     * Create new prices based on budget
+     */
     fun updateBudget(budget: Int, categoriesAndWeights: List<CategoryAndWeight>) {
         pricesBasedOnBudget = PricesBasedOnBudget(context, budget, categoriesAndWeights)
     }
 
+    /**
+     * This method has to be called only after [updateBudget]
+     */
     operator fun invoke(category: String, city: String, startAfterLast: Boolean, pageSize: Int, postsOrderType: PostsOrderType) = flow<Resource<List<PostWithRating>>> {
         try {
             emit(Resource.Loading())

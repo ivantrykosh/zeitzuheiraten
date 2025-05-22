@@ -21,6 +21,10 @@ class FirestoreBookings(
 
     private lateinit var lastVisibleBooking: DocumentSnapshot
 
+    /**
+     * Create booking with provided data, [BookingStatus.NOT_CONFIRMED]  status and current creation UTC time.
+     * This method used for booking uncommon categories, where booking is not unique for date
+     */
     suspend fun createBooking(userId: String, username: String, postId: String, category: String, providerId: String, provider: String, dateRange: DatePair) {
         val bookingData = mapOf(
             Booking::userId.name to userId,
@@ -39,6 +43,10 @@ class FirestoreBookings(
             .await()
     }
 
+    /**
+     * Create booking with provided data, [BookingStatus.NOT_CONFIRMED]  status and current creation UTC time.
+     * This method used for booking common categories, where booking is unique for date
+     */
     suspend fun createBookingWithLock(userId: String, username: String, postId: String, category: String, providerId: String, provider: String, dateRange: DatePair) {
         val bookingData = mapOf(
             Booking::userId.name to userId,
@@ -60,6 +68,9 @@ class FirestoreBookings(
             .await()
     }
 
+    /**
+     * Change the booking date for uncommon categories
+     */
     suspend fun updateBookingDateRange(bookingId: String, dateRange: DatePair) {
         val updatedData = mapOf(
             Booking::dateRange.name to dateRange
@@ -70,6 +81,9 @@ class FirestoreBookings(
             .await()
     }
 
+    /**
+     * Change the booking date for common categories
+     */
     suspend fun updateBookingDateRangeWithLock(bookingId: String, dateRange: DatePair) {
         val updatedData = mapOf(
             Booking::id.name to bookingId,
@@ -96,40 +110,19 @@ class FirestoreBookings(
     }
 
     suspend fun getBookingsForUser(userId: String, startAfterLast: Boolean, pageSize: Int, bookingsFilterType: BookingsFilterType): List<Booking> {
-        return firestore.collection(Collections.BOOKINGS)
-            .whereEqualTo(Booking::userId.name, userId)
-            .let {
-                when (bookingsFilterType) {
-                    BookingsFilterType.CANCELED -> it.whereEqualTo(Booking::status.name, BookingStatus.CANCELED.name)
-                    BookingsFilterType.SERVICE_PROVIDED -> it.whereEqualTo(Booking::status.name, BookingStatus.SERVICE_PROVIDED.name)
-                    BookingsFilterType.NOT_CONFIRMED -> it.whereEqualTo(Booking::status.name, BookingStatus.NOT_CONFIRMED.name)
-                    BookingsFilterType.CONFIRMED -> it.whereEqualTo(Booking::status.name, BookingStatus.CONFIRMED.name)
-                }
-            }
-            .orderBy("${Booking::dateRange.name}.${DatePair::startDate.name}")
-            .let {
-                if (startAfterLast) {
-                    it.startAfter(lastVisibleBooking)
-                } else {
-                    it
-                }
-            }
-            .limit(pageSize.toLong())
-            .get()
-            .await()
-            .also {
-                if (!it.isEmpty) {
-                    lastVisibleBooking = it.documents[it.size() - 1]
-                }
-            }
-            .map { doc ->
-                doc.toObject(Booking::class.java).copy(id = doc.id)
-            }
+        return getBookingByField(Booking::userId.name, userId, startAfterLast, pageSize, bookingsFilterType)
     }
 
     suspend fun getBookingsForPost(postId: String, startAfterLast: Boolean, pageSize: Int, bookingsFilterType: BookingsFilterType): List<Booking> {
+        return getBookingByField(Booking::postId.name, postId, startAfterLast, pageSize, bookingsFilterType)
+    }
+
+    /**
+     * Get booking by field name and value, filter them by status, order by start date and paginate
+     */
+    private suspend fun getBookingByField(field: String, fieldValue: String, startAfterLast: Boolean, pageSize: Int, bookingsFilterType: BookingsFilterType): List<Booking> {
         return firestore.collection(Collections.BOOKINGS)
-            .whereEqualTo(Booking::postId.name, postId)
+            .whereEqualTo(field, fieldValue)
             .let {
                 when (bookingsFilterType) {
                     BookingsFilterType.CANCELED -> it.whereEqualTo(Booking::status.name, BookingStatus.CANCELED.name)
@@ -159,6 +152,11 @@ class FirestoreBookings(
             }
     }
 
+    /**
+     * Get booked dates for post.
+     * Only includes bookings with status [BookingStatus.NOT_CONFIRMED] or [BookingStatus.CONFIRMED]
+     * and with end date that is today or later.
+     */
     suspend fun getBookingDatesForPost(postId: String): List<DatePair> {
         return firestore.collection(Collections.BOOKINGS)
             .whereEqualTo(Booking::postId.name, postId)

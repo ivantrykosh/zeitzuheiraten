@@ -19,7 +19,7 @@ class CreateMessageUseCase @Inject constructor(
 ) {
     /**
      * @param chatId if null then new chat will be created
-     * @param otherUserId if chatId is null then otherUserId has not to be null
+     * @param otherUserId if chatId is null then otherUserId does not have to be null
      */
     operator fun invoke(chatId: String?, message: String, otherUserId: String? = null) = flow<Resource<Unit>> {
         try {

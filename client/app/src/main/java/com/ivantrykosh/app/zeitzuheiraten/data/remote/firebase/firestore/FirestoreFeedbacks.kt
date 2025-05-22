@@ -30,32 +30,19 @@ class FirestoreFeedbacks(private val firestore: FirebaseFirestore = Firebase.fir
     }
 
     suspend fun getFeedbacksForPost(postId: String, startAfterLast: Boolean, pageSize: Int): List<Feedback> {
-        return firestore.collection(Collections.FEEDBACKS)
-            .whereEqualTo(Feedback::postId.name, postId)
-            .orderBy(Feedback::date.name)
-            .let {
-                if (startAfterLast) {
-                    it.startAfter(lastVisibleFeedback)
-                } else {
-                    it
-                }
-            }
-            .limit(pageSize.toLong())
-            .get()
-            .await()
-            .also {
-                if (!it.isEmpty) {
-                    lastVisibleFeedback = it.documents[it.size() - 1]
-                }
-            }
-            .map { doc ->
-                doc.toObject(Feedback::class.java).copy(id = doc.id)
-            }
+        return getFeedbacksByField(Feedback::postId.name, postId, startAfterLast, pageSize)
     }
 
     suspend fun getFeedbacksForUser(userId: String, startAfterLast: Boolean, pageSize: Int): List<Feedback> {
+        return getFeedbacksByField(Feedback::userId.name, userId, startAfterLast, pageSize)
+    }
+
+    /**
+     * Get feedbacks by field name and value, order by date and paginate
+     */
+    private suspend fun getFeedbacksByField(field: String, fieldValue: String, startAfterLast: Boolean, pageSize: Int): List<Feedback> {
         return firestore.collection(Collections.FEEDBACKS)
-            .whereEqualTo(Feedback::userId.name, userId)
+            .whereEqualTo(field, fieldValue)
             .orderBy(Feedback::date.name)
             .let {
                 if (startAfterLast) {

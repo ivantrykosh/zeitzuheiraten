@@ -14,6 +14,11 @@ class GetNotAvailableDatesForBookingUseCase @Inject constructor(
     private val postRepository: PostRepository,
     private val bookingRepository: BookingRepository,
 ) {
+    /**
+     * Get not available dates for booking.
+     * If [includeBookingDates] is true then merge notAvailableDates of post with booked dates,
+     * otherwise return only notAvailableDates of post
+     */
     operator fun invoke(postId: String, includeBookingDates: Boolean = true) = flow<Resource<List<DatePair>>> {
         try {
             emit(Resource.Loading())

@@ -1,5 +1,8 @@
 package com.ivantrykosh.app.zeitzuheiraten.utils
 
+/**
+ * Statuses that bookings can have
+ */
 enum class BookingStatus {
     NOT_CONFIRMED, CONFIRMED, CANCELED, SERVICE_PROVIDED;
 

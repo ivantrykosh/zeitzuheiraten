@@ -54,6 +54,9 @@ class FirestorePosts(private val firestore: FirebaseFirestore = Firebase.firesto
             .copy(id = id)
     }
 
+    /**
+     * Get enabled posts by filters, such as category, city, min and max price, order by [postsOrderType] and paginate
+     */
     suspend fun getPostsByFilters(category: String, city: String, minPrice: Int?, maxPrice: Int?, startAfterLast: Boolean, pageSize: Int, postsOrderType: PostsOrderType): List<PostWithRating> {
         return firestore.collection(Collections.POSTS)
             .let {
@@ -101,6 +104,9 @@ class FirestorePosts(private val firestore: FirebaseFirestore = Firebase.firesto
             }
     }
 
+    /**
+     * Update post. Only fields cities, description, minPrice, photosUrl, notAvailableDates, enabled can be updated
+     */
     suspend fun updatePost(post: PostWithRating) {
         val postData = mapOf(
             PostWithRating::cities.name to post.cities,

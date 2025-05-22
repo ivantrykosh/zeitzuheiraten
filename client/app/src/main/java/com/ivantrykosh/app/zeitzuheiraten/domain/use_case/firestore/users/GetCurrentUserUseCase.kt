@@ -14,6 +14,9 @@ class GetCurrentUserUseCase @Inject constructor(
     private val userAuthRepository: UserAuthRepository,
     private val userRepository: UserRepository,
 ) {
+    /**
+     * If user logged in and exists return one, otherwise return null
+     */
     operator fun invoke() = flow<Resource<User?>> {
         try {
             emit(Resource.Loading())
