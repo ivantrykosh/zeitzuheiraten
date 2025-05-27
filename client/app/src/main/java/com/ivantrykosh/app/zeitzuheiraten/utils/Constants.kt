@@ -14,4 +14,6 @@ object Constants {
     const val MAX_SYMBOLS_FOR_MESSAGE = 1000
     const val MAX_SYMBOLS_FOR_REPORT_DESCRIPTION = 1000
     const val MAX_SYMBOLS_FOR_USERNAME = 50
+    const val LATEST_APP_VERSION_NAME_URL = "https://api.github.com/repos/ivantrykosh/zeitzuheiraten/releases/latest"
+    const val LATEST_APP_RELEASE_URL = "https://github.com/ivantrykosh/zeitzuheiraten/releases/latest"
 }

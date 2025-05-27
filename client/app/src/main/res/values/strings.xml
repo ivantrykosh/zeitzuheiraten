@@ -202,4 +202,9 @@
     <string name="deleted_user">Видалений користувач</string>
     <string name="you_cannot_change_username_until">Ви не можене змінювавати ім\'я до %s</string>
     <string name="post_doesnt_exist">Оголошення не існує</string>
+
+    <string name="later">Пізніше</string>
+    <string name="there_is_update">Є доступне оновлення</string>
+    <string name="do_you_want_to_update">Чи бажаєте ви встановити оновлення?</string>
+    <string name="yes">Так</string>
 </resources>

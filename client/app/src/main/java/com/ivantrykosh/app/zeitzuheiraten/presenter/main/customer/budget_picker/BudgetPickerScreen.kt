@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -89,11 +90,46 @@ fun BudgetPickerScreen(
                 title = { Text(text = stringResource(R.string.budget_picker)) },
                 windowInsets = WindowInsets(top = 0.dp),
             )
+        },
+        bottomBar = {
+            Row(
+                modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp),
+            ) {
+                Button(
+                    onClick = {
+                        if (cityValue.isEmpty()) {
+                            showAlertDialog = true
+                            textInAlertDialog = cityValueError
+                        } else if (budgetValue.isEmpty()) {
+                            showAlertDialog = true
+                            textInAlertDialog = budgetValueError
+                        } else if (chosenCategories.isEmpty()) {
+                            showAlertDialog = true
+                            textInAlertDialog = chosenCategoriesError
+                        } else {
+                            navigateToPosts()
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RectangleShape,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Black,
+                        contentColor = Color.White
+                    ),
+                    border = BorderStroke(2.dp, color = Color.Black)
+                ) {
+                    Text(
+                        text = stringResource(R.string.find_posts).uppercase(),
+                        fontSize = 16.sp
+                    )
+                }
+            }
         }
     ) {
         Column(
             modifier = Modifier
                 .padding(it).padding(horizontal = 16.dp)
+                .fillMaxSize()
         ) {
             Spacer(modifier = Modifier.height(16.dp))
             Column(
@@ -158,39 +194,6 @@ fun BudgetPickerScreen(
                             fontSize = 16.sp
                         )
                     }
-                }
-            }
-            Row(
-                modifier = Modifier.weight(1f).padding(bottom = 8.dp),
-                verticalAlignment = Alignment.Bottom
-            ) {
-                Button(
-                    onClick = {
-                        if (cityValue.isEmpty()) {
-                            showAlertDialog = true
-                            textInAlertDialog = cityValueError
-                        } else if (budgetValue.isEmpty()) {
-                            showAlertDialog = true
-                            textInAlertDialog = budgetValueError
-                        } else if (chosenCategories.isEmpty()) {
-                            showAlertDialog = true
-                            textInAlertDialog = chosenCategoriesError
-                        } else {
-                            navigateToPosts()
-                        }
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RectangleShape,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.Black,
-                        contentColor = Color.White
-                    ),
-                    border = BorderStroke(2.dp, color = Color.Black)
-                ) {
-                    Text(
-                        text = stringResource(R.string.find_posts).uppercase(),
-                        fontSize = 16.sp
-                    )
                 }
             }
         }

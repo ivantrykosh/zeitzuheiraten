@@ -9,10 +9,12 @@ import com.ivantrykosh.app.zeitzuheiraten.data.remote.firebase.firestore.Firesto
 import com.ivantrykosh.app.zeitzuheiraten.data.remote.firebase.firestore.FirestoreReports
 import com.ivantrykosh.app.zeitzuheiraten.data.remote.firebase.firestore.FirestoreUsers
 import com.ivantrykosh.app.zeitzuheiraten.data.remote.firebase.storage.FirebaseStorage
+import com.ivantrykosh.app.zeitzuheiraten.data.remote.github.GitHubRepo
 import com.ivantrykosh.app.zeitzuheiraten.data.repository.BookingRepositoryImpl
 import com.ivantrykosh.app.zeitzuheiraten.data.repository.ChatRepositoryImpl
 import com.ivantrykosh.app.zeitzuheiraten.data.repository.FeedbackRepositoryImpl
 import com.ivantrykosh.app.zeitzuheiraten.data.repository.FirebaseStorageRepositoryImpl
+import com.ivantrykosh.app.zeitzuheiraten.data.repository.GitHubRepositoryImpl
 import com.ivantrykosh.app.zeitzuheiraten.data.repository.MessageRepositoryImpl
 import com.ivantrykosh.app.zeitzuheiraten.data.repository.PostRepositoryImpl
 import com.ivantrykosh.app.zeitzuheiraten.data.repository.ReportUserRepositoryImpl
@@ -22,6 +24,7 @@ import com.ivantrykosh.app.zeitzuheiraten.domain.repository.BookingRepository
 import com.ivantrykosh.app.zeitzuheiraten.domain.repository.ChatRepository
 import com.ivantrykosh.app.zeitzuheiraten.domain.repository.FeedbackRepository
 import com.ivantrykosh.app.zeitzuheiraten.domain.repository.FirebaseStorageRepository
+import com.ivantrykosh.app.zeitzuheiraten.domain.repository.GitHubRepository
 import com.ivantrykosh.app.zeitzuheiraten.domain.repository.MessageRepository
 import com.ivantrykosh.app.zeitzuheiraten.domain.repository.PostRepository
 import com.ivantrykosh.app.zeitzuheiraten.domain.repository.ReportUserRepository
@@ -73,6 +76,10 @@ abstract class AppModuleBindings {
     @Singleton
     @Binds
     abstract fun bindFirebaseStorageRepository(firebaseStorageRepositoryImpl: FirebaseStorageRepositoryImpl): FirebaseStorageRepository
+
+    @Singleton
+    @Binds
+    abstract fun bindGitHubRepository(gitHubRepositoryImpl: GitHubRepositoryImpl): GitHubRepository
 }
 
 @Module
@@ -131,5 +138,11 @@ object AppModuleProvidings {
     @Provides
     fun provideFirebaseStorage(): FirebaseStorage {
         return FirebaseStorage()
+    }
+
+    @Singleton
+    @Provides
+    fun provideGitHubRepo(): GitHubRepo {
+        return GitHubRepo()
     }
 }
