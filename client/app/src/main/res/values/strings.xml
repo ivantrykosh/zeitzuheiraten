@@ -164,7 +164,6 @@
     <string name="the_booking_was_confirmed">Бронювання підтверджено!</string>
     <string name="confirm_booking">Підтвердити бронювання</string>
     <string name="confirm_booking_question">Підтвердити бронювання?</string>
-    <string name="feedbacks">%d відгуків</string>
     <string name="no_feedbacks_found">Відгуків не знайдено</string>
     <string name="feedbacks_title">Відгуки</string>
     <string name="delete_feedback">Видалити відгук</string>
@@ -207,4 +206,11 @@
     <string name="there_is_update">Є доступне оновлення</string>
     <string name="do_you_want_to_update">Чи бажаєте ви встановити оновлення?</string>
     <string name="yes">Так</string>
+
+    <plurals name="feedbacks">
+        <item quantity="zero">%s відгуків</item>
+        <item quantity="one">%s відгук</item>
+        <item quantity="few">%s відгуки</item>
+        <item quantity="many">%s відгуків</item>
+    </plurals>
 </resources>

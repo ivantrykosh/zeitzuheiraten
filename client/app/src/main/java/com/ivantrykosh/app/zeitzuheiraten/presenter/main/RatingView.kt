@@ -19,7 +19,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -68,7 +68,7 @@ fun RatingView(
             }
         }
         Text(
-            text = stringResource(R.string.feedbacks, rating.numberOfFeedbacks),
+            text = pluralStringResource(R.plurals.feedbacks, rating.numberOfFeedbacks.toInt(), rating.numberOfFeedbacks),
             modifier = Modifier.padding(start = 10.dp),
             fontSize = 16.sp
         )
