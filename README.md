@@ -27,8 +27,8 @@ wedding budget.
 
    <p align="center">
       <img src="screenshots/budget_picker_screen.png" alt="Budget picker screen" width="300"/>
-      ;&nbsp;;&nbsp;;&nbsp;
-      <img src="screenshots/posts_with_budget.png" alt="Posts with budget screen" width="300"/>
+      &nbsp;&nbsp;&nbsp;
+      <img src="screenshots/posts_with_budget_screen.png" alt="Posts with budget screen" width="300"/>
    </p>
 
 3. **Post view:**
